@@ -5,7 +5,7 @@ ClientVS22/extern/
 ClientVS22/binary/
 
 # Visual Studio local files
-ClientVS22/.vs/
+**/.vs/
 *.user
 *.suo
 *.aps
@@ -24,3 +24,7 @@ ClientVS22/.vs/
 *.exe
 *.ilk
 *.exp
+**/Release/
+**/Debug/
+**/x64/
+**/x86/

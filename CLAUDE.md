@@ -38,3 +38,26 @@ Acest repo este **doar clientul**. Serverul si website-ul sunt proiecte complet 
 - **metin2-server** → `C:\Users\skema\Desktop\metin2-server\` (FreeBSD C++)
 - **metin2-client** → `C:\Users\skema\Desktop\metin2-client\` (Windows VS2022) ← ESTI AICI
 - **metin2-ignition-website** → alt calculator, izolat complet
+
+## Multi-Language Setup
+
+**Limbi disponibile:** EN/DE/HU/FR/CZ/DK/ES/GR/IT/NL/PL/PT/RO/RU/TR (default: EN)
+
+### Client
+- Redenumește `locale.cfg` → `locale_en.cfg`
+- Redenumește `locale_de.cfg` → `locale.cfg`
+
+### Server (înlocuiește `xy` cu codul limbii)
+- `share/conf/item_names_xy.txt` → `item_names.txt`
+- `share/conf/mob_names_xy.txt` → `mob_names.txt`
+- `share/locale/english/translate_xy.lua` → `translate_xy.lua` activ
+- `share/locale/english/locale_string_xy.txt` → activ
+- Rulează `questcompile` după modificări
+
+### Setare limbă server
+1. Redenumește `share/locale/english/` → `share/locale/germany/` (sau alt locale)
+2. `common.locale` tabelă → `LOCALE` mValue = `germany`
+3. Actualizează `~/.cshrc` questcompile path
+
+### Coduri locale
+`english` `germany` `hungary` `france` `czech` `denmark` `spain` `greek` `italy` `netherlands` `poland` `portugal` `romania` `russia` `turkey`
