@@ -1,0 +1,26 @@
+# Librarii externe (prea mari pentru GitHub)
+ClientVS22/extern/
+
+# Output compilare
+ClientVS22/binary/
+
+# Visual Studio local files
+ClientVS22/.vs/
+*.user
+*.suo
+*.aps
+*.ncb
+*.sdf
+*.opensdf
+*.pch
+*.ipch
+*.idb
+*.pdb
+
+# Build outputs
+*.obj
+*.lib
+*.dll
+*.exe
+*.ilk
+*.exp

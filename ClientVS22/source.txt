@@ -1,0 +1,1 @@
+Special thanks to Mali: https://metin2.dev/topic/22115-compile-client-with-visual-studio-2022-src/
