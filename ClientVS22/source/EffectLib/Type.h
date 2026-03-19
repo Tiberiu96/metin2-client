@@ -71,12 +71,12 @@ enum EBillBoardType
 	BILLBOARD_TYPE_ALL,
 	BILLBOARD_TYPE_Y,
 	
-	BILLBOARD_TYPE_LIE, // ¹Ù´Ú¿¡ ´©Àº Çü»ó
+	BILLBOARD_TYPE_LIE, // ï¿½Ù´Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-	BILLBOARD_TYPE_2FACE, //     / and \ 
-	BILLBOARD_TYPE_3FACE, //     / and \ and -
+	BILLBOARD_TYPE_2FACE,
+	BILLBOARD_TYPE_3FACE,
 
-	//BILLBOARD_TYPE_RAY, // ÀÜ»ó
+	//BILLBOARD_TYPE_RAY, // ï¿½Ü»ï¿½
 
 };
 
@@ -220,8 +220,8 @@ typedef std::vector<TTimeEventTypeVector2>		TTimeEventTableVector2;
 typedef std::vector<TTimeEventTypeVector3>		TTimeEventTableVector3;
 
 
-// NOTE : TimeEventValue ÇÔ¼öµéÀº °ªÀ» ³Ñ°Ü ¹ÞÁö ¸»¾Æ¾ß ÇÏ´Â ¶§µµ ÀÖÀ¸¹Ç·Î
-//        °ªÀÇ Á÷Á¢ ¸®ÅÏÀÌ ¾Æ´Ñ Æ÷ÀÎÅÍ ¸®ÅÏÀ¸·Î ÀÛ¼º Çß½À´Ï´Ù. - [levites]
+// NOTE : TimeEventValue ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ¾ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½
+//        ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½ ï¿½ß½ï¿½ï¿½Ï´ï¿½. - [levites]
 
 template <typename T>
 __forceinline void GetTimeEventBlendValue(float fElapsedTime, std::vector<CTimeEvent<T> >& rVector, T * pReturnValue)

@@ -244,7 +244,7 @@ void LocaleService_ForceSetLocale(const char* name, const char* localePath)
 	strcpy(MULTI_LOCALE_NAME, name);
 	strcpy(MULTI_LOCALE_PATH, localePath);
 
-	// ±âÁ¸ Ãµ¸¶ ¼­¹ö·Î Á¢¼Ó½Ã¿¡´Â security key º¯°æ (WE ¹öÀü Å¬¶ó·Î Ãµ¸¶¼­¹ö Á¢¼ÓÇÏ±â À§ÇÔ)
+	// ï¿½ï¿½ï¿½ï¿½ Ãµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ó½Ã¿ï¿½ï¿½ï¿½ security key ï¿½ï¿½ï¿½ï¿½ (WE ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ Ãµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	if (0 == stricmp(name, "ymir"))
 		__SECURITY_KEY_STRING__ = "testtesttesttest";
 	if (0 == stricmp(name, "we_korea"))
@@ -259,33 +259,21 @@ struct SLOCALEDATA
 	WORD		wCodePage;
 	const char*	szSecurityKey;
 } gs_stLocaleData[] = {
-	{ LSS_YMIR,		"ymir",			949,	"testtesttesttest"	},		// Korea
-	{ LSS_EUROPE,	"de",			1252,	"1234abcd5678efgh"	},		// GameForge (Germany)
-	{ LSS_EUROPE,	"en",			1252,	"1234abcd5678efgh"	},		// GameForge (United Kingdom)
-	{ LSS_EUROPE,	"us",			1252,	"1234abcd5678efgh"	},		// GameForge (USA)
-	{ LSS_EUROPE,	"es",			1252,	"1234abcd5678efgh"	},		// GameForge (Spain)
-	{ LSS_EUROPE,	"it",			1252,	"1234abcd5678efgh"	},		// GameForge (Italy)
-	{ LSS_EUROPE,	"fr",			1252,	"1234abcd5678efgh"	},		// GameForge (France)
-	{ LSS_EUROPE,	"pt",			1252,	"1234abcd5678efgh"	},		// GameForge (Portugal)
-	{ LSS_EUROPE,	"tr",			1253,	"1234abcd5678efgh"	},		// GameForge (Greece)
-	{ LSS_EUROPE,	"pl",			1250,	"1234abcd5678efgh"	},		// GameForge (Poland)
-	{ LSS_EUROPE,	"tr",			1254,	"1234abcd5678efgh"	},		// GameForge (Turkey)
-	{ LSS_EUROPE,	"dk",			1252,	"1234abcd5678efgh"	},		// GameForge (Demmark)
-	{ LSS_EUROPE,	"ae",			1256,	"1234abcd5678efgh"	},		// GameForge (United Arab Emirate)
-	{ LSS_EUROPE,	"mx",			1252,	"1234abcd5678efgh"	},		// GameForge (Mexico)
-	{ LSS_EUROPE,	"nl",			1252,	"1234abcd5678efgh"	},		// GameForge (Netherlands)
-	{ LSS_EUROPE,	"cz",			1252,	"1234abcd5678efgh"	},		// GameForge (Czech Republic)
-	{ LSS_EUROPE,	"ru",			1251,	"1234abcd5678efgh"	},		// GameForge (Russian Federation)
-	{ LSS_EUROPE,	"hu",			1250,	"1234abcd5678efgh"	},		// GameForge (Hungary)
-	{ LSS_EUROPE,	"ro",			1250,	"1234abcd5678efgh"	},		// GameForge (Romania)
-	{ LSS_EUROPE,	"ca",			1252,	"testtesttesttest"	},		// Z8Games (Canada)
-	{ LSS_EUROPE,	"sg",			1252,	"testtesttesttest"	},		// TEC (Singapore)
-	{ LSS_JAPAN,	"japan",		932,	"testtesttesttest"	},		// Japan
-	{ LSS_EUROPE,	"br",			1252,	"testtesttesttest"	},		// OnGame (Brazil)
-	{ LSS_HONGKONG,	"hongkong",		950,	"testtesttesttest"	},		// HongKong & Taiwan
-	{ LSS_NEWCIBN,	"newcibn",		936,	"testtesttesttest"	},		// CIBN (Free world)
-	{ LSS_ENGLISH,	"english",		949,	"testtesttesttest"	},		// English (Obsoleted)
-	{ LSS_YMIR,		"kr",			949,	"testtesttesttest"	},		// Korea (Obsoleted)
+	{ LSS_EUROPE,	"en",			1252,	"1234abcd5678efgh"	},		// English
+	{ LSS_EUROPE,	"de",			1252,	"1234abcd5678efgh"	},		// Germany
+	{ LSS_EUROPE,	"hu",			1250,	"1234abcd5678efgh"	},		// Hungary
+	{ LSS_EUROPE,	"fr",			1252,	"1234abcd5678efgh"	},		// France
+	{ LSS_EUROPE,	"cz",			1252,	"1234abcd5678efgh"	},		// Czech Republic
+	{ LSS_EUROPE,	"dk",			1252,	"1234abcd5678efgh"	},		// Denmark
+	{ LSS_EUROPE,	"es",			1252,	"1234abcd5678efgh"	},		// Spain
+	{ LSS_EUROPE,	"gr",			1253,	"1234abcd5678efgh"	},		// Greece
+	{ LSS_EUROPE,	"it",			1252,	"1234abcd5678efgh"	},		// Italy
+	{ LSS_EUROPE,	"nl",			1252,	"1234abcd5678efgh"	},		// Netherlands
+	{ LSS_EUROPE,	"pl",			1250,	"1234abcd5678efgh"	},		// Poland
+	{ LSS_EUROPE,	"pt",			1252,	"1234abcd5678efgh"	},		// Portugal
+	{ LSS_EUROPE,	"ro",			1250,	"1234abcd5678efgh"	},		// Romania
+	{ LSS_EUROPE,	"ru",			1251,	"1234abcd5678efgh"	},		// Russia
+	{ LSS_EUROPE,	"tr",			1254,	"1234abcd5678efgh"	},		// Turkey
 	{ NULL,			NULL,			0,		"testtesttesttest"	}
 };
 

@@ -26,5 +26,14 @@ ClientVS22/binary/
 *.exp
 **/Release/
 **/Debug/
+**/Distribute/
 **/x64/
 **/x86/
+
+# Build logs and temp files
+*.log
+*.tlog
+*.lastbuildstate
+*.iobj
+*.ipdb
+*.FileListAbsolute.txt
