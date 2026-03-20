@@ -12,6 +12,7 @@ ClientVS22/
   vs_files/     → fisiere proiect VS
   extern/       → librarii externe (167MB, exclus din Git)
   binary/       → output compilare (exclus din Git)
+Patcher/        → WPF launcher (.NET 8, C#) — selectie limba, news, start game
 extensions/     → extensii zip (4 Inventory, 6th skill, Firewall)
 ```
 
@@ -23,7 +24,16 @@ Output-ul (`.exe`) se copiaza in folderul Client/ (runtime, pe Google Drive).
 ## Client runtime
 
 Fisierele mari (pack/, dll-uri, exe) sunt stocate pe **Google Drive**, nu in acest repo.
-Dupa compilare, copiaza `Metin2Distribute.exe` in folderul Client/ local.
+Dupa compilare, copiaza `gamecore.exe` in folderul `C:\Users\skema\Desktop\ClientIgnition\`.
+
+## Patcher (Launcher)
+
+- **Stack:** WPF, .NET 8, C#
+- **Publish:** `dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true`
+- **Output:** `Patcher/bin/Release/net8.0-windows/win-x64/publish/` → copiaza in `ClientIgnition/`
+- **Functionalitati:** selectie limba (seteaza locale.cfg), afisare news de pe website, start game
+- **News source:** `http://192.168.184.132/news` (VM local, Host: metin2-ignition.local)
+- Clientul (Locale.cpp) citeste `locale.cfg` si sare peste dialogul SELECT LOCALE daca fisierul exista
 
 ## Excluderi Git (.gitignore)
 
@@ -31,6 +41,7 @@ Dupa compilare, copiaza `Metin2Distribute.exe` in folderul Client/ local.
 - `ClientVS22/binary/` — output compilare
 - `ClientVS22/.vs/` — setari locale VS
 - `**/Release/`, `**/Debug/` — output build
+- `Patcher/bin/`, `Patcher/obj/` — output build patcher
 
 ## Proiecte separate
 
