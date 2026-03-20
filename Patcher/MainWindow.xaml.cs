@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,7 +14,10 @@ public partial class MainWindow : Window
 {
     private const string NewsUrl = "http://192.168.184.132/news";
     private const string NewsHost = "metin2-ignition.local";
+    private const string PatchBaseUrl = "http://192.168.184.132";
+    private const string PatchHost = "patches.metin2-ignition.local";
     private static readonly HttpClient _http = new();
+    private bool _patchComplete;
 
     private readonly string _clientPath;
     private readonly string _localeCfgPath;
@@ -45,6 +50,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Loading news..." }, { "NoNews", "No announcements yet." }, { "NewsError", "Could not load news." },
             { "GameNotFound", "Game files not found!\nMake sure the launcher is in the game folder." },
             { "GameError", "Failed to start game" },
+            { "Checking", "Checking for updates..." }, { "Downloading", "Downloading" },
+            { "PatchComplete", "All files up to date" }, { "PatchError", "Update failed — check connection" },
+            { "PatchProgress", "{0} / {1} files" },
         }},
         { "Deutsch", new() {
             { "News", "— NACHRICHTEN —" }, { "Language", "SPRACHE" }, { "ServerStatus", "SERVERSTATUS" },
@@ -53,6 +61,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Nachrichten laden..." }, { "NoNews", "Noch keine Ankündigungen." }, { "NewsError", "Nachrichten konnten nicht geladen werden." },
             { "GameNotFound", "Spieldateien nicht gefunden!\nStellen Sie sicher, dass der Launcher im Spielordner ist." },
             { "GameError", "Spiel konnte nicht gestartet werden" },
+            { "Checking", "Suche nach Updates..." }, { "Downloading", "Herunterladen" },
+            { "PatchComplete", "Alle Dateien aktuell" }, { "PatchError", "Update fehlgeschlagen" },
+            { "PatchProgress", "{0} / {1} Dateien" },
         }},
         { "Romana", new() {
             { "News", "— NOUTATI —" }, { "Language", "LIMBA" }, { "ServerStatus", "STATUS SERVER" },
@@ -61,6 +72,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Se incarca noutatile..." }, { "NoNews", "Nicio anunt momentan." }, { "NewsError", "Nu s-au putut incarca noutatile." },
             { "GameNotFound", "Fisierele jocului nu au fost gasite!\nAsigurati-va ca launcher-ul este in folderul jocului." },
             { "GameError", "Jocul nu a putut fi pornit" },
+            { "Checking", "Se verifica actualizarile..." }, { "Downloading", "Se descarca" },
+            { "PatchComplete", "Toate fisierele sunt la zi" }, { "PatchError", "Actualizare esuata" },
+            { "PatchProgress", "{0} / {1} fisiere" },
         }},
         { "Turkce", new() {
             { "News", "— HABERLER —" }, { "Language", "DIL" }, { "ServerStatus", "SUNUCU DURUMU" },
@@ -69,6 +83,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Haberler yükleniyor..." }, { "NoNews", "Henüz duyuru yok." }, { "NewsError", "Haberler yüklenemedi." },
             { "GameNotFound", "Oyun dosyalari bulunamadi!\nBaslaticinin oyun klasöründe oldugundan emin olun." },
             { "GameError", "Oyun baslatilamadi" },
+            { "Checking", "Güncellemeler kontrol ediliyor..." }, { "Downloading", "Indiriliyor" },
+            { "PatchComplete", "Tüm dosyalar güncel" }, { "PatchError", "Güncelleme basarisiz" },
+            { "PatchProgress", "{0} / {1} dosya" },
         }},
         { "Espanol", new() {
             { "News", "— NOTICIAS —" }, { "Language", "IDIOMA" }, { "ServerStatus", "ESTADO DEL SERVIDOR" },
@@ -77,6 +94,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Cargando noticias..." }, { "NoNews", "Sin anuncios aún." }, { "NewsError", "No se pudieron cargar las noticias." },
             { "GameNotFound", "Archivos del juego no encontrados!\nAsegúrate de que el launcher está en la carpeta del juego." },
             { "GameError", "No se pudo iniciar el juego" },
+            { "Checking", "Buscando actualizaciones..." }, { "Downloading", "Descargando" },
+            { "PatchComplete", "Todos los archivos actualizados" }, { "PatchError", "Actualización fallida" },
+            { "PatchProgress", "{0} / {1} archivos" },
         }},
         { "Francais", new() {
             { "News", "— ACTUALITÉS —" }, { "Language", "LANGUE" }, { "ServerStatus", "ÉTAT DU SERVEUR" },
@@ -85,6 +105,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Chargement des actualités..." }, { "NoNews", "Aucune annonce pour le moment." }, { "NewsError", "Impossible de charger les actualités." },
             { "GameNotFound", "Fichiers du jeu introuvables!\nAssurez-vous que le launcher est dans le dossier du jeu." },
             { "GameError", "Impossible de lancer le jeu" },
+            { "Checking", "Recherche de mises à jour..." }, { "Downloading", "Téléchargement" },
+            { "PatchComplete", "Tous les fichiers sont à jour" }, { "PatchError", "Mise à jour échouée" },
+            { "PatchProgress", "{0} / {1} fichiers" },
         }},
         { "Italiano", new() {
             { "News", "— NOTIZIE —" }, { "Language", "LINGUA" }, { "ServerStatus", "STATO DEL SERVER" },
@@ -93,6 +116,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Caricamento notizie..." }, { "NoNews", "Nessun annuncio al momento." }, { "NewsError", "Impossibile caricare le notizie." },
             { "GameNotFound", "File di gioco non trovati!\nAssicurati che il launcher sia nella cartella del gioco." },
             { "GameError", "Impossibile avviare il gioco" },
+            { "Checking", "Ricerca aggiornamenti..." }, { "Downloading", "Download" },
+            { "PatchComplete", "Tutti i file sono aggiornati" }, { "PatchError", "Aggiornamento fallito" },
+            { "PatchProgress", "{0} / {1} file" },
         }},
         { "Polski", new() {
             { "News", "— AKTUALNOSCI —" }, { "Language", "JEZYK" }, { "ServerStatus", "STATUS SERWERA" },
@@ -101,6 +127,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Ladowanie aktualnosci..." }, { "NoNews", "Brak ogloszen." }, { "NewsError", "Nie mozna zaladowac aktualnosci." },
             { "GameNotFound", "Nie znaleziono plików gry!\nUpewnij sie, ze launcher jest w folderze gry." },
             { "GameError", "Nie mozna uruchomic gry" },
+            { "Checking", "Sprawdzanie aktualizacji..." }, { "Downloading", "Pobieranie" },
+            { "PatchComplete", "Wszystkie pliki aktualne" }, { "PatchError", "Aktualizacja nieudana" },
+            { "PatchProgress", "{0} / {1} plików" },
         }},
         { "Portugues", new() {
             { "News", "— NOTÍCIAS —" }, { "Language", "IDIOMA" }, { "ServerStatus", "ESTADO DO SERVIDOR" },
@@ -109,6 +138,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Carregando notícias..." }, { "NoNews", "Nenhum anúncio ainda." }, { "NewsError", "Não foi possível carregar as notícias." },
             { "GameNotFound", "Ficheiros do jogo não encontrados!\nCertifique-se que o launcher está na pasta do jogo." },
             { "GameError", "Não foi possível iniciar o jogo" },
+            { "Checking", "Verificando atualizações..." }, { "Downloading", "Baixando" },
+            { "PatchComplete", "Todos os ficheiros atualizados" }, { "PatchError", "Atualização falhou" },
+            { "PatchProgress", "{0} / {1} ficheiros" },
         }},
         { "Nederlands", new() {
             { "News", "— NIEUWS —" }, { "Language", "TAAL" }, { "ServerStatus", "SERVERSTATUS" },
@@ -117,6 +149,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Nieuws laden..." }, { "NoNews", "Nog geen aankondigingen." }, { "NewsError", "Kon nieuws niet laden." },
             { "GameNotFound", "Spelbestanden niet gevonden!\nZorg ervoor dat de launcher in de spelmap staat." },
             { "GameError", "Kon het spel niet starten" },
+            { "Checking", "Controleren op updates..." }, { "Downloading", "Downloaden" },
+            { "PatchComplete", "Alle bestanden zijn bijgewerkt" }, { "PatchError", "Update mislukt" },
+            { "PatchProgress", "{0} / {1} bestanden" },
         }},
         { "Magyar", new() {
             { "News", "— HÍREK —" }, { "Language", "NYELV" }, { "ServerStatus", "SZERVER ÁLLAPOT" },
@@ -125,6 +160,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Hírek betöltése..." }, { "NoNews", "Még nincsenek közlemények." }, { "NewsError", "Nem sikerült betölteni a híreket." },
             { "GameNotFound", "A játékfájlok nem találhatók!\nGyőződjön meg róla, hogy az indító a játék mappájában van." },
             { "GameError", "Nem sikerült elindítani a játékot" },
+            { "Checking", "Frissítések keresése..." }, { "Downloading", "Letöltés" },
+            { "PatchComplete", "Minden fájl naprakész" }, { "PatchError", "Frissítés sikertelen" },
+            { "PatchProgress", "{0} / {1} fájl" },
         }},
         { "Cesky", new() {
             { "News", "— NOVINKY —" }, { "Language", "JAZYK" }, { "ServerStatus", "STAV SERVERU" },
@@ -133,6 +171,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Nacítání novinek..." }, { "NoNews", "Zatím žádná oznámení." }, { "NewsError", "Nepodařilo se načíst novinky." },
             { "GameNotFound", "Herní soubory nenalezeny!\nUjistete se, že launcher je ve složce hry." },
             { "GameError", "Nepodařilo se spustit hru" },
+            { "Checking", "Kontrola aktualizací..." }, { "Downloading", "Stahování" },
+            { "PatchComplete", "Všechny soubory aktuální" }, { "PatchError", "Aktualizace selhala" },
+            { "PatchProgress", "{0} / {1} souborů" },
         }},
         { "Dansk", new() {
             { "News", "— NYHEDER —" }, { "Language", "SPROG" }, { "ServerStatus", "SERVERSTATUS" },
@@ -141,6 +182,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Indlæser nyheder..." }, { "NoNews", "Ingen meddelelser endnu." }, { "NewsError", "Kunne ikke indlæse nyheder." },
             { "GameNotFound", "Spilfiler ikke fundet!\nSørg for at launcheren er i spilmappen." },
             { "GameError", "Kunne ikke starte spillet" },
+            { "Checking", "Søger efter opdateringer..." }, { "Downloading", "Downloader" },
+            { "PatchComplete", "Alle filer er opdaterede" }, { "PatchError", "Opdatering mislykkedes" },
+            { "PatchProgress", "{0} / {1} filer" },
         }},
         { "Ellhnika", new() {
             { "News", "— NEA —" }, { "Language", "GLOSSA" }, { "ServerStatus", "KATASTASI SERVER" },
@@ -149,6 +193,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Fortosi neon..." }, { "NoNews", "Den yparxoun anakoinoseis." }, { "NewsError", "Adynati i fortosi neon." },
             { "GameNotFound", "Ta archeia tou paichniou den vrethikan!\nVevaiotheite oti o launcher einai ston fakelo tou paichniou." },
             { "GameError", "Adynati i enarxi tou paichniou" },
+            { "Checking", "Elegchos gia enimerosis..." }, { "Downloading", "Metafortosi" },
+            { "PatchComplete", "Ola ta archeia einai enimera" }, { "PatchError", "I enimerosi apetiche" },
+            { "PatchProgress", "{0} / {1} archeia" },
         }},
         { "Russkij", new() {
             { "News", "— NOVOSTI —" }, { "Language", "JAZYK" }, { "ServerStatus", "STATUS SERVERA" },
@@ -157,6 +204,9 @@ public partial class MainWindow : Window
             { "LoadingNews", "Zagruzka novostej..." }, { "NoNews", "Poká net objavlenij." }, { "NewsError", "Ne udalos zagruzit novosti." },
             { "GameNotFound", "Fajly igry ne najdeny!\nUbedites, chto launcher nahoditsja v papke igry." },
             { "GameError", "Ne udalos zapustit igru" },
+            { "Checking", "Proverka obnovlenij..." }, { "Downloading", "Zagruzka" },
+            { "PatchComplete", "Vse fajly obnovleny" }, { "PatchError", "Obnovlenie ne udalos" },
+            { "PatchProgress", "{0} / {1} fajlov" },
         }},
     };
 
@@ -170,7 +220,9 @@ public partial class MainWindow : Window
 
         LoadLanguages();
         LoadCurrentLocale();
+        StartButton.IsEnabled = false;
         _ = LoadNewsAsync();
+        _ = RunPatchAsync();
     }
 
     private async Task LoadNewsAsync()
@@ -220,6 +272,102 @@ public partial class MainWindow : Window
         {
             NewsText.Text = T("NewsError");
         }
+    }
+
+    private async Task RunPatchAsync()
+    {
+        try
+        {
+            StatusText.Text = T("Checking");
+            PatchProgress.Value = 0;
+
+            // Download patch list
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{PatchBaseUrl}/patch_list.json");
+            request.Headers.Host = PatchHost;
+            var response = await _http.SendAsync(request);
+            string json = await response.Content.ReadAsStringAsync();
+            var patchFiles = JsonSerializer.Deserialize<List<PatchFileInfo>>(json);
+
+            if (patchFiles == null || patchFiles.Count == 0)
+            {
+                StatusText.Text = T("PatchComplete");
+                StartButton.IsEnabled = true;
+                _patchComplete = true;
+                return;
+            }
+
+            // Find files that need updating
+            var toDownload = new List<PatchFileInfo>();
+            foreach (var pf in patchFiles)
+            {
+                // Skip the patcher itself
+                if (pf.file.Equals("Metin2Ignition.exe", StringComparison.OrdinalIgnoreCase) ||
+                    pf.file.Equals("Metin2Ignition.pdb", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                string localPath = Path.Combine(_clientPath, pf.file.Replace('/', Path.DirectorySeparatorChar));
+                if (!File.Exists(localPath))
+                {
+                    toDownload.Add(pf);
+                    continue;
+                }
+
+                string localHash = ComputeSha256(localPath);
+                if (!string.Equals(localHash, pf.hash, StringComparison.OrdinalIgnoreCase))
+                    toDownload.Add(pf);
+            }
+
+            if (toDownload.Count == 0)
+            {
+                StatusText.Text = T("PatchComplete");
+                PatchProgress.Value = 100;
+                StartButton.IsEnabled = true;
+                _patchComplete = true;
+                return;
+            }
+
+            // Download missing/changed files
+            for (int i = 0; i < toDownload.Count; i++)
+            {
+                var pf = toDownload[i];
+                string fileName = Path.GetFileName(pf.file);
+                StatusText.Text = $"{T("Downloading")}: {fileName}";
+                PatchProgress.Value = (double)i / toDownload.Count * 100;
+
+                string localPath = Path.Combine(_clientPath, pf.file.Replace('/', Path.DirectorySeparatorChar));
+                string? dir = Path.GetDirectoryName(localPath);
+                if (dir != null && !Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                // URL encode the path segments for spaces/special chars
+                string urlPath = string.Join("/", pf.file.Split('/').Select(Uri.EscapeDataString));
+                var dlRequest = new HttpRequestMessage(HttpMethod.Get, $"{PatchBaseUrl}/{urlPath}");
+                dlRequest.Headers.Host = PatchHost;
+                var dlResponse = await _http.SendAsync(dlRequest);
+                dlResponse.EnsureSuccessStatusCode();
+
+                byte[] data = await dlResponse.Content.ReadAsByteArrayAsync();
+                await File.WriteAllBytesAsync(localPath, data);
+            }
+
+            StatusText.Text = T("PatchComplete");
+            PatchProgress.Value = 100;
+            StartButton.IsEnabled = true;
+            _patchComplete = true;
+        }
+        catch (Exception ex)
+        {
+            StatusText.Text = $"{T("PatchError")}: {ex.Message}";
+            // Allow starting anyway if patch fails
+            StartButton.IsEnabled = true;
+        }
+    }
+
+    private static string ComputeSha256(string filePath)
+    {
+        using var stream = File.OpenRead(filePath);
+        byte[] hash = SHA256.HashData(stream);
+        return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
     }
 
     private void LoadLanguages()
@@ -332,6 +480,7 @@ public partial class MainWindow : Window
 
         if (!File.Exists(exePath))
         {
+            // If patch didn't complete, game files might still be downloading
             MessageBox.Show(T("GameNotFound"),
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             return;
@@ -354,4 +503,11 @@ public partial class MainWindow : Window
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
+}
+
+public class PatchFileInfo
+{
+    public string file { get; set; } = "";
+    public string hash { get; set; } = "";
+    public long size { get; set; }
 }
