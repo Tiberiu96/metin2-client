@@ -37,3 +37,7 @@ ClientVS22/binary/
 *.iobj
 *.ipdb
 *.FileListAbsolute.txt
+
+# Patcher build output
+Patcher/bin/
+Patcher/obj/

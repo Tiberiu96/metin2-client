@@ -1,0 +1,217 @@
+<Window x:Class="Patcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Patcher"
+        Title="Metin2 Ignition"
+        Height="600" Width="900"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize">
+
+    <Border CornerRadius="10" BorderBrush="#FF5a1a1a" BorderThickness="2">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FF0d0d0d" Offset="0"/>
+                <GradientStop Color="#FF1a0a0a" Offset="0.5"/>
+                <GradientStop Color="#FF0d0d0d" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.Background>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="130"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="80"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title Bar -->
+            <Border Grid.Row="0" CornerRadius="10,10,0,0" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#FF1a0808" Offset="0"/>
+                        <GradientStop Color="#FF2a0e0e" Offset="0.5"/>
+                        <GradientStop Color="#FF1a0808" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <TextBlock Text="METIN2 IGNITION — LAUNCHER"
+                               Foreground="#FF8b0000"
+                               FontSize="12" FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Margin="20,0,0,0" Opacity="0.7"/>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
+                        <Button Content="—" Style="{StaticResource TitleBarButton}" Click="Minimize_Click"/>
+                        <Button Content="✕" Style="{StaticResource TitleBarButton}" Click="Close_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Logo Area -->
+            <Border Grid.Row="1" Background="Transparent">
+                <Image Source="Assets/logo.png"
+                       Height="110"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+            </Border>
+
+            <!-- Main Content -->
+            <Grid Grid.Row="2" Margin="20,0,20,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="230"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- News Panel (Left) -->
+                <Border Grid.Column="0" CornerRadius="8" Margin="0,0,10,0" Padding="15"
+                        BorderBrush="#FF3a1515" BorderThickness="1">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#FF1a0a0a" Offset="0"/>
+                            <GradientStop Color="#FF120808" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="— NEWS —"
+                                   Foreground="#FF8b0000"
+                                   FontSize="14" FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+
+                        <Border Grid.Row="1" Background="#FF0d0808" CornerRadius="5"
+                                Margin="0,5,0,0" Padding="12"
+                                BorderBrush="#FF2a1010" BorderThickness="1">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <TextBlock x:Name="NewsText"
+                                           Text="Loading news..."
+                                           Foreground="#FF999080"
+                                           FontSize="12"
+                                           TextWrapping="Wrap"/>
+                            </ScrollViewer>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Right Panel -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Top">
+
+                    <!-- Language Selector -->
+                    <Border CornerRadius="8" Padding="15" Margin="0,0,0,10"
+                            BorderBrush="#FF3a1515" BorderThickness="1">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#FF1a0a0a" Offset="0"/>
+                                <GradientStop Color="#FF120808" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <StackPanel>
+                            <TextBlock Text="LANGUAGE"
+                                       Foreground="#FFe8d5a3"
+                                       FontSize="13" FontWeight="Bold"
+                                       Margin="0,0,0,8"/>
+
+                            <ComboBox x:Name="LanguageComboBox"
+                                      Height="32" FontSize="13"
+                                      SelectionChanged="LanguageComboBox_SelectionChanged"
+                                      Style="{StaticResource DarkComboBox}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Server Status -->
+                    <Border CornerRadius="8" Padding="15" Margin="0,0,0,10"
+                            BorderBrush="#FF3a1515" BorderThickness="1">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#FF1a0a0a" Offset="0"/>
+                                <GradientStop Color="#FF120808" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <StackPanel>
+                            <TextBlock Text="SERVER STATUS"
+                                       Foreground="#FFe8d5a3"
+                                       FontSize="13" FontWeight="Bold"
+                                       Margin="0,0,0,8"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="10" Height="10" Fill="#FF00cc66"
+                                         Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="ServerStatusText"
+                                           Text="Online"
+                                           Foreground="#FF00cc66" FontSize="13"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Version Info -->
+                    <Border CornerRadius="8" Padding="15"
+                            BorderBrush="#FF3a1515" BorderThickness="1">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#FF1a0a0a" Offset="0"/>
+                                <GradientStop Color="#FF120808" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <StackPanel>
+                            <TextBlock Text="VERSION"
+                                       Foreground="#FFe8d5a3"
+                                       FontSize="13" FontWeight="Bold"
+                                       Margin="0,0,0,8"/>
+                            <TextBlock x:Name="VersionText"
+                                       Text="v1.0.0"
+                                       Foreground="#FF999080" FontSize="13"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <!-- Bottom Bar -->
+            <Border Grid.Row="3" CornerRadius="0,0,10,10" Padding="20,0"
+                    BorderBrush="#FF3a1515" BorderThickness="0,1,0,0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#FF1a0808" Offset="0"/>
+                        <GradientStop Color="#FF2a0e0e" Offset="0.5"/>
+                        <GradientStop Color="#FF1a0808" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Progress Bar -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
+                        <TextBlock x:Name="StatusText"
+                                   Text="Ready to play"
+                                   Foreground="#FF999080" FontSize="12"
+                                   Margin="0,0,0,5"/>
+                        <ProgressBar x:Name="PatchProgress"
+                                     Height="8"
+                                     Background="#FF1a0a0a"
+                                     Foreground="#FF8b0000"
+                                     BorderBrush="#FF3a1515"
+                                     BorderThickness="1"
+                                     Value="0"/>
+                    </StackPanel>
+
+                    <!-- Start Button -->
+                    <Button x:Name="StartButton"
+                            Grid.Column="1"
+                            Content="START GAME"
+                            Height="45"
+                            FontSize="16" FontWeight="Bold"
+                            Click="StartButton_Click"
+                            Style="{StaticResource StartButton}"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

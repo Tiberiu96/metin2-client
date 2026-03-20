@@ -349,6 +349,32 @@ bool LocaleService_LoadGlobal(HINSTANCE hInstance)
 	int nFoundLocales = 0;
 	char szLocalePath[256];
 
+	// If locale.cfg exists, use it directly and skip the dialog
+	bool bLocaleFromCfg = false;
+	FILE* fpCfg = fopen("locale.cfg", "rt");
+	if (fpCfg)
+	{
+		char cfgLine[256] = {};
+		if (fgets(cfgLine, sizeof(cfgLine)-1, fpCfg))
+		{
+			char cfgName[256] = {};
+			int cfgId, cfgCode;
+			if (sscanf(cfgLine, "%d %d %s", &cfgId, &cfgCode, cfgName) == 3)
+			{
+				for (int i = 0; gs_stLocaleData[i].szServiceName; i++)
+				{
+					if (stricmp(gs_stLocaleData[i].szLocaleName, cfgName) == 0)
+					{
+						gs_iLocale = i;
+						bLocaleFromCfg = true;
+						break;
+					}
+				}
+			}
+		}
+		fclose(fpCfg);
+	}
+
 	for(int i=0; gs_stLocaleData[i].szServiceName; i++ ) {
 		sprintf(szLocalePath, "locale/%s/item_proto", gs_stLocaleData[i].szLocaleName);
 		if( CEterPackManager::Instance().isExist(szLocalePath)) {
@@ -359,7 +385,7 @@ bool LocaleService_LoadGlobal(HINSTANCE hInstance)
 	}
 	if (gs_iLocale < 0)
 		return false;
-	if(nFoundLocales > 1)
+	if(nFoundLocales > 1 && !bLocaleFromCfg)
 		::DialogBox(hInstance, MAKEINTRESOURCE(IDD_SELECT_LOCALE), NULL, (DLGPROC) SelectDlgProc);
 	if (gs_iLocale < 0)
 		return false;
