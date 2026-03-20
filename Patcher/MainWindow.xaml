@@ -81,7 +81,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="— NEWS —"
+                        <TextBlock x:Name="NewsLabel" Grid.Row="0" Text="— NEWS —"
                                    Foreground="#FF8b0000"
                                    FontSize="14" FontWeight="Bold"
                                    HorizontalAlignment="Center"/>
@@ -113,7 +113,7 @@
                             </LinearGradientBrush>
                         </Border.Background>
                         <StackPanel>
-                            <TextBlock Text="LANGUAGE"
+                            <TextBlock x:Name="LanguageLabel" Text="LANGUAGE"
                                        Foreground="#FFe8d5a3"
                                        FontSize="13" FontWeight="Bold"
                                        Margin="0,0,0,8"/>
@@ -135,7 +135,7 @@
                             </LinearGradientBrush>
                         </Border.Background>
                         <StackPanel>
-                            <TextBlock Text="SERVER STATUS"
+                            <TextBlock x:Name="ServerStatusLabel" Text="SERVER STATUS"
                                        Foreground="#FFe8d5a3"
                                        FontSize="13" FontWeight="Bold"
                                        Margin="0,0,0,8"/>
@@ -159,7 +159,7 @@
                             </LinearGradientBrush>
                         </Border.Background>
                         <StackPanel>
-                            <TextBlock Text="VERSION"
+                            <TextBlock x:Name="VersionLabel" Text="VERSION"
                                        Foreground="#FFe8d5a3"
                                        FontSize="13" FontWeight="Bold"
                                        Margin="0,0,0,8"/>
