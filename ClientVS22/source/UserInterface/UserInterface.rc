@@ -154,7 +154,7 @@ END
 // Icon
 //
 
-// Icon removed - game launches via Metin2Ignition.exe
+IDI_METIN2      ICON    "icon_metin2.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

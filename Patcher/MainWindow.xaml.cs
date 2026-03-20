@@ -222,6 +222,7 @@ public partial class MainWindow : Window
         LoadCurrentLocale();
         StartButton.IsEnabled = false;
         _ = LoadNewsAsync();
+        _ = LoadVersionAsync();
         _ = RunPatchAsync();
     }
 
@@ -271,6 +272,22 @@ public partial class MainWindow : Window
         catch
         {
             NewsText.Text = T("NewsError");
+        }
+    }
+
+    private async Task LoadVersionAsync()
+    {
+        try
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{PatchBaseUrl}/version.txt");
+            request.Headers.Host = PatchHost;
+            var response = await _http.SendAsync(request);
+            string version = (await response.Content.ReadAsStringAsync()).Trim();
+            VersionText.Text = $"v{version}";
+        }
+        catch
+        {
+            VersionText.Text = "v?.?.?";
         }
     }
 
@@ -476,7 +493,7 @@ public partial class MainWindow : Window
 
     private void StartButton_Click(object sender, RoutedEventArgs e)
     {
-        string exePath = Path.Combine(_clientPath, "gamecore.exe");
+        string exePath = Path.Combine(_clientPath, "zgamecore.exe");
 
         if (!File.Exists(exePath))
         {
