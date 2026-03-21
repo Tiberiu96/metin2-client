@@ -12,15 +12,16 @@ namespace Patcher;
 
 public partial class MainWindow : Window
 {
-    private const string NewsUrl = "http://192.168.184.132/news";
-    private const string NewsHost = "metin2-ignition.local";
-    private const string PatchBaseUrl = "http://192.168.184.132";
-    private const string PatchHost = "patches.metin2-ignition.local";
     private static readonly HttpClient _http = new();
     private bool _patchComplete;
 
     private readonly string _clientPath;
     private readonly string _localeCfgPath;
+
+    private string _newsUrl = "http://192.168.184.132/news";
+    private string _newsHost = "metin2-ignition.local";
+    private string _patchBaseUrl = "http://192.168.184.132";
+    private string _patchHost = "patches.metin2-ignition.local";
 
     private readonly Dictionary<string, (string code, int codepage, string cfgFile)> _languages = new()
     {
@@ -218,6 +219,7 @@ public partial class MainWindow : Window
         _clientPath = AppDomain.CurrentDomain.BaseDirectory;
         _localeCfgPath = Path.Combine(_clientPath, "locale.cfg");
 
+        LoadConfig();
         LoadLanguages();
         LoadCurrentLocale();
         StartButton.IsEnabled = false;
@@ -226,12 +228,40 @@ public partial class MainWindow : Window
         _ = RunPatchAsync();
     }
 
+    private void LoadConfig()
+    {
+        string cfgPath = Path.Combine(_clientPath, "patcher.cfg");
+        if (!File.Exists(cfgPath))
+            return;
+
+        foreach (string line in File.ReadAllLines(cfgPath))
+        {
+            string trimmed = line.Trim();
+            if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith('#'))
+                continue;
+
+            int eq = trimmed.IndexOf('=');
+            if (eq < 0) continue;
+
+            string key = trimmed[..eq].Trim().ToLowerInvariant();
+            string val = trimmed[(eq + 1)..].Trim();
+
+            switch (key)
+            {
+                case "patch_url": _patchBaseUrl = val; break;
+                case "patch_host": _patchHost = val; break;
+                case "news_url": _newsUrl = val; break;
+                case "news_host": _newsHost = val; break;
+            }
+        }
+    }
+
     private async Task LoadNewsAsync()
     {
         try
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, NewsUrl);
-            request.Headers.Host = NewsHost;
+            var request = new HttpRequestMessage(HttpMethod.Get, _newsUrl);
+            request.Headers.Host = _newsHost;
             var response = await _http.SendAsync(request);
             string html = await response.Content.ReadAsStringAsync();
 
@@ -279,8 +309,8 @@ public partial class MainWindow : Window
     {
         try
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{PatchBaseUrl}/version.txt");
-            request.Headers.Host = PatchHost;
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_patchBaseUrl}/version.txt");
+            request.Headers.Host = _patchHost;
             var response = await _http.SendAsync(request);
             string version = (await response.Content.ReadAsStringAsync()).Trim();
             VersionText.Text = $"v{version}";
@@ -299,8 +329,8 @@ public partial class MainWindow : Window
             PatchProgress.Value = 0;
 
             // Download patch list
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{PatchBaseUrl}/patch_list.json");
-            request.Headers.Host = PatchHost;
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_patchBaseUrl}/patch_list.json");
+            request.Headers.Host = _patchHost;
             var response = await _http.SendAsync(request);
             string json = await response.Content.ReadAsStringAsync();
             var patchFiles = JsonSerializer.Deserialize<List<PatchFileInfo>>(json);
@@ -358,8 +388,8 @@ public partial class MainWindow : Window
 
                 // URL encode the path segments for spaces/special chars
                 string urlPath = string.Join("/", pf.file.Split('/').Select(Uri.EscapeDataString));
-                var dlRequest = new HttpRequestMessage(HttpMethod.Get, $"{PatchBaseUrl}/{urlPath}");
-                dlRequest.Headers.Host = PatchHost;
+                var dlRequest = new HttpRequestMessage(HttpMethod.Get, $"{_patchBaseUrl}/{urlPath}");
+                dlRequest.Headers.Host = _patchHost;
                 var dlResponse = await _http.SendAsync(dlRequest);
                 dlResponse.EnsureSuccessStatusCode();
 
