@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find c:UsersskemaDesktopClientIgnitionEternexusroot -name *.tga -o -name *icon*)",
+      "Read(//c/Users/skema/Desktop/ClientIgnition/Eternexus/root/**)",
+      "Read(//c/Users/skema/Desktop/metin2-server/src/server/common/**)",
+      "Read(//c/Users/skema/Desktop/ClientIgnition/**)",
+      "Read(//c/Users/skema/Desktop/metin2-server/src/**)",
+      "Read(//c/Users/skema/Desktop/metin2-server/**)",
+      "Bash(grep -rn \"icon\\\\|\\\\.tga\" ./server/share --include=*.txt --include=*.lua)",
+      "Bash(grep -r \"game_give_item\\\\|give.*award\\\\|socket0.*socket1.*socket2\" /c/Users/skema/Desktop/metin2-server/src/server/game/src/*.cpp)"
+    ]
+  }
+}
