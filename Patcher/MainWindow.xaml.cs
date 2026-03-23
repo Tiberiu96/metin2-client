@@ -347,9 +347,14 @@ public partial class MainWindow : Window
             var toDownload = new List<PatchFileInfo>();
             foreach (var pf in patchFiles)
             {
-                // Skip the patcher itself
+                // Skip the patcher itself, user-specific config files, and game log files
                 if (pf.file.Equals("Metin2Ignition.exe", StringComparison.OrdinalIgnoreCase) ||
-                    pf.file.Equals("Metin2Ignition.pdb", StringComparison.OrdinalIgnoreCase))
+                    pf.file.Equals("Metin2Ignition.pdb", StringComparison.OrdinalIgnoreCase) ||
+                    pf.file.Equals("metin2.cfg", StringComparison.OrdinalIgnoreCase) ||
+                    pf.file.Equals("locale.cfg", StringComparison.OrdinalIgnoreCase) ||
+                    pf.file.Equals("channel.inf", StringComparison.OrdinalIgnoreCase) ||
+                    pf.file.Equals("syserr.txt", StringComparison.OrdinalIgnoreCase) ||
+                    pf.file.Equals("syslog.txt", StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 string localPath = Path.Combine(_clientPath, pf.file.Replace('/', Path.DirectorySeparatorChar));
