@@ -41,3 +41,6 @@ ClientVS22/binary/
 # Patcher build output
 Patcher/bin/
 Patcher/obj/
+
+# MCP config (contine tokeni)
+.mcp.json
