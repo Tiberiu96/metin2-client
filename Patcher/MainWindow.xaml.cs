@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -222,10 +223,8 @@ public partial class MainWindow : Window
         LoadConfig();
         LoadLanguages();
         LoadCurrentLocale();
-        StartButton.IsEnabled = false;
         _ = LoadNewsAsync();
         _ = LoadVersionAsync();
-        _ = RunPatchAsync();
     }
 
     private void LoadConfig()
@@ -338,7 +337,6 @@ public partial class MainWindow : Window
             if (patchFiles == null || patchFiles.Count == 0)
             {
                 StatusText.Text = T("PatchComplete");
-                StartButton.IsEnabled = true;
                 _patchComplete = true;
                 return;
             }
@@ -373,7 +371,6 @@ public partial class MainWindow : Window
             {
                 StatusText.Text = T("PatchComplete");
                 PatchProgress.Value = 100;
-                StartButton.IsEnabled = true;
                 _patchComplete = true;
                 return;
             }
@@ -404,14 +401,11 @@ public partial class MainWindow : Window
 
             StatusText.Text = T("PatchComplete");
             PatchProgress.Value = 100;
-            StartButton.IsEnabled = true;
             _patchComplete = true;
         }
         catch (Exception ex)
         {
             StatusText.Text = $"{T("PatchError")}: {ex.Message}";
-            // Allow starting anyway if patch fails
-            StartButton.IsEnabled = true;
         }
     }
 
@@ -456,8 +450,34 @@ public partial class MainWindow : Window
             catch { }
         }
 
-        // Default to English
-        LanguageComboBox.SelectedItem = "English";
+        // Default based on OS language
+        LanguageComboBox.SelectedItem = GetDefaultLanguageFromOS();
+    }
+
+    private string GetDefaultLanguageFromOS()
+    {
+        var osLang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLower();
+
+        var isoToLanguage = new Dictionary<string, string>
+        {
+            { "en", "English" },
+            { "de", "Deutsch" },
+            { "ro", "Romana" },
+            { "tr", "Turkce" },
+            { "es", "Espanol" },
+            { "fr", "Francais" },
+            { "it", "Italiano" },
+            { "pl", "Polski" },
+            { "pt", "Portugues" },
+            { "nl", "Nederlands" },
+            { "hu", "Magyar" },
+            { "cs", "Cesky" },
+            { "da", "Dansk" },
+            { "el", "Ellhnika" },
+            { "ru", "Russkij" },
+        };
+
+        return isoToLanguage.TryGetValue(osLang, out var langName) ? langName : "English";
     }
 
     private void SaveLocale(string langName)
@@ -526,15 +546,20 @@ public partial class MainWindow : Window
         }
     }
 
-    private void StartButton_Click(object sender, RoutedEventArgs e)
+    private async void StartButton_Click(object sender, RoutedEventArgs e)
     {
+        StartButton.IsEnabled = false;
+
+        // Run patch before launching
+        await RunPatchAsync();
+
         string exePath = Path.Combine(_clientPath, "zgamecore.exe");
 
         if (!File.Exists(exePath))
         {
-            // If patch didn't complete, game files might still be downloading
             MessageBox.Show(T("GameNotFound"),
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            StartButton.IsEnabled = true;
             return;
         }
 
