@@ -3,6 +3,7 @@
 #include "Packet.h"
 #include "PythonApplication.h"
 #include "NetworkActorManager.h"
+#include "Locale.h"
 
 #include "AbstractPlayer.h"
 
@@ -356,6 +357,43 @@ bool CPythonNetworkStream::SendEnterGame()
 	if (!SendSequence())
 		return false;
 
+	SendSetLanguagePacket();
+
 	__SendInternalBuffer();
+	return true;
+}
+
+bool CPythonNetworkStream::SendSetLanguagePacket()
+{
+	TPacketCGSetLanguage packet;
+	packet.header = HEADER_CG_SET_LANGUAGE;
+	memset(packet.language, 0, sizeof(packet.language));
+
+	// Read 2-letter language code from locale.cfg (format: "10002\t1252\ten")
+	FILE* fp = fopen("locale.cfg", "rt");
+	if (fp)
+	{
+		char line[256] = {};
+		if (fgets(line, sizeof(line) - 1, fp))
+		{
+			char code[32] = {};
+			int port, codepage;
+			if (sscanf(line, "%d %d %s", &port, &codepage, code) == 3)
+			{
+				strncpy(packet.language, code, sizeof(packet.language));
+			}
+		}
+		fclose(fp);
+	}
+
+	if (packet.language[0] == 0)
+		strncpy(packet.language, "en", sizeof(packet.language));
+
+	if (!Send(sizeof(packet), &packet))
+	{
+		Tracen("Send SendSetLanguagePacket");
+		return false;
+	}
+
 	return true;
 }
