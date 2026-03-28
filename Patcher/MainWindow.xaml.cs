@@ -565,9 +565,16 @@ public partial class MainWindow : Window
 
         try
         {
+            // Generate one-time launch token
+            string token = Guid.NewGuid().ToString("N");
+            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            string tokPath = Path.Combine(_clientPath, "launch.tok");
+            await File.WriteAllTextAsync(tokPath, $"{token}\n{timestamp}");
+
             Process.Start(new ProcessStartInfo
             {
                 FileName = exePath,
+                Arguments = $"--launch-token {token}",
                 WorkingDirectory = _clientPath,
                 UseShellExecute = true
             });

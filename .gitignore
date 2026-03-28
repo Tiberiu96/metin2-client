@@ -44,3 +44,6 @@ Patcher/obj/
 
 # MCP config (contine tokeni)
 .mcp.json
+
+# Token lansare joc (generat de patcher, one-time use)
+launch.tok
