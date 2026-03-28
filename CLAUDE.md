@@ -35,6 +35,16 @@ Dupa compilare, copiaza `gamecore.exe` in folderul `C:\Users\skema\Desktop\Clien
 - **News source:** `http://192.168.184.132/news` (VM local, Host: metin2-ignition.local)
 - Clientul (Locale.cpp) citeste `locale.cfg` si sare peste dialogul SELECT LOCALE daca fisierul exista
 
+## Client runtime — fisiere Python/script
+
+Fisierele `.py` (root, uiscript etc.) sunt citite din **pack-uri** (`root.epk`/`root.eix`, etc.), nu direct din folder.
+Clientul compilat cu configuratia **Distribute** citeste exclusiv din packuri.
+
+> **Orice modificare la fisiere `.py` sau script necesita repackuire** — editarea fisierului din
+> `ClientIgnition\Eternexus\root\` nu are efect fara a regenera `root.epk` + `root.eix`.
+
+Packurile se afla in `C:\Users\skema\Desktop\ClientIgnition\` (`root.epk`, `root.eix`, `locale_ro.epk`, etc.).
+
 ## Excluderi Git (.gitignore)
 
 - `ClientVS22/extern/` — librarii externe (167MB)
