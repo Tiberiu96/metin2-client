@@ -219,7 +219,7 @@ PyObject * chrSelect(PyObject* poSelf, PyObject* poArgs)
 			break;
 
 		default:
-			// NOTE: »¡°£»öÀ¸·Î ³ª¿À°Ô ÇÏ¸é ½º¼¦ ÂïÀ» ¶§ º¸±â°¡ ¾ÈÁÁ¾Æ¼­ ÄÚ¸àÆ® ÇÏ¿´½À´Ï´Ù [cronan 040226]
+			// NOTE: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½â°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ï¿½ ï¿½Ú¸ï¿½Æ® ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ [cronan 040226]
 			//pkInst->SetAddColor(D3DXCOLOR(0.3f, 0.0f, 0.0f, 1.0f));
 			break;
 	}
@@ -528,7 +528,7 @@ PyObject * chrRefresh(PyObject* poSelf, PyObject* poArgs)
 	if (!pkInst)
 		return Py_BuildNone();
 
-	// Select È­¸é¿¡¼­´Â WAIT ¸ð¼ÇÀÌ ÁØºñ µÇÁö ¾ÊÀº »óÅÂÀÌ±â ¶§¹®¿¡ ¹®Á¦°¡ »ý±ä´Ù.
+	// Select È­ï¿½é¿¡ï¿½ï¿½ï¿½ï¿½ WAIT ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Øºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
 	//pkInst->Refresh(CRaceMotionData::NAME_WAIT, true);
 	return Py_BuildNone();
 }
@@ -840,6 +840,20 @@ PyObject * chrGetGuildID(PyObject* poSelf, PyObject* poArgs)
 		return Py_BuildValue("i", 0);
 
 	return Py_BuildValue("i", pInstance->GetGuildID());
+}
+
+PyObject * chrGetLanguage(PyObject* poSelf, PyObject* poArgs)
+{
+	int iVirtualID;
+	if (!PyTuple_GetInteger(poArgs, 0, &iVirtualID))
+		return Py_BuildException();
+
+	CInstanceBase * pInstance = CPythonCharacterManager::Instance().GetInstancePtr(iVirtualID);
+
+	if (!pInstance)
+		return Py_BuildValue("s", "en");
+
+	return Py_BuildValue("s", pInstance->GetLanguage());
 }
 
 PyObject * chrGetProjectPosition(PyObject* poSelf, PyObject* poArgs)
@@ -1290,6 +1304,7 @@ void initchr()
 		{ "GetName",					chrGetName,							METH_VARARGS },
 		{ "GetNameByVID",				chrGetNameByVID,					METH_VARARGS },
 		{ "GetGuildID",					chrGetGuildID,						METH_VARARGS },
+		{ "GetLanguage",				chrGetLanguage,						METH_VARARGS },
 		{ "GetProjectPosition",			chrGetProjectPosition,				METH_VARARGS },
 
 		{ "GetVirtualNumber",			chrGetVirtualNumber,				METH_VARARGS },

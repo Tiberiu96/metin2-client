@@ -212,7 +212,7 @@ void CPythonNetworkStream::GamePhase()
     while (ret)
 	{
 		if(dwRecvCount++ >= MAX_RECV_COUNT-1 && GetRecvBufferSize() < SAFE_RECV_BUFSIZE
-			&& m_strPhase == "Game") //phase_game ÀÌ ¾Æ´Ï¾îµµ ¿©±â·Î µé¾î¿À´Â °æ¿ì°¡ ÀÖ´Ù.
+			&& m_strPhase == "Game") //phase_game ï¿½ï¿½ ï¿½Æ´Ï¾îµµ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì°¡ ï¿½Ö´ï¿½.
 			break;
 
 		if (!CheckPacket(&header))
@@ -239,7 +239,7 @@ void CPythonNetworkStream::GamePhase()
 
 			case HEADER_GC_PHASE:
 				ret = RecvPhasePacket();
-				return; // µµÁß¿¡ Phase °¡ ¹Ù²î¸é ÀÏ´Ü ¹«Á¶°Ç GamePhase Å»Ãâ - [levites]
+				return; // ï¿½ï¿½ï¿½ß¿ï¿½ Phase ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ GamePhase Å»ï¿½ï¿½ - [levites]
 				break;
 
 			case HEADER_GC_PVP:
@@ -820,9 +820,9 @@ void CPythonNetworkStream::Warp(LONG lGlobalX, LONG lGlobalY)
 	//rkBgMgr.SetShadowLevel(CPythonBackground::SHADOW_ALL);
 	rkBgMgr.RefreshShadowLevel();
 
-	// NOTE : Warp ÇßÀ»¶§ CenterPositionÀÇ Height°¡ 0ÀÌ±â ¶§¹®¿¡ Ä«¸Þ¶ó°¡ ¶¥¹Ù´Ú¿¡ ¹ÚÇôÀÖ°Ô µÊ
-	//        ¿òÁ÷ÀÏ¶§¸¶´Ù Height°¡ °»½Å µÇ±â ¶§¹®ÀÌ¹Ç·Î ¸ÊÀ» ÀÌµ¿ÇÏ¸é PositionÀ» °­Á¦·Î ÇÑ¹ø
-	//        ¼ÂÆÃÇØÁØ´Ù - [levites]
+	// NOTE : Warp ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CenterPositionï¿½ï¿½ Heightï¿½ï¿½ 0ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½Ù´Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½ ï¿½ï¿½
+	//        ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ï¿½ï¿½ï¿½ Heightï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¹Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ï¸ï¿½ Positionï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¹ï¿½
+	//        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ - [levites]
 	LONG lLocalX = lGlobalX;
 	LONG lLocalY = lGlobalY;
 	__GlobalPositionToLocalPosition(lLocalX, lLocalY);
@@ -870,7 +870,7 @@ void CPythonNetworkStream::SetGamePhase()
 	m_phaseProcessFunc.Set(this, &CPythonNetworkStream::GamePhase);
 	m_phaseLeaveFunc.Set(this, &CPythonNetworkStream::__LeaveGamePhase);
 
-	// Main Character µî·ÏO
+	// Main Character ï¿½ï¿½ï¿½O
 
 	IAbstractPlayer & rkPlayer = IAbstractPlayer::GetSingleton();
 	rkPlayer.SetMainCharacterIndex(GetMainActorVID());
@@ -985,11 +985,11 @@ bool CPythonNetworkStream::RecvPVPPacket()
 		case PVP_MODE_AGREE:
 			rkChrMgr.RemovePVPKey(kPVPPacket.dwVIDSrc, kPVPPacket.dwVIDDst);
 
-			// »ó´ë°¡ ³ª(Dst)¿¡°Ô µ¿ÀÇ¸¦ ±¸ÇßÀ»¶§
+			// ï¿½ï¿½ë°¡ ï¿½ï¿½(Dst)ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			if (rkPlayer.IsMainCharacterIndex(kPVPPacket.dwVIDDst))
 				rkPlayer.RememberChallengeInstance(kPVPPacket.dwVIDSrc);
 
-			// »ó´ë¿¡°Ô µ¿ÀÇ¸¦ ±¸ÇÑ µ¿¾È¿¡´Â ´ë°á ºÒ´É
+			// ï¿½ï¿½ë¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½
 			if (rkPlayer.IsMainCharacterIndex(kPVPPacket.dwVIDSrc))
 				rkPlayer.RememberCantFightInstance(kPVPPacket.dwVIDDst);
 			break;
@@ -1000,11 +1000,11 @@ bool CPythonNetworkStream::RecvPVPPacket()
 			DWORD dwKiller = kPVPPacket.dwVIDSrc;
 			DWORD dwVictim = kPVPPacket.dwVIDDst;
 
-			// ³»(victim)°¡ »ó´ë¿¡°Ô º¹¼öÇÒ ¼ö ÀÖÀ»¶§
+			// ï¿½ï¿½(victim)ï¿½ï¿½ ï¿½ï¿½ë¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			if (rkPlayer.IsMainCharacterIndex(dwVictim))
 				rkPlayer.RememberRevengeInstance(dwKiller);
 
-			// »ó´ë(victim)°¡ ³ª¿¡°Ô º¹¼öÇÏ´Â µ¿¾È¿¡´Â ´ë°á ºÒ´É
+			// ï¿½ï¿½ï¿½(victim)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½
 			if (rkPlayer.IsMainCharacterIndex(dwKiller))
 				rkPlayer.RememberCantFightInstance(dwVictim);
 			break;
@@ -1022,7 +1022,7 @@ bool CPythonNetworkStream::RecvPVPPacket()
 			break;
 	}
 
-	// NOTE : PVP Åä±Û½Ã TargetBoard ¸¦ ¾÷µ¥ÀÌÆ® ÇÕ´Ï´Ù.
+	// NOTE : PVP ï¿½ï¿½Û½ï¿½ TargetBoard ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Õ´Ï´ï¿½.
 	__RefreshTargetBoardByVID(kPVPPacket.dwVIDSrc);
 	__RefreshTargetBoardByVID(kPVPPacket.dwVIDDst);
 
@@ -1085,7 +1085,7 @@ bool CPythonNetworkStream::SendMessengerAddByNamePacket(const char * c_szName)
 		return false;
 	char szName[CHARACTER_NAME_MAX_LEN];
 	strncpy(szName, c_szName, CHARACTER_NAME_MAX_LEN-1);
-	szName[CHARACTER_NAME_MAX_LEN-1] = '\0'; // #720: ¸Þ½ÅÀú ÀÌ¸§ °ü·Ã ¹öÆÛ ¿À¹öÇÃ·Î¿ì ¹ö±× ¼öÁ¤
+	szName[CHARACTER_NAME_MAX_LEN-1] = '\0'; // #720: ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ã·Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	if (!Send(sizeof(szName), &szName))
 		return false;
@@ -1119,7 +1119,7 @@ bool CPythonNetworkStream::SendCharacterStatePacket(const TPixelPosition& c_rkPP
 	else if (fDstRot > 360.0f)
 		fDstRot = fmodf(fDstRot, 360.0f);
 
-	// TODO: ³ªÁß¿¡ ÆÐÅ¶ÀÌ¸§À» ¹Ù²ÙÀÚ
+	// TODO: ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½Å¶ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ï¿½
 	TPacketCGMove kStatePacket;
 	kStatePacket.bHeader = HEADER_CG_CHARACTER_MOVE;
 	kStatePacket.bFunc = eFunc;
@@ -1148,7 +1148,7 @@ bool CPythonNetworkStream::SendCharacterStatePacket(const TPixelPosition& c_rkPP
 	return SendSequence();
 }
 
-// NOTE : SlotIndex´Â ÀÓ½Ã
+// NOTE : SlotIndexï¿½ï¿½ ï¿½Ó½ï¿½
 bool CPythonNetworkStream::SendUseSkillPacket(DWORD dwSkillIndex, DWORD dwTargetVID)
 {
 	TPacketCGUseSkill UseSkillPacket;
@@ -1290,9 +1290,9 @@ bool CPythonNetworkStream::RecvChatPacket()
 
 	buf[uChatSize]='\0';
 	
-	// À¯·´ ¾Æ¶ø ¹öÀü Ã³¸®
-	// "ÀÌ¸§: ³»¿ë" ÀÔ·ÂÀ» "³»¿ë: ÀÌ¸§" ¼ø¼­·Î Ãâ·ÂÇÏ±â À§ÇØ ÅÇ(0x08)À» ³ÖÀ½
-	// ÅÇÀ» ¾Æ¶ø¾î ±âÈ£·Î Ã³¸®ÇØ (¿µ¾î1) : (¿µ¾î2) ·Î ÀÔ·ÂµÇ¾îµµ (¿µ¾î2) : (¿µ¾î1) ·Î Ãâ·ÂÇÏ°Ô ¸¸µç´Ù
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
+	// "ï¿½Ì¸ï¿½: ï¿½ï¿½ï¿½ï¿½" ï¿½Ô·ï¿½ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½: ï¿½Ì¸ï¿½" ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½(0x08)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¶ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½1) : (ï¿½ï¿½ï¿½ï¿½2) ï¿½ï¿½ ï¿½Ô·ÂµÇ¾îµµ (ï¿½ï¿½ï¿½ï¿½2) : (ï¿½ï¿½ï¿½ï¿½1) ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (LocaleService_IsEUROPE() && GetDefaultCodePage() == 1256)
 	{
 		char * p = strchr(buf, ':'); 
@@ -1318,11 +1318,11 @@ bool CPythonNetworkStream::RecvChatPacket()
 		
 		switch (kChat.type)
 		{
-		case CHAT_TYPE_TALKING:  /* ±×³É Ã¤ÆÃ */
-		case CHAT_TYPE_PARTY:    /* ÆÄÆ¼¸» */
-		case CHAT_TYPE_GUILD:    /* ±æµå¸» */
-		case CHAT_TYPE_SHOUT:	/* ¿ÜÄ¡±â */
-		case CHAT_TYPE_WHISPER:	// ¼­¹ö¿Í´Â ¿¬µ¿µÇÁö ¾Ê´Â Only Client Enum
+		case CHAT_TYPE_TALKING:  /* ï¿½×³ï¿½ Ã¤ï¿½ï¿½ */
+		case CHAT_TYPE_PARTY:    /* ï¿½ï¿½Æ¼ï¿½ï¿½ */
+		case CHAT_TYPE_GUILD:    /* ï¿½ï¿½å¸» */
+		case CHAT_TYPE_SHOUT:	/* ï¿½ï¿½Ä¡ï¿½ï¿½ */
+		case CHAT_TYPE_WHISPER:	// ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ Only Client Enum
 			{
 				char * p = strchr(buf, ':');
 
@@ -1360,9 +1360,9 @@ bool CPythonNetworkStream::RecvChatPacket()
 				}
 			}
 			break;
-		case CHAT_TYPE_COMMAND:	/* ¸í·É */
-		case CHAT_TYPE_INFO:     /* Á¤º¸ (¾ÆÀÌÅÛÀ» Áý¾ú´Ù, °æÇèÄ¡¸¦ ¾ò¾ú´Ù. µî) */
-		case CHAT_TYPE_NOTICE:   /* °øÁö»çÇ× */
+		case CHAT_TYPE_COMMAND:	/* ï¿½ï¿½ï¿½ï¿½ */
+		case CHAT_TYPE_INFO:     /* ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½) */
+		case CHAT_TYPE_NOTICE:   /* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 		case CHAT_TYPE_BIG_NOTICE:
 		case CHAT_TYPE_MAX_NUM:
 		default:
@@ -1376,7 +1376,13 @@ bool CPythonNetworkStream::RecvChatPacket()
 		}
 
 		if (pkInstChatter->IsPC())
-			CPythonChat::Instance().AppendChat(kChat.type, buf);
+		{
+			// Python handles AppendChat + flag prefix via BINARY_AppendChatWithFlag
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME],
+				"BINARY_AppendChatWithFlag",
+				Py_BuildValue("(iisi)", kChat.dwVID, kChat.type, buf, (int)pkInstChatter->GetEmpireID())
+			);
+		}
 	}
 	else
 	{
@@ -1396,6 +1402,31 @@ bool CPythonNetworkStream::RecvChatPacket()
 			{
 				if (m_isEnableChatInsultFilter)
 					__FilterInsult(p, strlen(p));
+			}
+
+			// Cauta VID-ul dupa nume in shout (format "Nume: mesaj")
+			// Incearca sa gaseasca instanta dupa numele din buf
+			{
+				char szName[CHARACTER_NAME_MAX_LEN + 1] = {};
+				const char* pColon = strchr(buf, ':');
+				if (pColon)
+				{
+					size_t nameLen = pColon - buf;
+					if (nameLen > 0 && nameLen <= CHARACTER_NAME_MAX_LEN)
+					{
+						strncpy(szName, buf, nameLen);
+						szName[nameLen] = '\0';
+						CInstanceBase* pkInst = CPythonCharacterManager::Instance().GetInstancePtrByName(szName);
+						if (pkInst && pkInst->IsPC())
+						{
+							PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME],
+								"BINARY_AppendChatWithFlag",
+								Py_BuildValue("(iisi)", pkInst->GetVirtualID(), kChat.type, buf, (int)pkInst->GetEmpireID())
+							);
+							return true;
+						}
+					}
+				}
 			}
 		}
 
@@ -1492,7 +1523,7 @@ bool CPythonNetworkStream::RecvPointChange()
 
 	CInstanceBase * pInstance = CPythonCharacterManager::Instance().GetMainInstancePtr();
 
-	// ÀÚ½ÅÀÇ Point°¡ º¯°æµÇ¾úÀ» °æ¿ì..
+	// ï¿½Ú½ï¿½ï¿½ï¿½ Pointï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½..
 	if (pInstance)
 	if (PointChange.dwVID == pInstance->GetVirtualID())
 	{
@@ -1595,7 +1626,7 @@ bool CPythonNetworkStream::RecvDeadPacket()
 		CInstanceBase* pkInstMain=rkChrMgr.GetMainInstancePtr();
 		if (pkInstMain==pkChrInstSel)
 		{
-			Tracenf("ÁÖÀÎ°ø »ç¸Á");
+			Tracenf("ï¿½ï¿½ï¿½Î°ï¿½ ï¿½ï¿½ï¿½");
 			if (false == pkInstMain->GetDuelMode())
 			{
 				PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "OnGameOver", Py_BuildValue("()"));
@@ -2186,7 +2217,7 @@ bool CPythonNetworkStream::SendExchangeExitPacket()
 	return SendSequence();
 }
 
-// PointReset °³ÀÓ½Ã
+// PointReset ï¿½ï¿½ï¿½Ó½ï¿½
 bool CPythonNetworkStream::SendPointResetPacket()
 {
 	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "StartPointReset", Py_BuildValue("()"));
@@ -2340,7 +2371,7 @@ bool CPythonNetworkStream::RecvSkillCoolTimeEnd()
 
 bool CPythonNetworkStream::RecvSkillLevel()
 {
-	assert(!"CPythonNetworkStream::RecvSkillLevel - »ç¿ëÇÏÁö ¾Ê´Â ÇÔ¼ö");
+	assert(!"CPythonNetworkStream::RecvSkillLevel - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½Ô¼ï¿½");
 	TPacketGCSkillLevel packet;
 	if (!Recv(sizeof(TPacketGCSkillLevel), &packet))
 	{
@@ -2566,7 +2597,7 @@ bool CPythonNetworkStream::RecvAddFlyTargetingPacket()
 
 	__GlobalPositionToLocalPosition(kPacket.lX, kPacket.lY);
 
-	Tracef("VID [%d]°¡ Å¸°ÙÀ» Ãß°¡ ¼³Á¤\n",kPacket.dwShooterVID);
+	Tracef("VID [%d]ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½\n",kPacket.dwShooterVID);
 
 	CPythonCharacterManager & rpcm = CPythonCharacterManager::Instance();
 
@@ -2811,7 +2842,7 @@ bool CPythonNetworkStream::RecvMessenger()
 
 		case MESSENGER_SUBHEADER_GC_MOBILE:
 		{
-			BYTE byState; // ¸ð¹ÙÀÏ ¹øÈ£°¡ ¾ø¾îÁ³´ÂÁö ÇÃ·¡±×
+			BYTE byState; // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½
 			BYTE byLength;
 			if (!Recv(sizeof(byState), &byState))
 				return false;
@@ -2982,7 +3013,7 @@ bool CPythonNetworkStream::RecvPartyUpdate()
 
 	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "UpdatePartyMemberInfo", Py_BuildValue("(i)", kPartyUpdatePacket.pid));
 
-	// ¸¸¾à ¸®´õ°¡ ¹Ù²î¾ú´Ù¸é, TargetBoard ÀÇ ¹öÆ°À» ¾÷µ¥ÀÌÆ® ÇÑ´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ï¿½Ù¸ï¿½, TargetBoard ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ñ´ï¿½.
 	DWORD dwVID;
 	if (CPythonPlayer::Instance().PartyMemberPIDToVID(kPartyUpdatePacket.pid, &dwVID))
 	if (byOldState != kPartyUpdatePacket.state)
@@ -3346,7 +3377,7 @@ bool CPythonNetworkStream::RecvGuild()
 			if (!Recv(sizeof(dwPID), &dwPID))
 				return false;
 
-			// Main Player ÀÏ °æ¿ì DeleteGuild
+			// Main Player ï¿½ï¿½ ï¿½ï¿½ï¿½ DeleteGuild
 			if (CPythonGuild::Instance().IsMainPlayer(dwPID))
 			{
 				CPythonGuild::Instance().Destroy();
@@ -4166,7 +4197,7 @@ bool CPythonNetworkStream::SendClientVersionPacket()
 		TPacketCGClientVersion2 kVersionPacket;
 		kVersionPacket.header = HEADER_CG_CLIENT_VERSION2;
 		strncpy(kVersionPacket.filename, filename.c_str(), sizeof(kVersionPacket.filename)-1);
-		strncpy(kVersionPacket.timestamp, "1215955205", sizeof(kVersionPacket.timestamp)-1); // # python time.time ¾ÕÀÚ¸®
+		strncpy(kVersionPacket.timestamp, "1215955205", sizeof(kVersionPacket.timestamp)-1); // # python time.time ï¿½ï¿½ï¿½Ú¸ï¿½
 		//strncpy(kVersionPacket.timestamp, __TIMESTAMP__, sizeof(kVersionPacket.timestamp)-1); // old_string_ver
 		//strncpy(kVersionPacket.timestamp, "1218055205", sizeof(kVersionPacket.timestamp)-1); // new_future
 		//strncpy(kVersionPacket.timestamp, "1214055205", sizeof(kVersionPacket.timestamp)-1); // old_past
@@ -4307,7 +4338,7 @@ bool CPythonNetworkStream::RecvTargetCreatePacket()
 
 //#ifdef _DEBUG
 //	char szBuf[256+1];
-//	_snprintf(szBuf, sizeof(szBuf), "Å¸°ÙÀÌ »ý¼º µÇ¾ú½À´Ï´Ù [%d:%s]", kTargetCreate.lID, kTargetCreate.szTargetName);
+//	_snprintf(szBuf, sizeof(szBuf), "Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ [%d:%s]", kTargetCreate.lID, kTargetCreate.szTargetName);
 //	CPythonChat::Instance().AppendChat(CHAT_TYPE_NOTICE, szBuf);
 //	Tracef(" >> RecvTargetCreatePacket %d : %s\n", kTargetCreate.lID, kTargetCreate.szTargetName);
 //#endif
@@ -4336,7 +4367,7 @@ bool CPythonNetworkStream::RecvTargetCreatePacketNew()
 
 //#ifdef _DEBUG
 //	char szBuf[256+1];
-//	_snprintf(szBuf, sizeof(szBuf), "Ä³¸¯ÅÍ Å¸°ÙÀÌ »ý¼º µÇ¾ú½À´Ï´Ù [%d:%s:%d]", kTargetCreate.lID, kTargetCreate.szTargetName, kTargetCreate.dwVID);
+//	_snprintf(szBuf, sizeof(szBuf), "Ä³ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ [%d:%s:%d]", kTargetCreate.lID, kTargetCreate.szTargetName, kTargetCreate.dwVID);
 //	CPythonChat::Instance().AppendChat(CHAT_TYPE_NOTICE, szBuf);
 //	Tracef(" >> RecvTargetCreatePacketNew %d : %d/%d\n", kTargetCreate.lID, kTargetCreate.byType, kTargetCreate.dwVID);
 //#endif
@@ -4359,7 +4390,7 @@ bool CPythonNetworkStream::RecvTargetUpdatePacket()
 
 //#ifdef _DEBUG
 //	char szBuf[256+1];
-//	_snprintf(szBuf, sizeof(szBuf), "Å¸°ÙÀÇ À§Ä¡°¡ °»½Å µÇ¾ú½À´Ï´Ù [%d:%d/%d]", kTargetUpdate.lID, kTargetUpdate.lX, kTargetUpdate.lY);
+//	_snprintf(szBuf, sizeof(szBuf), "Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ [%d:%d/%d]", kTargetUpdate.lID, kTargetUpdate.lX, kTargetUpdate.lY);
 //	CPythonChat::Instance().AppendChat(CHAT_TYPE_NOTICE, szBuf);
 //	Tracef(" >> RecvTargetUpdatePacket %d : %d, %d\n", kTargetUpdate.lID, kTargetUpdate.lX, kTargetUpdate.lY);
 //#endif
@@ -4438,7 +4469,7 @@ bool CPythonNetworkStream::RecvDigMotionPacket()
 }
 
 
-// ¿ëÈ¥¼® °­È­
+// ï¿½ï¿½È¥ï¿½ï¿½ ï¿½ï¿½È­
 bool CPythonNetworkStream::SendDragonSoulRefinePacket(BYTE bRefineType, TItemPos* pos)
 {
 	TPacketCGDragonSoulRefine pk;

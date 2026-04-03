@@ -95,6 +95,7 @@ class CPythonChat : public CSingleton<CPythonChat>, public IAbstractChat
 			float fAppendedTime;
 			D3DXCOLOR aColor[CHAT_LINE_COLOR_ARRAY_MAX_NUM];
 			CGraphicTextInstance Instance;
+			CGraphicImageInstance* pFlagInstance;
 
 			SChatLine();
 			virtual ~SChatLine();
@@ -195,6 +196,7 @@ class CPythonChat : public CSingleton<CPythonChat>, public IAbstractChat
 
 		// Chat
 		void AppendChat(int iType, const char * c_szChat);
+		void AppendChatWithFlag(int iType, const char * c_szChat, const char * c_szLang);
 		void AppendChatWithDelay(int iType, const char * c_szChat, int iDelay);
 		void ArrangeShowingChat(DWORD dwID);
 

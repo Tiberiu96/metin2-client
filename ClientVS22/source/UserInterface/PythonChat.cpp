@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "PythonChat.h"
+#include "../EterLib/GrpImageInstance.h"
 
 #include "AbstractApplication.h"
 #include "PythonCharacterManager.h"
@@ -74,10 +75,16 @@ CPythonChat::SChatLine::SChatLine()
 {
 	for (int i = 0; i < CHAT_LINE_COLOR_ARRAY_MAX_NUM; ++i)
 		aColor[i] = 0xff0000ff;
+	pFlagInstance = NULL;
 }
-CPythonChat::SChatLine::~SChatLine() 
+CPythonChat::SChatLine::~SChatLine()
 {
 	Instance.Destroy();
+	if (pFlagInstance)
+	{
+		CGraphicImageInstance::Delete(pFlagInstance);
+		pFlagInstance = NULL;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,7 +141,14 @@ void CPythonChat::UpdateViewMode(DWORD dwID)
 		iHeight += pChatSet->m_iStep;
 		--iLineIndex;
 
-		pChatLine->Instance.SetPosition(pChatSet->m_ix, pChatSet->m_iy + iHeight);
+		{
+			{
+				const float fFlagOffset = pChatLine->pFlagInstance ? 21.0f : 0.0f;
+				pChatLine->Instance.SetPosition(pChatSet->m_ix + fFlagOffset, pChatSet->m_iy + iHeight);
+				if (pChatLine->pFlagInstance)
+					pChatLine->pFlagInstance->SetPosition(float(pChatSet->m_ix), float(pChatSet->m_iy + iHeight + 3));
+			}
+		}
 		pChatLine->Instance.SetColor(rColor);
 		pChatLine->Instance.Update();
 	}
@@ -175,7 +189,14 @@ void CPythonChat::UpdateEditMode(DWORD dwID)
 		}
 
 		iHeight += pChatSet->m_iStep;
-		pChatLine->Instance.SetPosition(pChatSet->m_ix, pChatSet->m_iy + iHeight);
+		{
+			{
+				const float fFlagOffset = pChatLine->pFlagInstance ? 21.0f : 0.0f;
+				pChatLine->Instance.SetPosition(pChatSet->m_ix + fFlagOffset, pChatSet->m_iy + iHeight);
+				if (pChatLine->pFlagInstance)
+					pChatLine->pFlagInstance->SetPosition(float(pChatSet->m_ix), float(pChatSet->m_iy + iHeight + 3));
+			}
+		}
 		pChatLine->Instance.SetColor(rColor);
 		pChatLine->Instance.Update();
 	}
@@ -195,7 +216,14 @@ void CPythonChat::UpdateLogMode(DWORD dwID)
 		TChatLine * pChatLine = (*itor);
 
 		iHeight -= pChatSet->m_iStep;
-		pChatLine->Instance.SetPosition(pChatSet->m_ix, pChatSet->m_iy + iHeight);
+		{
+			{
+				const float fFlagOffset = pChatLine->pFlagInstance ? 21.0f : 0.0f;
+				pChatLine->Instance.SetPosition(pChatSet->m_ix + fFlagOffset, pChatSet->m_iy + iHeight);
+				if (pChatLine->pFlagInstance)
+					pChatLine->pFlagInstance->SetPosition(float(pChatSet->m_ix), float(pChatSet->m_iy + iHeight + 3));
+			}
+		}
 		pChatLine->Instance.SetColor(pChatLine->GetColorRef(dwID));
 		pChatLine->Instance.Update();
 	}
@@ -246,8 +274,10 @@ void CPythonChat::Render(DWORD dwID)
 
 	for (TChatLineList::iterator itor = pLineList->begin(); itor != pLineList->end(); ++itor)
 	{
-		CGraphicTextInstance & rInstance = (*itor)->Instance;
-		rInstance.Render();
+		TChatLine* pLine = *itor;
+		if (pLine->pFlagInstance)
+			pLine->pFlagInstance->Render();
+		pLine->Instance.Render();
 	}
 }
 
@@ -474,7 +504,7 @@ void CPythonChat::AppendChat(int iType, const char * c_szChat)
 		TChatSet * pChatSet = &(itor->second);
 		//pChatLine->SetColor(itor->first, GetChatColor(iType));
 
-		// Edit Mode ¸¦ ¾ïÁö·Î ³¢¿ö ¸ÂÃß±â À§ÇØ Ãß°¡
+		// Edit Mode ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
 		if (BOARD_STATE_EDIT == pChatSet->m_iBoardState)
 		{
 			ArrangeShowingChat(itor->first);
@@ -488,6 +518,33 @@ void CPythonChat::AppendChat(int iType, const char * c_szChat)
 			}
 		}
 	}
+}
+
+void CPythonChat::AppendChatWithFlag(int iType, const char * c_szChat, const char * c_szLang)
+{
+	AppendChat(iType, c_szChat);
+
+	if (m_ChatLineDeque.empty())
+		return;
+
+	SChatLine* pChatLine = m_ChatLineDeque.back();
+
+	// Language flag
+	if (c_szLang && c_szLang[0] != '\0')
+	{
+		const char* szFlagCode = (strcmp(c_szLang, "en") == 0) ? "uk" : c_szLang;
+		char szFlagPath[128];
+		_snprintf_s(szFlagPath, sizeof(szFlagPath), "d/ymir work/ui/game/flags/%s.tga", szFlagCode);
+
+		CResource* pRes = CResourceManager::Instance().GetResourcePointer(szFlagPath);
+		if (pRes && pRes->IsType(CGraphicImage::Type()))
+		{
+			pChatLine->pFlagInstance = CGraphicImageInstance::New();
+			pChatLine->pFlagInstance->SetImagePointer(static_cast<CGraphicImage*>(pRes));
+			pChatLine->pFlagInstance->SetRenderSize(20.0f, 13.0f);
+		}
+	}
+
 }
 
 void CPythonChat::AppendChatWithDelay(int iType, const char * c_szChat, int iDelay)
@@ -512,12 +569,12 @@ DWORD CPythonChat::GetChatColor(int iType)
 void CPythonChat::IgnoreCharacter(const char * c_szName)
 {
 	TIgnoreCharacterSet::iterator itor = m_IgnoreCharacterSet.find(c_szName);
-	// NOTE : ÀÌ¹Ì Â÷´Ü ÁßÀÌ¶ó¸é..
+	// NOTE : ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½..
 	if (m_IgnoreCharacterSet.end() != itor)
 	{
 		m_IgnoreCharacterSet.erase(itor);
 	}
-	// NOTE : Â÷´ÜÀÌ µÇÁö ¾ÊÀº Ä³¸¯ÅÍ¶ó¸é..
+	// NOTE : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Í¶ï¿½ï¿½..
 	else
 	{
 		m_IgnoreCharacterSet.insert(c_szName);

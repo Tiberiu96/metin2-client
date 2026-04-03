@@ -40,7 +40,8 @@ struct SNetworkActorData
 
 	DWORD	m_dwGuildID;
 	DWORD	m_dwLevel;
-	
+	char	m_szLanguage[3];
+
 	SNetworkActorData();
 
 	void SetDstPosition(DWORD dwServerTime, LONG lDstX, LONG lDstY, DWORD dwDuration);
@@ -90,7 +91,7 @@ struct SNetworkUpdateActorData
 	short m_sAlignment;
 	BYTE m_byPKMode;
 	DWORD m_dwMountVnum;
-	DWORD m_dwStateFlags; // º»·¡ Create ¶§¸¸ ¾²ÀÌ´Â º¯¼öÀÓ
+	DWORD m_dwStateFlags; // ï¿½ï¿½ï¿½ï¿½ Create ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	CAffectFlagContainer m_kAffectFlags;
 
 	SNetworkUpdateActorData()

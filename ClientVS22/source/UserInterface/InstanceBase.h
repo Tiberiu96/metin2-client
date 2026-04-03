@@ -32,6 +32,7 @@ class CInstanceBase
 			CAffectFlagContainer	m_kAffectFlags;
 
 			std::string m_stName;
+			char	m_szLanguage[3];
 
 			bool	m_isMain;
 		};
@@ -73,8 +74,8 @@ class CInstanceBase
 			AFFECT_SLOW,
 			AFFECT_STUN,
 
-			AFFECT_DUNGEON_READY,			// ´øÀü¿¡¼­ ÁØºñ »óÅÂ
-			AFFECT_SHOW_ALWAYS,				// AFFECT_DUNGEON_UNIQUE ¿¡¼­ º¯°æ(Å¬¶óÀÌ¾ðÆ®¿¡¼­ ÄÃ¸µµÇÁö¾ÊÀ½)
+			AFFECT_DUNGEON_READY,			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Øºï¿½ ï¿½ï¿½ï¿½ï¿½
+			AFFECT_SHOW_ALWAYS,				// AFFECT_DUNGEON_UNIQUE ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 
 			AFFECT_BUILDING_CONSTRUCTION_SMALL,
 			AFFECT_BUILDING_CONSTRUCTION_LARGE,
@@ -85,34 +86,34 @@ class CInstanceBase
 
 			AFFECT_FISH_MIND,				// 13
 
-			AFFECT_JEONGWI,					// 14 Àü±ÍÈ¥
-			AFFECT_GEOMGYEONG,				// 15 °Ë°æ
-			AFFECT_CHEONGEUN,				// 16 Ãµ±ÙÃß
-			AFFECT_GYEONGGONG,				// 17 °æ°ø¼ú
-			AFFECT_EUNHYEONG,				// 18 ÀºÇü¹ý
-			AFFECT_GWIGEOM,					// 19 ±Í°Ë
-			AFFECT_GONGPO,					// 20 °øÆ÷
-			AFFECT_JUMAGAP,					// 21 ÁÖ¸¶°©
-			AFFECT_HOSIN,					// 22 È£½Å
-			AFFECT_BOHO,					// 23 º¸È£
-			AFFECT_KWAESOK,					// 24 Äè¼Ó
-		    AFFECT_HEUKSIN,					// 25 Èæ½Å¼öÈ£
-			AFFECT_MUYEONG,					// 26 ¹«¿µÁø
-			AFFECT_REVIVE_INVISIBILITY,		// 27 ºÎÈ° ¹«Àû
-			AFFECT_FIRE,					// 28 Áö¼Ó ºÒ
-			AFFECT_GICHEON,					// 29 ±âÃµ ´ë°ø
-			AFFECT_JEUNGRYEOK,				// 30 Áõ·Â¼ú 
-			AFFECT_DASH,					// 31 ´ë½¬
-			AFFECT_PABEOP,					// 32 ÆÄ¹ý¼ú
-			AFFECT_FALLEN_CHEONGEUN,		// 33 ´Ù¿î ±×·¹ÀÌµå Ãµ±ÙÃß
-			AFFECT_POLYMORPH,				// 34 Æú¸®¸ðÇÁ
+			AFFECT_JEONGWI,					// 14 ï¿½ï¿½ï¿½ï¿½È¥
+			AFFECT_GEOMGYEONG,				// 15 ï¿½Ë°ï¿½
+			AFFECT_CHEONGEUN,				// 16 Ãµï¿½ï¿½ï¿½ï¿½
+			AFFECT_GYEONGGONG,				// 17 ï¿½ï¿½ï¿½ï¿½ï¿½
+			AFFECT_EUNHYEONG,				// 18 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			AFFECT_GWIGEOM,					// 19 ï¿½Í°ï¿½
+			AFFECT_GONGPO,					// 20 ï¿½ï¿½ï¿½ï¿½
+			AFFECT_JUMAGAP,					// 21 ï¿½Ö¸ï¿½ï¿½ï¿½
+			AFFECT_HOSIN,					// 22 È£ï¿½ï¿½
+			AFFECT_BOHO,					// 23 ï¿½ï¿½È£
+			AFFECT_KWAESOK,					// 24 ï¿½ï¿½ï¿½
+		    AFFECT_HEUKSIN,					// 25 ï¿½ï¿½Å¼ï¿½È£
+			AFFECT_MUYEONG,					// 26 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			AFFECT_REVIVE_INVISIBILITY,		// 27 ï¿½ï¿½È° ï¿½ï¿½ï¿½ï¿½
+			AFFECT_FIRE,					// 28 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+			AFFECT_GICHEON,					// 29 ï¿½ï¿½Ãµ ï¿½ï¿½ï¿½
+			AFFECT_JEUNGRYEOK,				// 30 ï¿½ï¿½ï¿½Â¼ï¿½ 
+			AFFECT_DASH,					// 31 ï¿½ë½¬
+			AFFECT_PABEOP,					// 32 ï¿½Ä¹ï¿½ï¿½ï¿½
+			AFFECT_FALLEN_CHEONGEUN,		// 33 ï¿½Ù¿ï¿½ ï¿½×·ï¿½ï¿½Ìµï¿½ Ãµï¿½ï¿½ï¿½ï¿½
+			AFFECT_POLYMORPH,				// 34 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			AFFECT_WAR_FLAG1,				// 35
 			AFFECT_WAR_FLAG2,				// 36
 			AFFECT_WAR_FLAG3,				// 37
 			AFFECT_CHINA_FIREWORK,			// 38
 			AFFECT_PREMIUM_SILVER,
 			AFFECT_PREMIUM_GOLD,
-			AFFECT_RAMADAN_RING,			// 41 ÃÊ½Â´Þ ¹ÝÁö Âø¿ë Affect
+			AFFECT_RAMADAN_RING,			// 41 ï¿½Ê½Â´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Affect
 
 			AFFECT_NUM = 64,
 
@@ -154,31 +155,31 @@ class CInstanceBase
 
 			NEW_AFFECT_BOW_DISTANCE,        // 225
 
-			NEW_AFFECT_EXP_BONUS         = 500, // °æÇèÀÇ ¹ÝÁö
-			NEW_AFFECT_ITEM_BONUS        = 501, // µµµÏÀÇ Àå°©
+			NEW_AFFECT_EXP_BONUS         = 500, // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			NEW_AFFECT_ITEM_BONUS        = 501, // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½å°©
 			NEW_AFFECT_SAFEBOX           = 502, // PREMIUM_SAFEBOX,
 			NEW_AFFECT_AUTOLOOT          = 503, // PREMIUM_AUTOLOOT,
 			NEW_AFFECT_FISH_MIND         = 504, // PREMIUM_FISH_MIND,
-			NEW_AFFECT_MARRIAGE_FAST     = 505, // ¿ø¾ÓÀÇ ±êÅÐ (±Ý½½),
+			NEW_AFFECT_MARRIAGE_FAST     = 505, // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½Ý½ï¿½),
 			NEW_AFFECT_GOLD_BONUS        = 506,
 
-		    NEW_AFFECT_MALL              = 510, // ¸ô ¾ÆÀÌÅÛ ¿¡ÆåÆ®
-			NEW_AFFECT_NO_DEATH_PENALTY  = 511, // ¿ë½ÅÀÇ °¡È£ (°æÇèÄ¡ ÆÐ³ÎÆ¼¸¦ ÇÑ¹ø ¸·¾ÆÁØ´Ù)
-			NEW_AFFECT_SKILL_BOOK_BONUS  = 512, // ¼±ÀÎÀÇ ±³ÈÆ (Ã¥ ¼ö·Ã ¼º°ø È®·üÀÌ 50% Áõ°¡)
-			NEW_AFFECT_SKILL_BOOK_NO_DELAY  = 513, // ÁÖ¾È ¼ú¼­ (Ã¥ ¼ö·Ã µô·¹ÀÌ ¾øÀ½)
+		    NEW_AFFECT_MALL              = 510, // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
+			NEW_AFFECT_NO_DEATH_PENALTY  = 511, // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ (ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½Ð³ï¿½Æ¼ï¿½ï¿½ ï¿½Ñ¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½)
+			NEW_AFFECT_SKILL_BOOK_BONUS  = 512, // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (Ã¥ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ 50% ï¿½ï¿½ï¿½ï¿½)
+			NEW_AFFECT_SKILL_BOOK_NO_DELAY  = 513, // ï¿½Ö¾ï¿½ ï¿½ï¿½ï¿½ï¿½ (Ã¥ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 
-			NEW_AFFECT_EXP_BONUS_EURO_FREE = 516, // °æÇèÀÇ ¹ÝÁö (À¯·´ ¹öÀü 14 ·¹º§ ÀÌÇÏ ±âº» È¿°ú)
+			NEW_AFFECT_EXP_BONUS_EURO_FREE = 516, // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 14 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½âº» È¿ï¿½ï¿½)
 			NEW_AFFECT_EXP_BONUS_EURO_FREE_UNDER_15 = 517,
 
-			NEW_AFFECT_AUTO_HP_RECOVERY		= 534,		// ÀÚµ¿¹°¾à HP
-			NEW_AFFECT_AUTO_SP_RECOVERY		= 535,		// ÀÚµ¿¹°¾à SP
+			NEW_AFFECT_AUTO_HP_RECOVERY		= 534,		// ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ HP
+			NEW_AFFECT_AUTO_SP_RECOVERY		= 535,		// ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ SP
 
 			NEW_AFFECT_DRAGON_SOUL_QUALIFIED = 540, 
 			NEW_AFFECT_DRAGON_SOUL_DECK1 = 541,
 			NEW_AFFECT_DRAGON_SOUL_DECK2 = 542,
 
 			NEW_AFFECT_RAMADAN_ABILITY = 300,
-			NEW_AFFECT_RAMADAN_RING    = 301,			// ¶ó¸¶´Ü ÀÌº¥Æ®¿ë Æ¯¼ö¾ÆÀÌÅÛ ÃÊ½Â´ÞÀÇ ¹ÝÁö Âø¿ë À¯¹«
+			NEW_AFFECT_RAMADAN_RING    = 301,			// ï¿½ó¸¶´ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½Â´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 			NEW_AFFECT_NOG_POCKET_ABILITY = 302,
 
@@ -263,7 +264,7 @@ class CInstanceBase
 			TITLE_NONE				= 4,
 		};
 
-		enum	//¾Æ·¡ ¹øÈ£°¡ ¹Ù²î¸é registerEffect ÂÊµµ ¹Ù²Ù¾î Áà¾ß ÇÑ´Ù.
+		enum	//ï¿½Æ·ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ registerEffect ï¿½Êµï¿½ ï¿½Ù²Ù¾ï¿½ ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
 		{
 			EFFECT_REFINED_NONE,
 
@@ -291,8 +292,8 @@ class CInstanceBase
 			EFFECT_BODYARMOR_REFINED8,
 			EFFECT_BODYARMOR_REFINED9,
 
-			EFFECT_BODYARMOR_SPECIAL,	// °©¿Ê 4-2-1
-			EFFECT_BODYARMOR_SPECIAL2,	// °©¿Ê 4-2-2
+			EFFECT_BODYARMOR_SPECIAL,	// ï¿½ï¿½ï¿½ï¿½ 4-2-1
+			EFFECT_BODYARMOR_SPECIAL2,	// ï¿½ï¿½ï¿½ï¿½ 4-2-2
 
 			EFFECT_REFINED_NUM,
 		};
@@ -305,7 +306,7 @@ class CInstanceBase
 			DAMAGE_BLOCK	= (1<<3),
 			DAMAGE_PENETRATE= (1<<4),
 			DAMAGE_CRITICAL = (1<<5),
-			// ¹Ý-_-»ç
+			// ï¿½ï¿½-_-ï¿½ï¿½
 		};
 
 		enum
@@ -359,17 +360,17 @@ class CInstanceBase
 			EFFECT_SUCCESS,
 			EFFECT_FAIL,
 			EFFECT_FR_SUCCESS,			
-			EFFECT_LEVELUP_ON_14_FOR_GERMANY,	//·¹º§¾÷ 14ÀÏ¶§ ( µ¶ÀÏÀü¿ë )
-			EFFECT_LEVELUP_UNDER_15_FOR_GERMANY,//·¹º§¾÷ 15ÀÏ¶§ ( µ¶ÀÏÀü¿ë )
+			EFFECT_LEVELUP_ON_14_FOR_GERMANY,	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 14ï¿½Ï¶ï¿½ ( ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ )
+			EFFECT_LEVELUP_UNDER_15_FOR_GERMANY,//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 15ï¿½Ï¶ï¿½ ( ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ )
 			EFFECT_PERCENT_DAMAGE1,
 			EFFECT_PERCENT_DAMAGE2,
 			EFFECT_PERCENT_DAMAGE3,
 			EFFECT_AUTO_HPUP,
 			EFFECT_AUTO_SPUP,
-			EFFECT_RAMADAN_RING_EQUIP,			// ÃÊ½Â´Þ ¹ÝÁö Âø¿ë ¼ø°£¿¡ ¹ßµ¿ÇÏ´Â ÀÌÆåÆ®
-			EFFECT_HALLOWEEN_CANDY_EQUIP,		// ÇÒ·ÎÀ© »çÅÁ Âø¿ë ¼ø°£¿¡ ¹ßµ¿ÇÏ´Â ÀÌÆåÆ®
-			EFFECT_HAPPINESS_RING_EQUIP,				// Çàº¹ÀÇ ¹ÝÁö Âø¿ë ¼ø°£¿¡ ¹ßµ¿ÇÏ´Â ÀÌÆåÆ®
-			EFFECT_LOVE_PENDANT_EQUIP,				// Çàº¹ÀÇ ¹ÝÁö Âø¿ë ¼ø°£¿¡ ¹ßµ¿ÇÏ´Â ÀÌÆåÆ®
+			EFFECT_RAMADAN_RING_EQUIP,			// ï¿½Ê½Â´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ßµï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
+			EFFECT_HALLOWEEN_CANDY_EQUIP,		// ï¿½Ò·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ßµï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
+			EFFECT_HAPPINESS_RING_EQUIP,				// ï¿½àº¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ßµï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
+			EFFECT_LOVE_PENDANT_EQUIP,				// ï¿½àº¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ßµï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
 			EFFECT_TEMP,
 			EFFECT_NUM,
 		};
@@ -434,7 +435,7 @@ class CInstanceBase
 		void MountHorse(UINT eRace);
 		void DismountHorse();		
 
-		// ½ºÅ©¸³Æ®¿ë Å×½ºÆ® ÇÔ¼ö. ³ªÁß¿¡ ¾ø¿¡ÀÚ
+		// ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½×½ï¿½Æ® ï¿½Ô¼ï¿½. ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		void SCRIPT_SetAffect(UINT eAffect, bool isVisible); 
 
 		float CalculateDistanceSq3d(const TPixelPosition& c_rkPPosDst);
@@ -515,6 +516,7 @@ class CInstanceBase
 		DWORD					GetVirtualNumber();
 		DWORD					GetEmpireID();
 		DWORD					GetGuildID();
+		const char*				GetLanguage();
 		int						GetAlignment();
 		UINT					GetAlignmentGrade();
 		int						GetAlignmentType();
@@ -604,7 +606,7 @@ class CInstanceBase
 		BOOL					CanAttackHorseLevel();
 
 #ifdef __MOVIE_MODE__
-		BOOL					IsMovieMode(); // ¿î¿µÀÚ¿ë ¿ÏÀüÈ÷ ¾Èº¸ÀÌ´Â°Å
+		BOOL					IsMovieMode(); // ï¿½î¿µï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Èºï¿½ï¿½Ì´Â°ï¿½
 #endif
 		bool					NEW_CanMoveToDestPixelPosition(const TPixelPosition& c_rkPPosDst);
 
@@ -750,8 +752,8 @@ class CInstanceBase
 		//void					SetParts(const WORD * c_pParts);
 		void					Refresh(DWORD dwMotIndex, bool isLoop);
 
-		//void					AttachEffectByID(DWORD dwParentPartIndex, const char * c_pszBoneName, DWORD dwEffectID, int dwLife = CActorInstance::EFFECT_LIFE_INFINITE ); // ¼ö¸íÀº ms´ÜÀ§ÀÔ´Ï´Ù.
-		//void					AttachEffectByName(DWORD dwParentPartIndex, const char * c_pszBoneName, const char * c_pszEffectName, int dwLife = CActorInstance::EFFECT_LIFE_INFINITE ); // ¼ö¸íÀº ms´ÜÀ§ÀÔ´Ï´Ù.
+		//void					AttachEffectByID(DWORD dwParentPartIndex, const char * c_pszBoneName, DWORD dwEffectID, int dwLife = CActorInstance::EFFECT_LIFE_INFINITE ); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ msï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½.
+		//void					AttachEffectByName(DWORD dwParentPartIndex, const char * c_pszBoneName, const char * c_pszEffectName, int dwLife = CActorInstance::EFFECT_LIFE_INFINITE ); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ msï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½.
 
 		float					GetDistance(CInstanceBase * pkTargetInst);
 		float					GetDistance(const TPixelPosition & c_rPixelPosition);
@@ -763,7 +765,7 @@ class CInstanceBase
 		bool __Background_IsWaterPixelPosition(const TPixelPosition& c_rkPPos);
 		bool __Background_GetWaterHeight(const TPixelPosition& c_rkPPos, float* pfHeight);
 
-		// 2004.07.25.myevan.ÀÌÆåÆ® ¾È³ª¿À´Â ¹®Á¦
+		// 2004.07.25.myevan.ï¿½ï¿½ï¿½ï¿½Æ® ï¿½È³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		/////////////////////////////////////////////////////////////
 		void __ClearAffectFlagContainer();
 		void __ClearAffects();
@@ -817,7 +819,7 @@ class CInstanceBase
 		void __DisableChangingTCPState();
 		BOOL __IsEnableTCPProcess(UINT eCurFunc);
 
-		// 2004.07.17.levites.isShow¸¦ ViewFrustumCheck·Î º¯°æ
+		// 2004.07.17.levites.isShowï¿½ï¿½ ViewFrustumCheckï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		bool __CanRender();
 		bool __IsInViewFrustum();
 
@@ -899,6 +901,7 @@ class CInstanceBase
 		DWORD					m_dwLevel;
 		DWORD					m_dwEmpireID;
 		DWORD					m_dwGuildID;
+		char					m_szLanguage[3];
 
 	protected:		
 		CAffectFlagContainer	m_kAffectFlagContainer;

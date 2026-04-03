@@ -56,16 +56,19 @@ void CResource::Load()
 		if (OnLoad(file.Size(), fileData))
 		{
 			me_state = STATE_EXIST;
+			if (strstr(c_szFileName, "flags")) TraceError("FLAG_DBG CResource::Load OK %s size=%d", c_szFileName, file.Size());
 		}
 		else
 		{
 			Tracef("CResource::Load Error %s\n", c_szFileName);
+			if (strstr(c_szFileName, "flags")) TraceError("FLAG_DBG CResource::Load OnLoad FAILED %s", c_szFileName);
 			me_state = STATE_ERROR;
 			return;
 		}
 	}
 	else
 	{
+		if (strstr(c_szFileName, "flags")) TraceError("FLAG_DBG CResource::Load PackManager FAILED %s", c_szFileName);
 		if (OnLoad(0, NULL))
 			me_state = STATE_EXIST;
 		else
@@ -131,8 +134,8 @@ int CResource::ConvertPathName(const char * c_szPathName, char * pszRetPathName,
 
 void CResource::SetFileName(const char* c_szFileName)
 {
-	// 2004. 2. 1. myevan. ¾²·¹µå°¡ »ç¿ëµÇ´Â »óÈ²¿¡¼­ static º¯¼ö´Â »ç¿ëÇÏÁö ¾Ê´Â°ÍÀÌ ÁÁ´Ù.
-	// 2004. 2. 1. myevan. ÆÄÀÏ ÀÌ¸§ Ã³¸®¸¦ std::string »ç¿ë
+	// 2004. 2. 1. myevan. ï¿½ï¿½ï¿½ï¿½ï¿½å°¡ ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½È²ï¿½ï¿½ï¿½ï¿½ static ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+	// 2004. 2. 1. myevan. ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ std::string ï¿½ï¿½ï¿½
 	m_stFileName=c_szFileName;
 }
 

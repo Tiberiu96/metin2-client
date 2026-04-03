@@ -42,6 +42,7 @@ class CResource : public CReferenceObject
 		bool			IsType(TType type);
 
 		DWORD			GetLoadCostMilliSecond()	{ return m_dwLoadCostMiliiSecond;	}
+		int				GetState() const			{ return (int)me_state;				}
 		//const char *	GetFileName() const			{ return m_pszFileName;				}
 		const char *	GetFileName() const			{ return m_stFileName.c_str();				}
 		const std::string& GetFileNameString() const { return m_stFileName;	}

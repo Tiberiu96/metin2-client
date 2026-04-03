@@ -87,6 +87,7 @@ void SNetworkActorData::__copy__(const SNetworkActorData& src)
 	m_dwGuildID = src.m_dwGuildID;
 	m_dwLevel = src.m_dwLevel;
 	m_stName = src.m_stName;
+	memcpy(m_szLanguage, src.m_szLanguage, sizeof(m_szLanguage));
 }
 // END_OF_NETWORK_ACTOR_DATA_COPY
 	
@@ -117,6 +118,7 @@ SNetworkActorData::SNetworkActorData()
 	m_dwMountVnum=0;
 
 	m_stName="";
+	m_szLanguage[0]='e'; m_szLanguage[1]='n'; m_szLanguage[2]='\0';
 
 	m_kAffectFlags.Clear();
 }
@@ -273,7 +275,7 @@ bool CNetworkActorManager::__IsVisibleActor(const SNetworkActorData& c_rkNetActo
 	if (__IsMainActorVID(c_rkNetActorData.m_dwVID))
 		return true;
 
-	// 2004.08.02.myevan.Ç×»ó º¸ÀÌ±â ÇÃ·¡±×
+	// 2004.08.02.myevan.ï¿½×»ï¿½ ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½
 	if (c_rkNetActorData.m_kAffectFlags.IsSet(CInstanceBase::AFFECT_SHOW_ALWAYS))
 		return true;
 
@@ -293,7 +295,7 @@ bool CNetworkActorManager::__IsVisiblePos(LONG lPosX, LONG lPosY)
 	LONG len = (LONG)sqrt(double(dx * dx + dy * dy));
 
 	extern int CHAR_STAGE_VIEW_BOUND;
-	if (len < CHAR_STAGE_VIEW_BOUND) // °Å¸®Á¦ÇÑ cm
+	if (len < CHAR_STAGE_VIEW_BOUND) // ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ cm
 		return true;
 
 	return false;
@@ -340,6 +342,7 @@ CInstanceBase* CNetworkActorManager::__AppendCharacterManagerActor(SNetworkActor
 	kCreateData.m_dwLevel=rkNetActorData.m_dwLevel;
 	kCreateData.m_dwGuildID=rkNetActorData.m_dwGuildID;
 	kCreateData.m_dwEmpireID=rkNetActorData.m_dwEmpireID;
+	memcpy(kCreateData.m_szLanguage, rkNetActorData.m_szLanguage, sizeof(kCreateData.m_szLanguage));
 	kCreateData.m_dwVID=rkNetActorData.m_dwVID;
 	kCreateData.m_dwMountVnum=rkNetActorData.m_dwMountVnum;
 	kCreateData.m_dwRace=rkNetActorData.m_dwRace;

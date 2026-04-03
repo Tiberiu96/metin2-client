@@ -62,8 +62,8 @@ void __SetWeaponPower(IAbstractPlayer& rkPlayer, DWORD dwWeaponID)
 	rkPlayer.SetWeaponPower(minPower, maxPower, minMagicPower, maxMagicPower, addPower);
 }
 
-//Å×ÀÌºí¿¡¼­ ÀÌ¸§ÀÌ "." ÀÎ °Íµé
-//Â÷ÈÄ¿¡ ¼­¹ö¿¡¼­ º¸³»ÁÖÁö ¾Ê°Ô µÇ¸é ¾ø¾îÁú ÇÔ¼ö..(¼­¹ö´Ô²² ²À!!Çù¹Ú; )
+//ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ "." ï¿½ï¿½ ï¿½Íµï¿½
+//ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½..(ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ ï¿½ï¿½!!ï¿½ï¿½ï¿½ï¿½; )
 bool IsInvisibleRace(WORD raceNum)
 {
 	switch(raceNum)
@@ -115,7 +115,7 @@ bool CPythonNetworkStream::RecvCharacterAppendPacket()
 	kNetActorData.m_dwHair=0;/*chrAddPacket.awPart[CHR_EQUIPPART_HAIR]*/;	
 	kNetActorData.m_dwMountVnum=0;/*chrAddPacket.dwMountVnum*/;	
 
-	kNetActorData.m_dwLevel = 0; // ¸ó½ºÅÍ ·¹º§ Ç¥½Ã ¾ÈÇÔ
+	kNetActorData.m_dwLevel = 0; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	if(kNetActorData.m_bType != CActorInstance::TYPE_PC && 
 		kNetActorData.m_bType != CActorInstance::TYPE_NPC)
@@ -157,6 +157,8 @@ bool CPythonNetworkStream::RecvCharacterAdditionalInfo()
 		kNetActorData.m_byPKMode=chrInfoPacket.bPKMode;	
 		kNetActorData.m_dwGuildID=chrInfoPacket.dwGuildID;
 		kNetActorData.m_dwEmpireID=chrInfoPacket.bEmpire;
+		if (chrInfoPacket.language[0] != '\0')
+			strncpy(kNetActorData.m_szLanguage, chrInfoPacket.language, sizeof(kNetActorData.m_szLanguage));
 		kNetActorData.m_dwArmor=chrInfoPacket.awPart[CHR_EQUIPPART_ARMOR];
 		kNetActorData.m_dwWeapon=chrInfoPacket.awPart[CHR_EQUIPPART_WEAPON];
 		kNetActorData.m_dwHair=chrInfoPacket.awPart[CHR_EQUIPPART_HAIR];	
@@ -173,7 +175,7 @@ bool CPythonNetworkStream::RecvCharacterAdditionalInfo()
 
 bool CPythonNetworkStream::RecvCharacterAppendPacketNew()
 {
-	TraceError("TPacketGCCharacterAdd2´Â ¾²Áö ¾Ê´Â ÆÐÅ¶ÀÔ´Ï´Ù.");
+	TraceError("TPacketGCCharacterAdd2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½Å¶ï¿½Ô´Ï´ï¿½.");
 	TPacketGCCharacterAdd2 chrAddPacket;
 	if (!Recv(sizeof(chrAddPacket), &chrAddPacket))
 		return false;
@@ -260,10 +262,10 @@ bool CPythonNetworkStream::RecvCharacterUpdatePacketNew()
 
 void CPythonNetworkStream::__RecvCharacterAppendPacket(SNetworkActorData * pkNetActorData)
 {
-	// NOTE : Ä«¸Þ¶ó°¡ ¶¥¿¡ ¹¯È÷´Â ¹®Á¦ÀÇ ÇØ°áÀ» À§ÇØ ¸ÞÀÎ Ä³¸¯ÅÍ°¡ ÁöÇü¿¡ ¿Ã·ÁÁö±â
-	//        Àü¿¡ ¸ÊÀ» ¾÷µ¥ÀÌÆ® ÇØ ³ôÀÌ¸¦ ±¸ÇÒ ¼ö ÀÖµµ·Ï ÇØ³õ¾Æ¾ß ÇÕ´Ï´Ù.
-	//        ´Ü, °ÔÀÓÀÌ µé¾î°¥¶§°¡ ¾Æ´Ñ ÀÌ¹Ì Ä³¸¯ÅÍ°¡ Ãß°¡ µÈ ÀÌÈÄ¿¡¸¸ ÇÕ´Ï´Ù.
-	//        Çåµ¥ ÀÌµ¿ÀÎµ¥ ¿Ö Move·Î ¾ÈÇÏ°í Append·Î ÇÏ´ÂÁö..? - [levites]
+	// NOTE : Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½
+	//        ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½Ø³ï¿½ï¿½Æ¾ï¿½ ï¿½Õ´Ï´ï¿½.
+	//        ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î°¥ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Ì¹ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ ï¿½Õ´Ï´ï¿½.
+	//        ï¿½åµ¥ ï¿½Ìµï¿½ï¿½Îµï¿½ ï¿½ï¿½ Moveï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ Appendï¿½ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½..? - [levites]
 	IAbstractPlayer& rkPlayer = IAbstractPlayer::GetSingleton();
 	if (rkPlayer.IsMainCharacterIndex(pkNetActorData->m_dwVID))
 	{
@@ -276,7 +278,7 @@ void CPythonNetworkStream::__RecvCharacterAppendPacket(SNetworkActorData * pkNet
 			CPythonBackground::Instance().Update(pkNetActorData->m_lCurX, pkNetActorData->m_lCurY, 0.0f);
 			CPythonCharacterManager::Instance().Update();
 
-			// NOTE : »ç±Í Å¸¿öÀÏ °æ¿ì GOTO ·Î ÀÌµ¿½Ã¿¡µµ ¸Ê ÀÌ¸§À» Ãâ·ÂÇÏµµ·Ï Ã³¸®
+			// NOTE : ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ GOTO ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
 			{
 				std::string strMapName = CPythonBackground::Instance().GetWarpMapName();
 				if (strMapName == "metin2_map_deviltower1")
@@ -335,8 +337,8 @@ bool CPythonNetworkStream::RecvCharacterDeletePacket()
 
 	m_rokNetActorMgr->RemoveActor(chrDelPacket.dwVID);
 
-	// Ä³¸¯ÅÍ°¡ »ç¶óÁú¶§ °³ÀÎ »óÁ¡µµ ¾ø¾ÖÁÝ´Ï´Ù.
-	// Key Check ¸¦ ÇÏ±â¶§¹®¿¡ ¾ø¾îµµ »ó°üÀº ¾ø½À´Ï´Ù.
+	// Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ý´Ï´ï¿½.
+	// Key Check ï¿½ï¿½ ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½îµµ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
 	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], 
 		"BINARY_PrivateShop_Disappear", 
 		Py_BuildValue("(i)", chrDelPacket.dwVID)

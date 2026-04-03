@@ -223,6 +223,24 @@ PyObject * chatAppendChat(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildNone();
 }
 
+PyObject * chatAppendChatWithFlag(PyObject* poSelf, PyObject* poArgs)
+{
+	int iType;
+	if (!PyTuple_GetInteger(poArgs, 0, &iType))
+		return Py_BuildException();
+
+	char * szChat;
+	if (!PyTuple_GetString(poArgs, 1, &szChat))
+		return Py_BuildException();
+
+	char * szLang;
+	if (!PyTuple_GetString(poArgs, 2, &szLang))
+		return Py_BuildException();
+
+	CPythonChat::Instance().AppendChatWithFlag(iType, szChat, szLang);
+	return Py_BuildNone();
+}
+
 PyObject * chatAppendChatWithDelay(PyObject* poSelf, PyObject* poArgs)
 {
 	int iType;
@@ -436,7 +454,7 @@ PyObject * chatGetLinkFromHyperlink(PyObject * poSelf, PyObject * poArgs)
 			}
 
 			if (isAttr)
-				//"item:¹øÈ£:ÇÃ·¡±×:¼ÒÄÏ0:¼ÒÄÏ1:¼ÒÄÏ2"
+				//"item:ï¿½ï¿½È£:ï¿½Ã·ï¿½ï¿½ï¿½:ï¿½ï¿½ï¿½ï¿½0:ï¿½ï¿½ï¿½ï¿½1:ï¿½ï¿½ï¿½ï¿½2"
 				snprintf(buf, sizeof(buf), "|cffffc700|H%s|h[%s]|h|r", itemlink, pItemData->GetName());
 			else
 				snprintf(buf, sizeof(buf), "|cfff1e6c0|H%s|h[%s]|h|r", itemlink, pItemData->GetName());
@@ -475,6 +493,7 @@ void initChat()
 
 		// Chat
 		{ "AppendChat",				chatAppendChat,				METH_VARARGS },
+		{ "AppendChatWithFlag",		chatAppendChatWithFlag,		METH_VARARGS },
 		{ "AppendChatWithDelay",	chatAppendChatWithDelay,	METH_VARARGS },
 		{ "ArrangeShowingChat",		chatArrangeShowingChat,		METH_VARARGS },
 

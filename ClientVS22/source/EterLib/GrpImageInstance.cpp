@@ -46,8 +46,8 @@ void CGraphicImageInstance::OnRender()
 	CGraphicImage * pImage = m_roImage.GetPointer();
 	CGraphicTexture * pTexture = pImage->GetTexturePointer();
 
-	float fimgWidth = pImage->GetWidth();
-	float fimgHeight = pImage->GetHeight();
+	float fimgWidth  = (m_fRenderWidth  > 0.0f) ? m_fRenderWidth  : (float)pImage->GetWidth();
+	float fimgHeight = (m_fRenderHeight > 0.0f) ? m_fRenderHeight : (float)pImage->GetHeight();
 
 	const RECT& c_rRect = pImage->GetRectReference();
 	float texReverseWidth = 1.0f / float(pTexture->GetWidth());
@@ -83,7 +83,7 @@ void CGraphicImageInstance::OnRender()
 	vertices[3].texCoord	= TTextureCoordinate(eu, ev);	
 	vertices[3].diffuse		= m_DiffuseColor;
 
-	// 2004.11.18.myevan.ctrl+alt+del ¹Ýº¹ »ç¿ë½Ã Æ¨±â´Â ¹®Á¦ 
+	// 2004.11.18.myevan.ctrl+alt+del ï¿½Ýºï¿½ ï¿½ï¿½ï¿½ï¿½ Æ¨ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
 	if (CGraphicBase::SetPDTStream(vertices, 4))
 	{
 		CGraphicBase::SetDefaultIndexBuffer(CGraphicBase::DEFAULT_IB_FILL_RECT);
@@ -203,11 +203,19 @@ void CGraphicImageInstance::Initialize()
 {
 	m_DiffuseColor.r = m_DiffuseColor.g = m_DiffuseColor.b = m_DiffuseColor.a = 1.0f;
 	m_v2Position.x = m_v2Position.y = 0.0f;
+	m_fRenderWidth = 0.0f;
+	m_fRenderHeight = 0.0f;
+}
+
+void CGraphicImageInstance::SetRenderSize(float fWidth, float fHeight)
+{
+	m_fRenderWidth = fWidth;
+	m_fRenderHeight = fHeight;
 }
 
 void CGraphicImageInstance::Destroy()
 {
-	m_roImage.SetPointer(NULL); // CRef ¿¡¼­ ·¹ÆÛ·±½º Ä«¿îÆ®°¡ ¶³¾îÁ®¾ß ÇÔ.
+	m_roImage.SetPointer(NULL); // CRef ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û·ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½.
 	Initialize();
 }
 

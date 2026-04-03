@@ -53,7 +53,7 @@ void CEterPackManager::SetRelativePathMode()
 }
 
 
-// StringPath std::string ¹öÀü
+// StringPath std::string ï¿½ï¿½ï¿½ï¿½
 int CEterPackManager::ConvertFileName(const char * c_szFileName, std::string & rstrFileName)
 {
 	rstrFileName = c_szFileName;
@@ -231,7 +231,7 @@ bool CEterPackManager::GetFromPack(CMappedFile & rMappedFile, const char * c_szF
 	return false;
 }
 
-const time_t g_tCachingInterval = 10; // 10ÃÊ
+const time_t g_tCachingInterval = 10; // 10ï¿½ï¿½
 void CEterPackManager::ArrangeMemoryMappedPack()
 {
 	//time_t curTime = time(NULL);
@@ -255,8 +255,8 @@ bool CEterPackManager::GetFromFile(CMappedFile & rMappedFile, const char * c_szF
 #ifndef _DEBUG
 	//const char *pcExt = strchr(c_szFileName, '.');
 	//if (pcExt && 
-	//	_strnicmp(pcExt, ".py", 3) == 0 && // python ½ºÅ©¸³Æ® Áß
-	//	stricmp(c_szFileName, "logininfo.py") != 0 && // ·Î±×ÀÎ Á¤º¸ ÆÄÀÏÀÌ ¾Æ´Ï°í
+	//	_strnicmp(pcExt, ".py", 3) == 0 && // python ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½
+	//	stricmp(c_szFileName, "logininfo.py") != 0 && // ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï°ï¿½
 	//	strnicmp(c_szFileName, "locale", 6) != 0
 	//	)
 	//{
@@ -294,7 +294,7 @@ bool CEterPackManager::isExistInPack(const char * c_szFileName)
 				return pkFileItem->pkPack->IsExist(strFileName.c_str());
 	}
 
-	// NOTE : ¸ÅÄ¡ µÇ´Â ÆÑÀÌ ¾ø´Ù¸é false - [levites]
+	// NOTE : ï¿½ï¿½Ä¡ ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ false - [levites]
 	return false;
 }
 
@@ -373,9 +373,7 @@ bool CEterPackManager::RegisterPack(const char * c_szName, const char * c_szDire
 			}
 			else
 			{
-#ifdef _DEBUG
-				Tracef("The eterpack doesn't exist [%s]\n", c_szName);
-#endif
+				TraceError("PACK_DBG RegisterPack FAILED for [%s] dir=[%s]", c_szName, c_szDirectory ? c_szDirectory : "NULL");
 				delete pEterPack;
 				pEterPack = NULL;
 				return false;
@@ -452,7 +450,7 @@ void CEterPackManager::RetrieveHybridCryptPackKeys(const BYTE *pStream)
 	{
 		int iRecvedCryptKeySize = 0;
 		memcpy( &iRecvedCryptKeySize, pStream + iMemOffset, sizeof(iRecvedCryptKeySize) );
-		iRecvedCryptKeySize -= sizeof(dwPackageNameHash); // ¼­¹ö¿¡¼­ ¹ÞÀº key stream¿¡´Â filename hash°¡ Æ÷ÇÔµÇ¾î ÀÖÀ¸¹Ç·Î, hash »çÀÌÁî ¸¸Å­ ¹èÁÜ.
+		iRecvedCryptKeySize -= sizeof(dwPackageNameHash); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ key streamï¿½ï¿½ï¿½ï¿½ filename hashï¿½ï¿½ ï¿½ï¿½ï¿½ÔµÇ¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½, hash ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½.
 		iMemOffset += sizeof(iRecvedCryptKeySize); 
 
 		memcpy( &dwPackageNameHash, pStream + iMemOffset, sizeof(dwPackageNameHash) );

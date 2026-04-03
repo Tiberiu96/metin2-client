@@ -24,6 +24,7 @@ class CGraphicImageInstance
 
 		void SetImagePointer(CGraphicImage* pImage);
 		void ReloadImagePointer(CGraphicImage* pImage);
+		void SetRenderSize(float fWidth, float fHeight);
 		bool IsEmpty() const;
 
 		int GetWidth();
@@ -46,6 +47,8 @@ class CGraphicImageInstance
 	protected:
 		D3DXCOLOR m_DiffuseColor;
 		D3DXVECTOR2 m_v2Position;
+		float m_fRenderWidth;
+		float m_fRenderHeight;
 
 		CGraphicImage::TRef m_roImage;
 		
