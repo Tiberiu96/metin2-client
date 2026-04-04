@@ -356,7 +356,7 @@ bool CEterPackManager::RegisterPackWhenPackMaking(const char * c_szName, const c
 }
 
 
-bool CEterPackManager::RegisterPack(const char * c_szName, const char * c_szDirectory, const BYTE* c_pbIV)
+bool CEterPackManager::RegisterPack(const char * c_szName, const char * c_szDirectory, const BYTE* c_pbIV, bool bOptional)
 {
 	CEterPack * pEterPack = NULL;
 	{
@@ -373,6 +373,7 @@ bool CEterPackManager::RegisterPack(const char * c_szName, const char * c_szDire
 			}
 			else
 			{
+				if (!bOptional)
 				TraceError("PACK_DBG RegisterPack FAILED for [%s] dir=[%s]", c_szName, c_szDirectory ? c_szDirectory : "NULL");
 				delete pEterPack;
 				pEterPack = NULL;

@@ -230,7 +230,7 @@ bool PackInitialize(const char * c_pszFolder)
 		strTexCachePackName = strPackName + "_texcache";
 
 		CEterPackManager::Instance().RegisterPack(strPackName.c_str(), c_rstFolder.c_str());
-		CEterPackManager::Instance().RegisterPack(strTexCachePackName.c_str(), c_rstFolder.c_str());
+		CEterPackManager::Instance().RegisterPack(strTexCachePackName.c_str(), c_rstFolder.c_str(), NULL, true);
 	}
 
 	CEterPackManager::Instance().RegisterRootPack((stFolder + std::string("root")).c_str());

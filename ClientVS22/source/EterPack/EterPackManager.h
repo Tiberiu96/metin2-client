@@ -48,7 +48,7 @@ class CEterPackManager : public CSingleton<CEterPackManager>
 		bool isExist(const char * c_szFileName);
 		bool isExistInPack(const char * c_szFileName);
 
-		bool RegisterPack(const char * c_szName, const char * c_szDirectory, const BYTE* c_pbIV = NULL);		
+		bool RegisterPack(const char * c_szName, const char * c_szDirectory, const BYTE* c_pbIV = NULL, bool bOptional = false);
 		void RegisterRootPack(const char * c_szName);
 		bool RegisterPackWhenPackMaking(const char * c_szName, const char * c_szDirectory, CEterPack* pPack);		
 
@@ -66,12 +66,12 @@ class CEterPackManager : public CSingleton<CEterPackManager>
 		//THEMIDA
 		void RetrieveHybridCryptPackSDB( const BYTE* pStream );
 
-		// ¸Þ¸ð¸®¿¡ ¸ÅÇÎµÈ ÆÑµé °¡¿îµ¥, Á¤¸®ÇØ¾ßÇÒ °Íµé Á¤¸®.
+		// ï¿½Þ¸ð¸®¿ï¿½ ï¿½ï¿½ï¿½Îµï¿½ ï¿½Ñµï¿½ ï¿½ï¿½ï¿½îµ¥, ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½ ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½.
 	public:
 		void ArrangeMemoryMappedPack();
 
 	protected:
-		int ConvertFileName(const char * c_szFileName, std::string & rstrFileName); // StringPath std::string ¹öÀü
+		int ConvertFileName(const char * c_szFileName, std::string & rstrFileName); // StringPath std::string ï¿½ï¿½ï¿½ï¿½
 		bool CompareName(const char * c_szDirectoryName, DWORD iLength, const char * c_szFileName);
 
 		CEterPack* FindPack(const char* c_szPathName);
