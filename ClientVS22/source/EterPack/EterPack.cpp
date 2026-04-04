@@ -485,8 +485,6 @@ bool CEterPack::__BuildIndex(CEterFileDict& rkFileDict, bool bOverwrite)
 
 			m_DataPositionMap.insert(TDataPositionMap::value_type(index->filename_crc, index));
 
-			if (strstr(m_dbName, "patch_flags"))
-				TraceError("PACK_DBG InsertItem [%s] crc=%u", index->filename, index->filename_crc);
 			if (bOverwrite) // ���� ���� ��ŷ ������ ���߿� �������� �ֻ����� ����ؾ��Ѵ�
 				rkFileDict.UpdateItem(this, index);
 			else
@@ -494,8 +492,6 @@ bool CEterPack::__BuildIndex(CEterFileDict& rkFileDict, bool bOverwrite)
 		}
 	}
 
-	if (strstr(m_dbName, "patch_flags"))
-		TraceError("PACK_DBG __BuildIndex OK %s indexCount=%d", m_dbName, m_indexCount);
 	//Tracef("Done. (spent %dms)\n", ELTimer_GetMSec() - dwBeginTime);
 	return true;
 }
