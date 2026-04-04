@@ -38,7 +38,7 @@ const DWORD c_FileName_Max_Length = 128;
 const DWORD c_Short_Name_Max_Length = 32;
 
 const DWORD c_Inventory_Page_Size = 5*9; // x*y
-const DWORD c_Inventory_Page_Count = 2;
+const DWORD c_Inventory_Page_Count = 4;
 const DWORD c_ItemSlot_Count = c_Inventory_Page_Size * c_Inventory_Page_Count;
 const DWORD c_Equipment_Count = 12;
 
@@ -56,12 +56,12 @@ const DWORD c_Equipment_Unique2	= c_Equipment_Start + 8;
 const DWORD c_Equipment_Arrow	= c_Equipment_Start + 9;
 const DWORD c_Equipment_Shield	= c_Equipment_Start + 10;
 
-// »õ·Î Ãß°¡µÈ ½Å±Ô ¹ÝÁö & º§Æ®
-// ÀåÂøÇü ¾ÆÀÌÅÛ¿¡ ÇÒ´çÇÒ ¼ö ÀÖ´Â À§Ä¡°¡ ±âÁ¸ Àåºñ, Ã¤±â¶ø Äù½ºÆ® º¸»ó, ÄÚ½ºÆ¬ ½Ã½ºÅÛ µîÀ¸·Î ÀÎÇØ¼­ °ø°£ÀÌ Àß·ÁÀÖ´Ù.
-// ÀÌ°Ô ´Ù Ã¤±â¶ø º¸»ó ¹öÇÁ¸¦ ÀåÂø¾ÆÀÌÅÛÃ³·³ ±¸ÇöÇÑ ¤µ¤¢ ¶§¹®¿¡ ³­¸®³µµû... ¤¶¤²
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Å±ï¿½ ï¿½ï¿½ï¿½ï¿½ & ï¿½ï¿½Æ®
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Û¿ï¿½ ï¿½Ò´ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, Ã¤ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½, ï¿½Ú½ï¿½Æ¬ ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß·ï¿½ï¿½Ö´ï¿½.
+// ï¿½Ì°ï¿½ ï¿½ï¿½ Ã¤ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½... ï¿½ï¿½ï¿½ï¿½
 // 
-// Á¤¸®ÇÏ¸é, ±âÁ¸ ÀåºñÃ¢µéÀº ¼­¹öDB»ó ¾ÆÀÌÅÛ Æ÷Áö¼ÇÀÌ 90 ~ 102 ÀÌ°í,
-// 2013³â ÃÊ¿¡ »õ·Î Ãß°¡µÇ´Â ½½·ÔµéÀº 111 ~ ºÎÅÍ ½ÃÀÛÇÑ´Ù. Âø¿ë Àåºñ¿¡¼­ ÃÖ´ë·Î »ç¿ëÇÒ ¼ö ÀÖ´Â °ªÀº 121 ±îÁöÀÌ°í, 122ºÎÅÍ´Â ¿ëÈ¥¼®¿¡¼­ »ç¿ëÇÑ´Ù.
+// ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¢ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½DBï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 90 ~ 102 ï¿½Ì°ï¿½,
+// 2013ï¿½ï¿½ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ï¿½ï¿½ 111 ~ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ñ¿¡¼ï¿½ ï¿½Ö´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ 121 ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½, 122ï¿½ï¿½ï¿½Í´ï¿½ ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 #ifdef ENABLE_NEW_EQUIPMENT_SYSTEM
 	const DWORD c_New_Equipment_Start = c_Equipment_Start + 21;
 	const DWORD c_New_Equipment_Count = 3;
@@ -99,7 +99,7 @@ enum EDragonSoulStepTypes
 };
 
 #ifdef ENABLE_COSTUME_SYSTEM
-	const DWORD c_Costume_Slot_Start	= c_Equipment_Start + 19;	// [ÁÖÀÇ] ¼ýÀÚ(19) ÇÏµåÄÚµù ÁÖÀÇ. ÇöÀç ¼­¹ö¿¡¼­ ÄÚ½ºÃõ ½½·ÔÀº 19ºÎÅÍÀÓ. ¼­¹ö common/length.h ÆÄÀÏÀÇ EWearPositions ¿­°ÅÇü Âü°í.
+	const DWORD c_Costume_Slot_Start	= c_Equipment_Start + 19;	// [ï¿½ï¿½ï¿½ï¿½] ï¿½ï¿½ï¿½ï¿½(19) ï¿½Ïµï¿½ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 19ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ common/length.h ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ EWearPositions ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	const DWORD	c_Costume_Slot_Body		= c_Costume_Slot_Start + 0;
 	const DWORD	c_Costume_Slot_Hair		= c_Costume_Slot_Start + 1;
 	const DWORD c_Costume_Slot_Count	= 2;
@@ -107,19 +107,19 @@ enum EDragonSoulStepTypes
 #endif
 
 
-// [ÁÖÀÇ] ¼ýÀÚ(32) ÇÏµåÄÚµù ÁÖÀÇ. ÇöÀç ¼­¹ö¿¡¼­ ¿ëÈ¥¼® ½½·ÔÀº 32ºÎÅÍÀÓ. 
-// ¼­¹ö common/length.h ÆÄÀÏÀÇ EWearPositions ¿­°ÅÇüÀÌ 32±îÁö È®ÀåµÉ °ÍÀ» ¿°µÎÇÏ°í(32 ÀÌ»óÀº È®Àå ÇÏ±â Èûµé°Ô µÇ¾îÀÖÀ½.), 
-// ±× ÀÌÈÄºÎÅÍ¸¦ ¿ëÈ¥¼® ÀåÂø ½½·ÔÀ¸·Î »ç¿ë.
+// [ï¿½ï¿½ï¿½ï¿½] ï¿½ï¿½ï¿½ï¿½(32) ï¿½Ïµï¿½ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 32ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. 
+// ï¿½ï¿½ï¿½ï¿½ common/length.h ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ EWearPositions ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 32ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½(32 ï¿½Ì»ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½.), 
+// ï¿½ï¿½ ï¿½ï¿½ï¿½Äºï¿½ï¿½Í¸ï¿½ ï¿½ï¿½È¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½.
 const DWORD c_Wear_Max = 32;
 const DWORD c_DragonSoul_Equip_Start = c_ItemSlot_Count + c_Wear_Max;
 const DWORD c_DragonSoul_Equip_Slot_Max = 6;
 const DWORD c_DragonSoul_Equip_End = c_DragonSoul_Equip_Start + c_DragonSoul_Equip_Slot_Max * DS_DECK_MAX_NUM;
 
-// NOTE: 2013³â 2¿ù 5ÀÏ ÇöÀç... ¿ëÈ¥¼® µ¥Å©´Â 2°³°¡ Á¸ÀçÇÏ´Âµ¥, ÇâÈÄ È®Àå °¡´É¼ºÀÌ ÀÖ¾î¼­ 3°³ µ¥Å© ¿©À¯ºÐÀ» ÇÒ´ç ÇØ µÒ. ±× µÚ °ø°£Àº º§Æ® ÀÎº¥Åä¸®·Î »ç¿ë
+// NOTE: 2013ï¿½ï¿½ 2ï¿½ï¿½ 5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½... ï¿½ï¿½È¥ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ 2ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½, ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½É¼ï¿½ï¿½ï¿½ ï¿½Ö¾î¼­ 3ï¿½ï¿½ ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ ï¿½ï¿½ ï¿½ï¿½. ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ® ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½
 const DWORD c_DragonSoul_Equip_Reserved_Count = c_DragonSoul_Equip_Slot_Max * 3;		
 
 #ifdef ENABLE_NEW_EQUIPMENT_SYSTEM
-	// º§Æ® ¾ÆÀÌÅÛÀÌ Á¦°øÇÏ´Â ÀÎº¥Åä¸®
+	// ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Îºï¿½ï¿½ä¸®
 	const DWORD c_Belt_Inventory_Slot_Start = c_DragonSoul_Equip_End + c_DragonSoul_Equip_Reserved_Count;
 	const DWORD c_Belt_Inventory_Width = 4;
 	const DWORD c_Belt_Inventory_Height= 4;
@@ -131,7 +131,7 @@ const DWORD c_DragonSoul_Equip_Reserved_Count = c_DragonSoul_Equip_Slot_Max * 3;
 	const DWORD c_Inventory_Count	= c_DragonSoul_Equip_End;
 #endif
 
-// ¿ëÈ¥¼® Àü¿ë ÀÎº¥Åä¸®
+// ï¿½ï¿½È¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ä¸®
 const DWORD c_DragonSoul_Inventory_Start = 0;
 const DWORD c_DragonSoul_Inventory_Box_Size = 32;
 const DWORD c_DragonSoul_Inventory_Count = CItemData::DS_SLOT_NUM_TYPES * DRAGON_SOUL_GRADE_MAX * c_DragonSoul_Inventory_Box_Size;
@@ -157,13 +157,13 @@ enum ESlotType
 enum EWindows
 {
 	RESERVED_WINDOW,
-	INVENTORY,				// ±âº» ÀÎº¥Åä¸®. (45Ä­ Â¥¸®°¡ 2ÆäÀÌÁö Á¸Àç = 90Ä­)
+	INVENTORY,				// ï¿½âº» ï¿½Îºï¿½ï¿½ä¸®. (45Ä­ Â¥ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ = 90Ä­)
 	EQUIPMENT,
 	SAFEBOX,
 	MALL,
 	DRAGON_SOUL_INVENTORY,
-	GROUND,					// NOTE: 2013³â 2¿ù5ÀÏ ÇöÀç±îÁö unused.. ¿Ö ÀÖ´Â°ÅÁö???
-	BELT_INVENTORY,			// NOTE: W2.1 ¹öÀü¿¡ »õ·Î Ãß°¡µÇ´Â º§Æ® ½½·Ô ¾ÆÀÌÅÛÀÌ Á¦°øÇÏ´Â º§Æ® ÀÎº¥Åä¸®
+	GROUND,					// NOTE: 2013ï¿½ï¿½ 2ï¿½ï¿½5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ unused.. ï¿½ï¿½ ï¿½Ö´Â°ï¿½ï¿½ï¿½???
+	BELT_INVENTORY,			// NOTE: W2.1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Æ® ï¿½Îºï¿½ï¿½ä¸®
 	
 	WINDOW_TYPE_MAX,
 };
@@ -192,9 +192,9 @@ typedef struct SItemPos
         cell = _cell;
     }
 
-	// ±âÁ¸¿¡ cellÀÇ ÇüÀ» º¸¸é BYTE°¡ ´ëºÎºÐÀÌÁö¸¸, oi
-	// ¾î¶² ºÎºÐÀº int, ¾î¶² ºÎºÐÀº WORD·Î µÇ¾îÀÖ¾î,
-	// °¡Àå Å« ÀÚ·áÇüÀÎ int·Î ¹Þ´Â´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ cellï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ BYTEï¿½ï¿½ ï¿½ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, oi
+	// ï¿½î¶² ï¿½Îºï¿½ï¿½ï¿½ int, ï¿½î¶² ï¿½Îºï¿½ï¿½ï¿½ WORDï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½Ö¾ï¿½,
+	// ï¿½ï¿½ï¿½ï¿½ Å« ï¿½Ú·ï¿½ï¿½ï¿½ï¿½ï¿½ intï¿½ï¿½ ï¿½Þ´Â´ï¿½.
   //  int operator=(const int _cell)
   //  {
 		//window_type = INVENTORY;

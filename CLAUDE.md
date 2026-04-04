@@ -19,6 +19,16 @@ VS2022 → copiaza `gamecore.exe` in `C:\Users\skema\Desktop\ClientIgnition\`
 - Versiunile despachetate se gasesc in `ClientIgnition/Eternexus/{nume_pack}/` (ex: `locale_en/locale/en/itemdesc.txt`).
 - **Orice modificare .py necesita repackuire** — regenereaza `root.epk` + `root.eix` din `C:\Users\skema\Desktop\ClientIgnition\`.
 
+## Verificare inainte de git commit
+
+Inainte de orice commit, verifica fisierele tracked/modificate care contin text (`.py`, `.txt`, `.h`, `.cpp`) sa nu aiba coruptie de encoding:
+
+- **Semn de coruptie:** secvente `?` sau `ï¿½` sau caractere `\x80-\x9F` aparute in locul diacriticelor sau caracterelor coreene originale — **doar in cod/text functional, nu in comentarii** (comentariile corupte sunt acceptabile)
+- **Cum verifici:** `git diff` — daca un fisier care initial avea diacritice (ro, hu, cz, pl, pt, it, gr, ru) sau koreana acum afiseaza `?` in loc, NU da commit
+- **Cauza frecventa:** editare cu tool care schimba encoding-ul (ex: Edit tool scrie UTF-8 peste ISO-8859/EUC-KR)
+- **Fix:** restaureaza din backup si aplica modificarea cu PowerShell pastrand encoding-ul original (`GetEncoding(1252)` / `GetEncoding('euc-kr')`)
+- **Fisiere sensibile la encoding:** `locale_interface.txt` (toate limbile), fisiere `.txt` si `.cpp` din `src/` cu comentarii coreene
+
 ## Debug — cand nu e clar, pune loguri
 - **C++:** `TraceError("DBG_X: ...")` → apare in `syserr.txt` din `ClientIgnition/`
 - **Python:** `import dbg; dbg.TraceError("DBG_X: ...")` → acelasi `syserr.txt`
