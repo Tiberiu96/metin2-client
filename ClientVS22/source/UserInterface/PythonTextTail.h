@@ -3,7 +3,7 @@
 #include "../eterBase/Singleton.h"
 
 /*
- *	µû¶ó´Ù´Ï´Â ÅØ½ºÆ® Ã³¸®
+ *	ï¿½ï¿½ï¿½ï¿½Ù´Ï´ï¿½ ï¿½Ø½ï¿½Æ® Ã³ï¿½ï¿½
  */
 class CPythonTextTail : public CSingleton<CPythonTextTail>
 {
@@ -18,10 +18,11 @@ class CPythonTextTail : public CSingleton<CPythonTextTail>
 
 			CGraphicTextInstance*			pTitleTextInstance;
 			CGraphicTextInstance*			pLevelTextInstance;
+			CGraphicImageInstance*			pLevelFlagInstance;
 
 
-			// Todo : ÀÌ°Ç ÀüºÎ VID·Î ¹Ù²Ùµµ·Ï ÇÑ´Ù.
-			//        µµÁß Ä³¸¯ÅÍ°¡ ¾ø¾îÁú °æ¿ì Æ¨±æ °¡´É¼ºÀÌ ÀÖÀ½
+			// Todo : ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ VIDï¿½ï¿½ ï¿½Ù²Ùµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
+			//        ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Æ¨ï¿½ï¿½ ï¿½ï¿½ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			CGraphicObjectInstance *		pOwner;
 
 			DWORD							dwVirtualID;
@@ -29,7 +30,7 @@ class CPythonTextTail : public CSingleton<CPythonTextTail>
 			float							x, y, z;
 			float							fDistanceFromPlayer;
 			D3DXCOLOR						Color;
-			BOOL							bNameFlag;		// ÀÌ¸§µµ ÇÔ²² ÄÓ°ÍÀÎÁöÀÇ ÇÃ·¡±×
+			BOOL							bNameFlag;		// ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Ô²ï¿½ ï¿½Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½
 
 			float							xStart, yStart;
 			float							xEnd, yEnd;
@@ -85,7 +86,7 @@ class CPythonTextTail : public CSingleton<CPythonTextTail>
 		void AttachTitle(DWORD dwVID, const char * c_szName, const D3DXCOLOR& c_rColor);
 		void DetachTitle(DWORD dwVID);
 
-		void AttachLevel(DWORD dwVID, const char* c_szText, const D3DXCOLOR& c_rColor);
+		void AttachLevel(DWORD dwVID, const char* c_szText, const D3DXCOLOR& c_rColor, const char* c_szLang = "");
 		void DetachLevel(DWORD dwVID);
 		
 

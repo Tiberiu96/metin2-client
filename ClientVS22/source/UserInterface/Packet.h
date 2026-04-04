@@ -1439,12 +1439,13 @@ typedef struct packet_chatting
 	BYTE	bEmpire;
 } TPacketGCChat;
 
-typedef struct packet_whisper   // ���� ��Ŷ    
-{   
-    BYTE        bHeader;                        
+typedef struct packet_whisper   // ���� ��Ŷ
+{
+    BYTE        bHeader;
     WORD        wSize;
     BYTE        bType;
     char        szNameFrom[CHARACTER_NAME_MAX_LEN + 1];
+    char        language[3];
 } TPacketGCWhisper;
 
 typedef struct packet_stun

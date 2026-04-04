@@ -322,6 +322,28 @@ PyObject * chatAppendWhisper(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildNone();
 }
 
+PyObject * chatAppendWhisperWithFlag(PyObject* poSelf, PyObject* poArgs)
+{
+	int iType;
+	if (!PyTuple_GetInteger(poArgs, 0, &iType))
+		return Py_BuildException();
+
+	char * szName;
+	if (!PyTuple_GetString(poArgs, 1, &szName))
+		return Py_BuildException();
+
+	char * szChat;
+	if (!PyTuple_GetString(poArgs, 2, &szChat))
+		return Py_BuildException();
+
+	char * szLang;
+	if (!PyTuple_GetString(poArgs, 3, &szLang))
+		return Py_BuildException();
+
+	CPythonChat::Instance().AppendWhisperWithFlag(iType, szName, szChat, szLang);
+	return Py_BuildNone();
+}
+
 PyObject * chatRenderWhisper(PyObject* poSelf, PyObject* poArgs)
 {
 	char * szName;
@@ -504,6 +526,7 @@ void initChat()
 		// Whisper
 		{ "CreateWhisper",			chatCreateWhisper,			METH_VARARGS },
 		{ "AppendWhisper",			chatAppendWhisper,			METH_VARARGS },
+		{ "AppendWhisperWithFlag",	chatAppendWhisperWithFlag,	METH_VARARGS },
 		{ "RenderWhisper",			chatRenderWhisper,			METH_VARARGS },
 		{ "SetWhisperBoxSize",		chatSetWhisperBoxSize,		METH_VARARGS },
 		{ "SetWhisperPosition",		chatSetWhisperPosition,		METH_VARARGS },

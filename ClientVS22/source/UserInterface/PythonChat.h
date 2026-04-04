@@ -9,13 +9,19 @@ class CWhisper
 		typedef struct SChatLine
 		{
 			CGraphicTextInstance Instance;
+			CGraphicImageInstance* pFlagInstance;
 
-			SChatLine()
+			SChatLine() : pFlagInstance(NULL)
 			{
 			}
 			~SChatLine()
 			{
 				Instance.Destroy();
+				if (pFlagInstance)
+				{
+					CGraphicImageInstance::Delete(pFlagInstance);
+					pFlagInstance = NULL;
+				}
 			}
 
 			static void DestroySystem();
@@ -38,6 +44,7 @@ class CWhisper
 		void SetPosition(float fPosition);
 		void SetBoxSize(float fWidth, float fHeight);
 		void AppendChat(int iType, const char* c_szChat);
+		void AppendChatWithFlag(int iType, const char* c_szChat, const char* c_szLang);
 		void Render(float fx, float fy);
 
 	protected:
@@ -207,6 +214,7 @@ class CPythonChat : public CSingleton<CPythonChat>, public IAbstractChat
 		// Whisper
 		CWhisper * CreateWhisper(const char * c_szName);
 		void AppendWhisper(int iType, const char * c_szName, const char * c_szChat);
+		void AppendWhisperWithFlag(int iType, const char * c_szName, const char * c_szChat, const char * c_szLang);
 		void ClearWhisper(const char * c_szName);
 		BOOL GetWhisper(const char * c_szName, CWhisper ** ppWhisper);
 		void InitWhisper(PyObject * ppyObject);

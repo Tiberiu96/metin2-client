@@ -143,10 +143,10 @@ void CPythonChat::UpdateViewMode(DWORD dwID)
 
 		{
 			{
-				const float fFlagOffset = pChatLine->pFlagInstance ? 21.0f : 0.0f;
+				const float fFlagOffset = pChatLine->pFlagInstance ? 18.0f : 0.0f;
 				pChatLine->Instance.SetPosition(pChatSet->m_ix + fFlagOffset, pChatSet->m_iy + iHeight);
 				if (pChatLine->pFlagInstance)
-					pChatLine->pFlagInstance->SetPosition(float(pChatSet->m_ix), float(pChatSet->m_iy + iHeight + 3));
+					pChatLine->pFlagInstance->SetPosition(float(pChatSet->m_ix), float(pChatSet->m_iy + iHeight + 2));
 			}
 		}
 		pChatLine->Instance.SetColor(rColor);
@@ -191,10 +191,10 @@ void CPythonChat::UpdateEditMode(DWORD dwID)
 		iHeight += pChatSet->m_iStep;
 		{
 			{
-				const float fFlagOffset = pChatLine->pFlagInstance ? 21.0f : 0.0f;
+				const float fFlagOffset = pChatLine->pFlagInstance ? 18.0f : 0.0f;
 				pChatLine->Instance.SetPosition(pChatSet->m_ix + fFlagOffset, pChatSet->m_iy + iHeight);
 				if (pChatLine->pFlagInstance)
-					pChatLine->pFlagInstance->SetPosition(float(pChatSet->m_ix), float(pChatSet->m_iy + iHeight + 3));
+					pChatLine->pFlagInstance->SetPosition(float(pChatSet->m_ix), float(pChatSet->m_iy + iHeight + 2));
 			}
 		}
 		pChatLine->Instance.SetColor(rColor);
@@ -218,10 +218,10 @@ void CPythonChat::UpdateLogMode(DWORD dwID)
 		iHeight -= pChatSet->m_iStep;
 		{
 			{
-				const float fFlagOffset = pChatLine->pFlagInstance ? 21.0f : 0.0f;
+				const float fFlagOffset = pChatLine->pFlagInstance ? 18.0f : 0.0f;
 				pChatLine->Instance.SetPosition(pChatSet->m_ix + fFlagOffset, pChatSet->m_iy + iHeight);
 				if (pChatLine->pFlagInstance)
-					pChatLine->pFlagInstance->SetPosition(float(pChatSet->m_ix), float(pChatSet->m_iy + iHeight + 3));
+					pChatLine->pFlagInstance->SetPosition(float(pChatSet->m_ix), float(pChatSet->m_iy + iHeight + 2));
 			}
 		}
 		pChatLine->Instance.SetColor(pChatLine->GetColorRef(dwID));
@@ -541,7 +541,7 @@ void CPythonChat::AppendChatWithFlag(int iType, const char * c_szChat, const cha
 		{
 			pChatLine->pFlagInstance = CGraphicImageInstance::New();
 			pChatLine->pFlagInstance->SetImagePointer(static_cast<CGraphicImage*>(pRes));
-			pChatLine->pFlagInstance->SetRenderSize(20.0f, 13.0f);
+			pChatLine->pFlagInstance->SetRenderSize(16.0f, 11.0f);
 		}
 	}
 
@@ -613,6 +613,19 @@ void CPythonChat::AppendWhisper(int iType, const char * c_szName, const char * c
 	}
 
 	pWhisper->AppendChat(iType, c_szChat);
+}
+
+void CPythonChat::AppendWhisperWithFlag(int iType, const char * c_szName, const char * c_szChat, const char * c_szLang)
+{
+	TWhisperMap::iterator itor = m_WhisperMap.find(c_szName);
+
+	CWhisper * pWhisper;
+	if (itor == m_WhisperMap.end())
+		pWhisper = CreateWhisper(c_szName);
+	else
+		pWhisper = itor->second;
+
+	pWhisper->AppendChatWithFlag(iType, c_szChat, c_szLang);
 }
 
 void CPythonChat::ClearWhisper(const char * c_szName)
@@ -801,6 +814,34 @@ void CWhisper::AppendChat(int iType, const char * c_szChat)
 	__ArrangeChat();
 }
 
+void CWhisper::AppendChatWithFlag(int iType, const char* c_szChat, const char* c_szLang)
+{
+	AppendChat(iType, c_szChat);
+
+	if (m_ChatLineDeque.empty())
+		return;
+
+	TChatLine* pChatLine = m_ChatLineDeque.back();
+
+	if (c_szLang && c_szLang[0] != '\0')
+	{
+		const char* szFlagCode = (strcmp(c_szLang, "en") == 0) ? "uk" : c_szLang;
+		char szFlagPath[128];
+		_snprintf_s(szFlagPath, sizeof(szFlagPath), "d/ymir work/ui/game/flags/%s.tga", szFlagCode);
+
+		CResource* pRes = CResourceManager::Instance().GetResourcePointer(szFlagPath);
+		if (pRes && pRes->IsType(CGraphicImage::Type()))
+		{
+			pChatLine->pFlagInstance = CGraphicImageInstance::New();
+			pChatLine->pFlagInstance->SetImagePointer(static_cast<CGraphicImage*>(pRes));
+			pChatLine->pFlagInstance->SetRenderSize(16.0f, 11.0f);
+		}
+	}
+
+	// Recalculeaza layout cu offset pentru flag
+	__ArrangeChat();
+}
+
 void CWhisper::__ArrangeChat()
 {
 	for (TChatLineDeque::iterator itor = m_ChatLineDeque.begin(); itor != m_ChatLineDeque.end(); ++itor)
@@ -836,8 +877,27 @@ void CWhisper::Render(float fx, float fy)
 		WORD wLineCount = pChatLine->Instance.GetTextLineCount();
 		fHeight -= wLineCount * m_fLineStep;
 
-		pChatLine->Instance.SetPosition(fx, fHeight);
+		const float fFlagOffset = pChatLine->pFlagInstance ? 18.0f : 0.0f;
+		pChatLine->Instance.SetPosition(fx + fFlagOffset, fHeight);
 		pChatLine->Instance.Render(&Rect);
+
+		if (pChatLine->pFlagInstance)
+			pChatLine->pFlagInstance->SetPosition(fx, fHeight + 2.0f);
+
+		if (fHeight < fy)
+			break;
+	}
+
+	// Render flag-uri separat (dupa text, pentru a fi pe deasupra)
+	fHeight = fy + m_fHeight;
+	for (int i = iStartLine; i >= 0; --i)
+	{
+		TChatLine * pChatLine = m_ChatLineDeque[i];
+		WORD wLineCount = pChatLine->Instance.GetTextLineCount();
+		fHeight -= wLineCount * m_fLineStep;
+
+		if (pChatLine->pFlagInstance)
+			pChatLine->pFlagInstance->Render();
 
 		if (fHeight < fy)
 			break;

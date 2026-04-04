@@ -828,6 +828,19 @@ PyObject * chrGetNameByVID(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildValue("s", pInstance->GetNameString());
 }
 
+PyObject * chrGetLanguageByName(PyObject* poSelf, PyObject* poArgs)
+{
+	char* szName;
+	if (!PyTuple_GetString(poArgs, 0, &szName))
+		return Py_BuildException();
+
+	CInstanceBase* pInstance = CPythonCharacterManager::Instance().GetInstancePtrByName(szName);
+	if (!pInstance)
+		return Py_BuildValue("s", "");
+
+	return Py_BuildValue("s", pInstance->GetLanguage());
+}
+
 PyObject * chrGetGuildID(PyObject* poSelf, PyObject* poArgs)
 {
 	int iVirtualID;
@@ -1305,6 +1318,7 @@ void initchr()
 		{ "GetNameByVID",				chrGetNameByVID,					METH_VARARGS },
 		{ "GetGuildID",					chrGetGuildID,						METH_VARARGS },
 		{ "GetLanguage",				chrGetLanguage,						METH_VARARGS },
+		{ "GetLanguageByName",			chrGetLanguageByName,				METH_VARARGS },
 		{ "GetProjectPosition",			chrGetProjectPosition,				METH_VARARGS },
 
 		{ "GetVirtualNumber",			chrGetVirtualNumber,				METH_VARARGS },

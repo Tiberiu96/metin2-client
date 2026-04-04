@@ -18,6 +18,12 @@ VS2022 → copiaza `gamecore.exe` in `C:\Users\skema\Desktop\ClientIgnition\`
 Citite din **pack-uri** (`root.epk`/`root.eix`), NU direct din folder.
 **Orice modificare .py necesita repackuire** — regenereaza `root.epk` + `root.eix` din `C:\Users\skema\Desktop\ClientIgnition\`.
 
+## Debug — cand nu e clar, pune loguri
+- **C++:** `TraceError("DBG_X: ...")` → apare in `syserr.txt` din `ClientIgnition/`
+- **Python:** `import dbg; dbg.TraceError("DBG_X: ...")` → acelasi `syserr.txt`
+- Dupa debug, sterge logurile inainte de commit.
+- Daca problema implica server: adauga si log pe server (`syslog` / `fprintf`) **inainte** de a incerca fix-uri oarbe.
+
 ## Multi-Language (EN/DE/HU/FR/CZ/DK/ES/GR/IT/NL/PL/PT/RO/RU/TR)
 **Client:** redenumeste `locale.cfg` ↔ `locale_{xy}.cfg`
 **Server:** `item_names_xy.txt`→`item_names.txt`, `mob_names_xy.txt`→`mob_names.txt`, `translate_xy.lua` + `locale_string_xy.txt` activ + questcompile

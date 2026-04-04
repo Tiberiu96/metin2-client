@@ -1416,6 +1416,10 @@ bool CPythonNetworkStream::RecvChatPacket()
 					{
 						strncpy(szName, buf, nameLen);
 						szName[nameLen] = '\0';
+						// trim trailing space (format "Nume : msg" are spatiu inainte de ':')
+						size_t trimLen = nameLen;
+						while (trimLen > 0 && szName[trimLen - 1] == ' ')
+							szName[--trimLen] = '\0';
 						CInstanceBase* pkInst = CPythonCharacterManager::Instance().GetInstancePtrByName(szName);
 						if (pkInst && pkInst->IsPC())
 						{
@@ -1429,7 +1433,6 @@ bool CPythonNetworkStream::RecvChatPacket()
 				}
 			}
 		}
-
 		CPythonChat::Instance().AppendChat(kChat.type, buf);
 		
 	}
@@ -1453,9 +1456,10 @@ bool CPythonNetworkStream::RecvWhisperPacket()
 
 	static char line[256];
 	if (CPythonChat::WHISPER_TYPE_CHAT == whisperPacket.bType || CPythonChat::WHISPER_TYPE_GM == whisperPacket.bType)
-	{		
+	{
 		_snprintf(line, sizeof(line), "%s : %s", whisperPacket.szNameFrom, buf);
-		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "OnRecvWhisper", Py_BuildValue("(iss)", (int) whisperPacket.bType, whisperPacket.szNameFrom, line));
+		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "OnRecvWhisper",
+			Py_BuildValue("(isss)", (int)whisperPacket.bType, whisperPacket.szNameFrom, line, whisperPacket.language));
 	}
 	else if (CPythonChat::WHISPER_TYPE_SYSTEM == whisperPacket.bType || CPythonChat::WHISPER_TYPE_ERROR == whisperPacket.bType)
 	{

@@ -135,7 +135,7 @@ void CInstanceBase::ProcessDamage()
 	else if (flag & DAMAGE_CRITICAL)
 	{
 		//rkEftMgr.CreateEffect(ms_adwCRCAffectEffect[EFFECT_DAMAGE_CRITICAL],v3Pos,v3Rot);
-		//return; ¼ýÀÚµµ Ç¥½Ã.
+		//return; ï¿½ï¿½ï¿½Úµï¿½ Ç¥ï¿½ï¿½.
 	}
 
 	std::string strDamageType;
@@ -162,7 +162,7 @@ void CInstanceBase::ProcessDamage()
 		{
 			strDamageType = "nontarget_";
 			rdwCRCEft = EFFECT_DAMAGE_NOT_TARGET;
-			return;//ÇöÀç Àû¿ë ¾ÈµÊ.
+			return;//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Èµï¿½.
 		}
 		else
 		{
@@ -178,7 +178,7 @@ void CInstanceBase::ProcessDamage()
 	{
 		if(index > 7)
 		{
-			TraceError("ProcessDamage¹«ÇÑ·çÇÁ °¡´É¼º");
+			TraceError("ProcessDamageï¿½ï¿½ï¿½Ñ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¼ï¿½");
 			break;
 		}
 		num = damage%10;
@@ -258,7 +258,7 @@ CInstanceBase::SEffectContainer::Dict& CInstanceBase::__EffectContainer_GetDict(
 	return m_kEffectContainer.m_kDct_dwEftID;
 }
 
-// Return value ¸¦ boolean ¿¡¼­ ID ·Î ¹Ù²ß´Ï´Ù
+// Return value ï¿½ï¿½ boolean ï¿½ï¿½ï¿½ï¿½ ID ï¿½ï¿½ ï¿½Ù²ß´Ï´ï¿½
 DWORD CInstanceBase::__EffectContainer_AttachEffect(DWORD dwEftKey)
 {
 	SEffectContainer::Dict& rkDctEftID=__EffectContainer_GetDict();
@@ -481,7 +481,7 @@ bool CInstanceBase::__FindPVPReadyKey(DWORD dwVIDSrc, DWORD dwVIDDst)
 
 	return true;
 }
-//±æµåÀü½Ã »ó´ë ±æµåÀÎÁö È®ÀÎÇÒ¶§.
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ò¶ï¿½.
 bool CInstanceBase::__FindGVGKey(DWORD dwSrcGuildID, DWORD dwDstGuildID)
 {
 	DWORD dwGVGKey=__GetPVPKey(dwSrcGuildID, dwDstGuildID);
@@ -491,7 +491,7 @@ bool CInstanceBase::__FindGVGKey(DWORD dwSrcGuildID, DWORD dwDstGuildID)
 
 	return true;
 }
-//´ë·Ã ¸ðµå¿¡¼­´Â ´ë·Ã »ó´ë¸¸ °ø°ÝÇÒ ¼ö ÀÖ´Ù.
+//ï¿½ï¿½ï¿½ ï¿½ï¿½å¿¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ë¸¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
 bool CInstanceBase::__FindDUELKey(DWORD dwVIDSrc, DWORD dwVIDDst)
 {
 	DWORD dwDUELKey=__GetPVPKey(dwVIDSrc, dwVIDDst);
@@ -510,7 +510,7 @@ bool CInstanceBase::IsPVPInstance(CInstanceBase& rkInstSel)
 	DWORD dwGuildIDSrc=GetGuildID();
 	DWORD dwGuildIDDst=rkInstSel.GetGuildID();
 
-	if (GetDuelMode())	//´ë·Ã ¸ðµåÀÏ¶§´Â ~_~
+	if (GetDuelMode())	//ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ï¿½ ~_~
 		return true;	
 
 	return __FindPVPKey(dwVIDSrc, dwVIDDst) || __FindGVGKey(dwGuildIDSrc, dwGuildIDDst);
@@ -658,7 +658,8 @@ void CInstanceBase::UpdateTextTailLevel(DWORD level)
 
 	char szText[256];
 	sprintf(szText, "Lv %d", level);
-	CPythonTextTail::Instance().AttachLevel(GetVirtualID(), szText, s_kLevelColor);
+	const char* szLang = IsPC() ? GetLanguage() : "";
+	CPythonTextTail::Instance().AttachLevel(GetVirtualID(), szText, s_kLevelColor, szLang);
 }
 
 void CInstanceBase::RefreshTextTail()
@@ -686,7 +687,7 @@ void CInstanceBase::RefreshTextTailTitle()
 	RefreshTextTail();
 }
 
-// 2004.07.25.myevan.ÀÌÆåÆ® ¾È ºÙ´Â ¹®Á¦ ÇØ°á
+// 2004.07.25.myevan.ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ ï¿½Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½
 /////////////////////////////////////////////////
 void CInstanceBase::__ClearAffectFlagContainer()
 {
@@ -780,7 +781,7 @@ void CInstanceBase::__SetReviveInvisibilityAffect(bool isVisible)
 {
 	if (isVisible)
 	{
-		// NOTE : Dress ¸¦ ÀÔ°í ÀÖÀ¸¸é Alpha ¸¦ ³ÖÁö ¾Ê´Â´Ù.
+		// NOTE : Dress ï¿½ï¿½ ï¿½Ô°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Alpha ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
 		if (IsWearingDress())
 			return;
 
@@ -796,7 +797,7 @@ void CInstanceBase::__Assassin_SetEunhyeongAffect(bool isVisible)
 {
 	if (isVisible)
 	{
-		// NOTE : Dress ¸¦ ÀÔ°í ÀÖÀ¸¸é Alpha ¸¦ ³ÖÁö ¾Ê´Â´Ù.
+		// NOTE : Dress ï¿½ï¿½ ï¿½Ô°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Alpha ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
 		if (IsWearingDress())
 			return;
 
@@ -806,7 +807,7 @@ void CInstanceBase::__Assassin_SetEunhyeongAffect(bool isVisible)
 		}
 		else
 		{
-			// 2004.10.16.myevan.ÀºÇü¹ý ¿ÏÀü Åõ¸í
+			// 2004.10.16.myevan.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			m_GraphicThingInstance.BlendAlphaValue(0.0f, 1.0f);
 			m_GraphicThingInstance.HideAllAttachingEffect();
 		}
@@ -859,7 +860,7 @@ void CInstanceBase::__SetAffect(UINT eAffect, bool isVisible)
 				return;
 			break;
 /*
-		case AFFECT_GWIGEOM: // Àü±â ¼Ó¼º °ø°ÝÀ¸·Î ¹Ù²ð ¿¹Á¤
+		case AFFECT_GWIGEOM: // ï¿½ï¿½ï¿½ï¿½ ï¿½Ó¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ ï¿½ï¿½ï¿½ï¿½
 			if (isVisible)
 			{
 				m_GraphicThingInstance.SetBattleHitEffect(ms_adwCRCAffectEffect[EFFECT_ELECTRIC_HIT]);
@@ -872,7 +873,7 @@ void CInstanceBase::__SetAffect(UINT eAffect, bool isVisible)
 			}
 			return;
 			break;
-		case AFFECT_HWAYEOM: // È­¿° ¼Ó¼º °ø°ÝÀ¸·Î ¹Ù²ð ¿¹Á¤
+		case AFFECT_HWAYEOM: // È­ï¿½ï¿½ ï¿½Ó¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ ï¿½ï¿½ï¿½ï¿½
 			if (isVisible)
 			{
 				m_GraphicThingInstance.SetBattleHitEffect(ms_adwCRCAffectEffect[EFFECT_FLAME_HIT]);
@@ -883,7 +884,7 @@ void CInstanceBase::__SetAffect(UINT eAffect, bool isVisible)
 				m_GraphicThingInstance.SetBattleHitEffect(ms_adwCRCAffectEffect[EFFECT_HIT]);
 				m_GraphicThingInstance.SetBattleAttachEffect(0);
 			}
-			// È­¿°ÂüÀº °ø°ÝÇÒ ¶§¸¸ ÀÏ½ÃÀûÀ¸·Î Visible ÇÕ´Ï´Ù.
+			// È­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Visible ï¿½Õ´Ï´ï¿½.
 			return;
 			break;
 */
@@ -902,13 +903,13 @@ void CInstanceBase::__SetAffect(UINT eAffect, bool isVisible)
 			break;
 		case AFFECT_GYEONGGONG:
 		case AFFECT_KWAESOK:
-			// °æ°ø¼ú, Äè¼ÓÀº ¶Û¶§¸¸ Attaching ½ÃÅµ´Ï´Ù. - [levites]
+			// ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¶ï¿½ï¿½ï¿½ Attaching ï¿½ï¿½Åµï¿½Ï´ï¿½. - [levites]
 			if (isVisible)
 				if (!IsWalking())
 					return;
 			break;
 		case AFFECT_INVISIBILITY:
-			// 2004.07.17.levites.isShow¸¦ ViewFrustumCheck·Î º¯°æ
+			// 2004.07.17.levites.isShowï¿½ï¿½ ViewFrustumCheckï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			if (isVisible)
 			{
 				m_GraphicThingInstance.ClearAttachingEffect();
@@ -1026,7 +1027,7 @@ void CInstanceBase::__DetachEffect(DWORD dwEID)
 
 DWORD CInstanceBase::__AttachEffect(UINT eEftType)
 {
-	// 2004.07.17.levites.isShow¸¦ ViewFrustumCheck·Î º¯°æ
+	// 2004.07.17.levites.isShowï¿½ï¿½ ViewFrustumCheckï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (IsAffect(AFFECT_INVISIBILITY))
 		return 0;
 
@@ -1041,8 +1042,8 @@ DWORD CInstanceBase::__AttachEffect(UINT eEftType)
 	{
 		std::string & rstrBoneName = ms_astAffectEffectAttachBone[eEftType];
 		const char * c_szBoneName;
-		// ¾ç¼Õ¿¡ ºÙÀÏ ¶§ »ç¿ëÇÑ´Ù.
-		// ÀÌ·± ½ÄÀÇ ¿¹¿Ü Ã³¸®¸¦ ÇØ³õÀº °ÍÀº Ä³¸¯ÅÍ ¸¶´Ù Equip ÀÇ Bone Name ÀÌ ´Ù¸£±â ¶§¹®.
+		// ï¿½ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+		// ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½Ø³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Equip ï¿½ï¿½ Bone Name ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 		if (0 == rstrBoneName.compare("PART_WEAPON"))
 		{
 			if (m_GraphicThingInstance.GetAttachingBoneName(CRaceData::PART_WEAPON, &c_szBoneName))

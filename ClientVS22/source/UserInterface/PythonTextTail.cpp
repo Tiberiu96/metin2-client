@@ -1,5 +1,5 @@
 //
-// Ä³¸¯ÅÍ¸¦ µû¶ó´Ù´Ï´Â ÅØ½ºÆ® °ü·Ã ¼Ò½º (ÀÌ¸§, ±æµåÀÌ¸§, ±æµå¸¶Å© µî)
+// Ä³ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ù´Ï´ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ (ï¿½Ì¸ï¿½, ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½, ï¿½ï¿½å¸¶Å© ï¿½ï¿½)
 //
 #include "stdafx.h"
 #include "InstanceBase.h"
@@ -75,7 +75,7 @@ void CPythonTextTail::UpdateAllTextTail()
 		{
 			UpdateDistance(pixelPos, itorChat->second);
 
-			// NOTE : Chat TextTailÀÌ ÀÖÀ¸¸é Ä³¸¯ÅÍ ÀÌ¸§µµ Ãâ·ÂÇÑ´Ù.
+			// NOTE : Chat TextTailï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 			if (itorChat->second->bNameFlag)
 			{
 				DWORD dwVID = itorChat->first;
@@ -104,7 +104,7 @@ void CPythonTextTail::UpdateShowingTextTail()
 		TTextTail * pTextTail = *itor;
 		UpdateTextTail(pTextTail);
 
-		// NOTE : Chat TextTailÀÌ ÀÖÀ» °æ¿ì À§Ä¡¸¦ ¹Ù²Û´Ù.
+		// NOTE : Chat TextTailï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ù²Û´ï¿½.
 		TChatTailMap::iterator itor = m_ChatTailMap.find(pTextTail->dwVirtualID);
 		if (m_ChatTailMap.end() != itor)
 		{
@@ -138,7 +138,7 @@ void CPythonTextTail::UpdateTextTail(TTextTail * pTextTail)
 	pTextTail->x = floorf(pTextTail->x);
 	pTextTail->y = floorf(pTextTail->y);
 
-	// NOTE : 13m ¹Û¿¡ ÀÖÀ»¶§¸¸ ±íÀÌ¸¦ ³Ö½À´Ï´Ù - [levites]
+	// NOTE : 13m ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½ - [levites]
 	if (pTextTail->fDistanceFromPlayer < 1300.0f)
 	{
 		pTextTail->z = 0.0f;
@@ -215,7 +215,7 @@ void CPythonTextTail::ArrangeTextTail()
 
 		float fxAdd = 0.0f;
 
-		// Mark À§Ä¡ ¾÷µ¥ÀÌÆ®
+		// Mark ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 		CGraphicMarkInstance * pMarkInstance = pTextTail->pMarkInstance;
 		CGraphicTextInstance * pGuildNameInstance = pTextTail->pGuildNameTextInstance;
 		if (pMarkInstance && pGuildNameInstance)
@@ -232,7 +232,10 @@ void CPythonTextTail::ArrangeTextTail()
 		int iNameWidth, iNameHeight;
 		pTextTail->pTextInstance->GetTextSize(&iNameWidth, &iNameHeight);
 
-		// Title À§Ä¡ ¾÷µ¥ÀÌÆ®
+		float fLevelRightEdgeX = 0.0f;
+		int   iLevelWidthForFlag = 0;
+
+		// Title ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 		CGraphicTextInstance * pTitle = pTextTail->pTitleTextInstance;
 		if (pTitle)
 		{			
@@ -241,7 +244,7 @@ void CPythonTextTail::ArrangeTextTail()
 
 			fxAdd = 8.0f;
 
-			if (LocaleService_IsEUROPE()) // µ¶ÀÏ¾î´Â ¸íÄªÀÌ ±æ¾î ¿À¸¥Á¤·Ä
+			if (LocaleService_IsEUROPE()) // ï¿½ï¿½ï¿½Ï¾ï¿½ï¿½ ï¿½ï¿½Äªï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				if( GetDefaultCodePage() == CP_ARABIC )
 				{
@@ -259,29 +262,33 @@ void CPythonTextTail::ArrangeTextTail()
 			}			
 			pTitle->Update();
 
-			// Level À§Ä¡ ¾÷µ¥ÀÌÆ®
+			// Level ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 			CGraphicTextInstance * pLevel = pTextTail->pLevelTextInstance;
 			if (pLevel)
 			{
 				int iLevelWidth, iLevelHeight;
 				pLevel->GetTextSize(&iLevelWidth, &iLevelHeight);
-				
-				if (LocaleService_IsEUROPE()) // µ¶ÀÏ¾î´Â ¸íÄªÀÌ ±æ¾î ¿À¸¥Á¤·Ä
+
+				if (LocaleService_IsEUROPE()) // ï¿½ï¿½ï¿½Ï¾ï¿½ï¿½ ï¿½ï¿½Äªï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
 					if( GetDefaultCodePage() == CP_ARABIC )
 					{
-						pLevel->SetPosition(pTextTail->x - (iNameWidth / 2) - iLevelWidth - iTitleWidth - 8.0f, pTextTail->y, pTextTail->z);
+						fLevelRightEdgeX = pTextTail->x - (iNameWidth / 2) - iLevelWidth - iTitleWidth - 8.0f;
+						pLevel->SetPosition(fLevelRightEdgeX, pTextTail->y, pTextTail->z);
 					}
 					else
 					{
-						pLevel->SetPosition(pTextTail->x - (iNameWidth / 2) - iTitleWidth, pTextTail->y, pTextTail->z);
+						fLevelRightEdgeX = pTextTail->x - (iNameWidth / 2) - iTitleWidth;
+						pLevel->SetPosition(fLevelRightEdgeX, pTextTail->y, pTextTail->z);
 					}
 				}
 				else
 				{
-					pLevel->SetPosition(pTextTail->x - (iNameWidth / 2) - fxAdd - iTitleWidth, pTextTail->y, pTextTail->z);
+					fLevelRightEdgeX = pTextTail->x - (iNameWidth / 2) - fxAdd - iTitleWidth;
+					pLevel->SetPosition(fLevelRightEdgeX, pTextTail->y, pTextTail->z);
 				}
 
+				iLevelWidthForFlag = iLevelWidth;
 				pLevel->Update();
 			}
 		}
@@ -289,31 +296,43 @@ void CPythonTextTail::ArrangeTextTail()
 		{
 			fxAdd = 4.0f;
 
-			// Level À§Ä¡ ¾÷µ¥ÀÌÆ®
+			// Level ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 			CGraphicTextInstance * pLevel = pTextTail->pLevelTextInstance;
 			if (pLevel)
 			{
 				int iLevelWidth, iLevelHeight;
 				pLevel->GetTextSize(&iLevelWidth, &iLevelHeight);
-				
-				if (LocaleService_IsEUROPE()) // µ¶ÀÏ¾î´Â ¸íÄªÀÌ ±æ¾î ¿À¸¥Á¤·Ä
+
+				if (LocaleService_IsEUROPE()) // ï¿½ï¿½ï¿½Ï¾ï¿½ï¿½ ï¿½ï¿½Äªï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
 					if( GetDefaultCodePage() == CP_ARABIC )
 					{
-						pLevel->SetPosition(pTextTail->x - (iNameWidth / 2) - iLevelWidth - 4.0f, pTextTail->y, pTextTail->z);
+						fLevelRightEdgeX = pTextTail->x - (iNameWidth / 2) - iLevelWidth - 4.0f;
+						pLevel->SetPosition(fLevelRightEdgeX, pTextTail->y, pTextTail->z);
 					}
 					else
 					{
-						pLevel->SetPosition(pTextTail->x - (iNameWidth / 2), pTextTail->y, pTextTail->z);
+						fLevelRightEdgeX = pTextTail->x - (iNameWidth / 2);
+						pLevel->SetPosition(fLevelRightEdgeX, pTextTail->y, pTextTail->z);
 					}
 				}
 				else
 				{
-					pLevel->SetPosition(pTextTail->x - (iNameWidth / 2) - fxAdd, pTextTail->y, pTextTail->z);
+					fLevelRightEdgeX = pTextTail->x - (iNameWidth / 2) - fxAdd;
+					pLevel->SetPosition(fLevelRightEdgeX, pTextTail->y, pTextTail->z);
 				}
 
+				iLevelWidthForFlag = iLevelWidth;
 				pLevel->Update();
 			}
+		}
+
+		// Flag lingua player langa nivel
+		if (pTextTail->pLevelFlagInstance && iLevelWidthForFlag > 0)
+		{
+			float fFlagX = fLevelRightEdgeX - iLevelWidthForFlag - 18.0f;
+			float fFlagY = pTextTail->y - 11.0f;
+			pTextTail->pLevelFlagInstance->SetPosition(fFlagX, fFlagY);
 		}
 		
 		pTextTail->pTextInstance->SetColor(pTextTail->Color.r, pTextTail->Color.g, pTextTail->Color.b);
@@ -361,6 +380,10 @@ void CPythonTextTail::Render()
 		{
 			pTextTail->pLevelTextInstance->Render();
 		}
+		if (pTextTail->pLevelFlagInstance)
+		{
+			pTextTail->pLevelFlagInstance->Render();
+		}
 	}
 
 	for (itor = m_ItemTextTailList.begin(); itor != m_ItemTextTailList.end(); ++itor)
@@ -383,7 +406,7 @@ void CPythonTextTail::Render()
 
 void CPythonTextTail::RenderTextTailBox(TTextTail * pTextTail)
 {
-	// °ËÀº»ö Å×µÎ¸®
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×µÎ¸ï¿½
 	CPythonGraphic::Instance().SetDiffuseColor(0.0f, 0.0f, 0.0f, 1.0f);
 	CPythonGraphic::Instance().RenderBox2d(pTextTail->x + pTextTail->xStart,
 										   pTextTail->y + pTextTail->yStart,
@@ -391,7 +414,7 @@ void CPythonTextTail::RenderTextTailBox(TTextTail * pTextTail)
 										   pTextTail->y + pTextTail->yEnd,
 										   pTextTail->z);
 
-	// °ËÀº»ö Åõ¸í¹Ú½º
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½
 	CPythonGraphic::Instance().SetDiffuseColor(0.0f, 0.0f, 0.0f, 0.3f);
 	CPythonGraphic::Instance().RenderBar2d(pTextTail->x + pTextTail->xStart,
 										   pTextTail->y + pTextTail->yStart,
@@ -407,8 +430,8 @@ void CPythonTextTail::RenderTextTailName(TTextTail * pTextTail)
 
 void CPythonTextTail::HideAllTextTail()
 {
-	// NOTE : Show AllÀ» ÇØÁØµÚ Hide AllÀ» ÇØÁÖÁö ¾ÊÀ¸¸é ¹®Á¦ ¹ß»ý °¡´É¼º ÀÖÀ½
-	//        µðÀÚÀÎ ÀÚÃ¼°¡ ±×·¸°Ô ±ò²ûÇÏ°Ô µÇÁö ¾Ê¾ÒÀ½ - [levites]
+	// NOTE : Show Allï¿½ï¿½ ï¿½ï¿½ï¿½Øµï¿½ Hide Allï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ ï¿½ï¿½ï¿½É¼ï¿½ ï¿½ï¿½ï¿½ï¿½
+	//        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾ï¿½ï¿½ï¿½ - [levites]
 	m_CharacterTextTailList.clear();
 	m_ItemTextTailList.clear();
 }
@@ -448,12 +471,12 @@ void CPythonTextTail::ShowCharacterTextTail(DWORD VirtualID)
 
 	if (m_CharacterTextTailList.end() != std::find(m_CharacterTextTailList.begin(), m_CharacterTextTailList.end(), pTextTail))
 	{
-		//Tracef("ÀÌ¹Ì ¸®½ºÆ®¿¡ ÀÖÀ½ : %d\n", VirtualID);
+		//Tracef("ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : %d\n", VirtualID);
 		return;
 	}
 
-	// NOTE : ShowAll ½Ã¿¡´Â ¸ðµç Instance ÀÇ Pointer ¸¦ Ã£¾Æ¼­ Ã¼Å©ÇÏ¹Ç·Î ºÎÇÏ°¡ °É¸± °¡´É¼ºµµ ÀÖ´Ù.
-	//        CInstanceBase °¡ TextTail À» Á÷Á¢ °¡Áö°í ÀÖ´Â °ÍÀÌ °¡Àå ÁÁÀº ÇüÅÂÀÏ µí..
+	// NOTE : ShowAll ï¿½Ã¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Instance ï¿½ï¿½ Pointer ï¿½ï¿½ Ã£ï¿½Æ¼ï¿½ Ã¼Å©ï¿½Ï¹Ç·ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½É¸ï¿½ ï¿½ï¿½ï¿½É¼ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.
+	//        CInstanceBase ï¿½ï¿½ TextTail ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½..
 	if (!pTextTail->pOwner->isShow())
 		return;
 	
@@ -479,7 +502,7 @@ void CPythonTextTail::ShowItemTextTail(DWORD VirtualID)
 
 	if (m_ItemTextTailList.end() != std::find(m_ItemTextTailList.begin(), m_ItemTextTailList.end(), pTextTail))
 	{
-		//Tracef("ÀÌ¹Ì ¸®½ºÆ®¿¡ ÀÖÀ½ : %d\n", VirtualID);
+		//Tracef("ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : %d\n", VirtualID);
 		return;
 	}
 
@@ -820,6 +843,7 @@ CPythonTextTail::TTextTail * CPythonTextTail::RegisterTextTail(DWORD dwVirtualID
 	pTextTail->pGuildNameTextInstance = NULL;
 	pTextTail->pTitleTextInstance = NULL;
 	pTextTail->pLevelTextInstance = NULL;
+	pTextTail->pLevelFlagInstance = NULL;
 	return pTextTail;
 }
 
@@ -855,8 +879,13 @@ void CPythonTextTail::DeleteTextTail(TTextTail * pTextTail)
 		CGraphicTextInstance::Delete(pTextTail->pLevelTextInstance);
 		pTextTail->pLevelTextInstance = NULL;
 	}
+	if (pTextTail->pLevelFlagInstance)
+	{
+		CGraphicImageInstance::Delete(pTextTail->pLevelFlagInstance);
+		pTextTail->pLevelFlagInstance = NULL;
+	}
 
-	m_TextTailPool.Free(pTextTail);	
+	m_TextTailPool.Free(pTextTail);
 }
 
 int CPythonTextTail::Pick(int ixMouse, int iyMouse)
@@ -940,7 +969,7 @@ void CPythonTextTail::EnablePKTitle(BOOL bFlag)
 	bPKTitleEnable = bFlag;
 }
 
-void CPythonTextTail::AttachLevel(DWORD dwVID, const char * c_szText, const D3DXCOLOR & c_rColor)
+void CPythonTextTail::AttachLevel(DWORD dwVID, const char * c_szText, const D3DXCOLOR & c_rColor, const char * c_szLang)
 {
 	if (!bPKTitleEnable)
 		return;
@@ -965,6 +994,31 @@ void CPythonTextTail::AttachLevel(DWORD dwVID, const char * c_szText, const D3DX
 	prLevel->SetValue(c_szText);
 	prLevel->SetColor(c_rColor.r, c_rColor.g, c_rColor.b);
 	prLevel->Update();
+
+	// Flag limba jucator langa nivel
+	if (c_szLang && c_szLang[0] != '\0')
+	{
+		const char* szFlagCode = (strcmp(c_szLang, "en") == 0) ? "uk" : c_szLang;
+		char szFlagPath[128];
+		_snprintf_s(szFlagPath, sizeof(szFlagPath), "d/ymir work/ui/game/flags/%s.tga", szFlagCode);
+
+		CResource* pRes = CResourceManager::Instance().GetResourcePointer(szFlagPath);
+		if (pRes && pRes->IsType(CGraphicImage::Type()))
+		{
+			if (!pTextTail->pLevelFlagInstance)
+				pTextTail->pLevelFlagInstance = CGraphicImageInstance::New();
+			pTextTail->pLevelFlagInstance->SetImagePointer(static_cast<CGraphicImage*>(pRes));
+			pTextTail->pLevelFlagInstance->SetRenderSize(16.0f, 11.0f);
+		}
+	}
+	else
+	{
+		if (pTextTail->pLevelFlagInstance)
+		{
+			CGraphicImageInstance::Delete(pTextTail->pLevelFlagInstance);
+			pTextTail->pLevelFlagInstance = NULL;
+		}
+	}
 }
 
 void CPythonTextTail::DetachLevel(DWORD dwVID)
@@ -982,6 +1036,11 @@ void CPythonTextTail::DetachLevel(DWORD dwVID)
 	{
 		CGraphicTextInstance::Delete(pTextTail->pLevelTextInstance);
 		pTextTail->pLevelTextInstance = NULL;
+	}
+	if (pTextTail->pLevelFlagInstance)
+	{
+		CGraphicImageInstance::Delete(pTextTail->pLevelFlagInstance);
+		pTextTail->pLevelFlagInstance = NULL;
 	}
 }
 
