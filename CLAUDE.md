@@ -14,9 +14,10 @@ VS2022 → copiaza `gamecore.exe` in `C:\Users\skema\Desktop\ClientIgnition\`
 - Output: `Patcher/bin/Release/net8.0-windows/win-x64/publish/` → copiaza in `ClientIgnition/`
 - News: `http://192.168.184.132/news` (metin2-ignition.local) | locale.cfg → sare peste SELECT LOCALE
 
-## IMPORTANT — fisiere .py/script
-Citite din **pack-uri** (`root.epk`/`root.eix`), NU direct din folder.
-**Orice modificare .py necesita repackuire** — regenereaza `root.epk` + `root.eix` din `C:\Users\skema\Desktop\ClientIgnition\`.
+## IMPORTANT — assets/fisiere client
+- Toate asseturile (`.py`, locale, `itemdesc.txt`, `item_proto` etc.) sunt citite din **pack-uri** din `ClientIgnition/pack/`, NU din rootul clientului.
+- Versiunile despachetate se gasesc in `ClientIgnition/Eternexus/{nume_pack}/` (ex: `locale_en/locale/en/itemdesc.txt`).
+- **Orice modificare .py necesita repackuire** — regenereaza `root.epk` + `root.eix` din `C:\Users\skema\Desktop\ClientIgnition\`.
 
 ## Debug — cand nu e clar, pune loguri
 - **C++:** `TraceError("DBG_X: ...")` → apare in `syserr.txt` din `ClientIgnition/`
