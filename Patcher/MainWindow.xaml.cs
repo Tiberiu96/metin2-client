@@ -352,7 +352,8 @@ public partial class MainWindow : Window
                     pf.file.Equals("locale.cfg", StringComparison.OrdinalIgnoreCase) ||
                     pf.file.Equals("channel.inf", StringComparison.OrdinalIgnoreCase) ||
                     pf.file.Equals("syserr.txt", StringComparison.OrdinalIgnoreCase) ||
-                    pf.file.Equals("syslog.txt", StringComparison.OrdinalIgnoreCase))
+                    pf.file.Equals("syslog.txt", StringComparison.OrdinalIgnoreCase) ||
+                    pf.file.Equals("saved_accounts.cfg", StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 string localPath = Path.Combine(_clientPath, pf.file.Replace('/', Path.DirectorySeparatorChar));
