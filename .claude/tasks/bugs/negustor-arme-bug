@@ -1,0 +1,20 @@
+
+==> /usr/metin2/server/channel1/game2/syserr <==
+SYSERR: Apr 10 22:57:50 :: RunState: LUA_ERROR: attempt to call a string value
+SYSERR: Apr 10 22:57:50 :: GetQuestStateName: QUEST wrong quest state file QUEST_CHAT_TEMP_QUEST.0
+SYSERR: Apr 10 22:57:50 :: WriteRunningStateToSyserr: LUA_ERROR: quest QUEST_CHAT_TEMP_QUEST. click
+SYSERR: Apr 10 22:57:52 :: RunState: LUA_ERROR: attempt to call a string value
+SYSERR: Apr 10 22:57:52 :: GetQuestStateName: QUEST wrong quest state file QUEST_CHAT_TEMP_QUEST.0
+SYSERR: Apr 10 22:57:52 :: WriteRunningStateToSyserr: LUA_ERROR: quest QUEST_CHAT_TEMP_QUEST. click
+SYSERR: Apr 10 22:57:53 :: RunState: LUA_ERROR: attempt to call a string value
+SYSERR: Apr 10 22:57:53 :: GetQuestStateName: QUEST wrong quest state file QUEST_CHAT_TEMP_QUEST.0
+SYSERR: Apr 10 22:57:53 :: WriteRunningStateToSyserr: LUA_ERROR: quest QUEST_CHAT_TEMP_QUEST. click
+SYSERR: Apr 10 22:58:01 :: RunState: LUA_ERROR: attempt to call a string value
+SYSERR: Apr 10 22:58:01 :: GetQuestStateName: QUEST wrong quest state file QUEST_CHAT_TEMP_QUEST.0
+SYSERR: Apr 10 22:58:01 :: WriteRunningStateToSyserr: LUA_ERROR: quest QUEST_CHAT_TEMP_QUEST. click
+SYSERR: Apr 10 22:58:08 :: RunState: LUA_ERROR: attempt to call a string value
+SYSERR: Apr 10 22:58:08 :: GetQuestStateName: QUEST wrong quest state file QUEST_CHAT_TEMP_QUEST.0
+SYSERR: Apr 10 22:58:08 :: WriteRunningStateToSyserr: LUA_ERROR: quest QUEST_CHAT_TEMP_QUEST. click
+
+
+Eroare cand dai click pe acest NPC, daca se gaseste solutia de verificat neaparat si la restul ca e ok
