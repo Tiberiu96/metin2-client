@@ -265,6 +265,11 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		// ��ȫ�� ��ȭ
 		bool SendDragonSoulRefinePacket(BYTE bRefineType, TItemPos* pos);
 
+		// Change Channel
+		void SendChangeChannelPacket(int channel, const char* szAddr, WORD wPort);
+		bool RecvChangeChannelPacket();
+		void Process();
+
 		// Handshake
 		bool RecvHandshakePacket();
 		bool RecvHandshakeOKPacket();
@@ -716,6 +721,13 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 			bool m_isSet;
 			DWORD m_dwChrSlotIndex;
 		} m_kDirectEnterMode;
+
+		bool m_bChangingChannel;
+		bool m_bPendingChannelReconnect;
+		bool m_bChannelChangeNeedsFirstHop;
+		bool m_bChannelHopInProgress;
+		std::string m_strNewChannelAddr;
+		WORD m_wNewChannelPort;
 
 		void __DirectEnterMode_Initialize();
 		void __DirectEnterMode_Set(UINT uChrSlotIndex);

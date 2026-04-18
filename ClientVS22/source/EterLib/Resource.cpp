@@ -56,19 +56,16 @@ void CResource::Load()
 		if (OnLoad(file.Size(), fileData))
 		{
 			me_state = STATE_EXIST;
-			if (strstr(c_szFileName, "flags")) TraceError("FLAG_DBG CResource::Load OK %s size=%d", c_szFileName, file.Size());
 		}
 		else
 		{
 			Tracef("CResource::Load Error %s\n", c_szFileName);
-			if (strstr(c_szFileName, "flags")) TraceError("FLAG_DBG CResource::Load OnLoad FAILED %s", c_szFileName);
 			me_state = STATE_ERROR;
 			return;
 		}
 	}
 	else
 	{
-		if (strstr(c_szFileName, "flags")) TraceError("FLAG_DBG CResource::Load PackManager FAILED %s", c_szFileName);
 		if (OnLoad(0, NULL))
 			me_state = STATE_EXIST;
 		else

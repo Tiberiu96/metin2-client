@@ -7,7 +7,7 @@
 
 #include "AbstractPlayer.h"
 
-static std::string gs_stServerInfo;
+std::string gs_stServerInfo;
 extern BOOL gs_bEmpireLanuageEnable;
 std::list<std::string> g_kList_strCommand;
 
@@ -1566,7 +1566,7 @@ PyObject* netSendRequestRefineInfoPacket(PyObject* poSelf, PyObject* poArgs)
 
 //	CPythonNetworkStream& rns=CPythonNetworkStream::Instance();
 //	rns.SendRequestRefineInfoPacket(iSlotIndex);
-	assert(!"netSendRequestRefineInfoPacket - ´õÀÌ»ó »ç¿ëÇÏÁö ¾Ê´Â ÇÔ¼ö ÀÔ´Ï´Ù");
+	assert(!"netSendRequestRefineInfoPacket - ï¿½ï¿½ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½Ô¼ï¿½ ï¿½Ô´Ï´ï¿½");
 
 	return Py_BuildNone();
 }
@@ -1582,6 +1582,24 @@ PyObject* netSendRefinePacket(PyObject* poSelf, PyObject* poArgs)
 
 	CPythonNetworkStream& rns=CPythonNetworkStream::Instance();
 	rns.SendRefinePacket(iSlotIndex, iType);
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendChangeChannelPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	int iChannel;
+	if (!PyTuple_GetInteger(poArgs, 0, &iChannel))
+		return Py_BuildException();
+	char* szAddr;
+	if (!PyTuple_GetString(poArgs, 1, &szAddr))
+		return Py_BuildException();
+	int iPort;
+	if (!PyTuple_GetInteger(poArgs, 2, &iPort))
+		return Py_BuildException();
+
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendChangeChannelPacket(iChannel, szAddr, (WORD)iPort);
 
 	return Py_BuildNone();
 }
@@ -1873,6 +1891,8 @@ void initnet()
 
 		// Log
 		{ "RegisterErrorLog",						netRegisterErrorLog,						METH_VARARGS },
+
+		{ "SendChangeChannelPacket",				netSendChangeChannelPacket,					METH_VARARGS },
 
 		{ NULL,										NULL,										NULL },
 	};

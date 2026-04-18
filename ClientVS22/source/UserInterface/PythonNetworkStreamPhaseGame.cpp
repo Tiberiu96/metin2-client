@@ -630,6 +630,10 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvDragonSoulRefine();
 				break;
 
+			case HEADER_GC_CHANGE_CHANNEL:
+				ret = RecvChangeChannelPacket();
+				break;
+
 			default:
 				ret = RecvDefaultPacket(header);
 				break;
@@ -4252,11 +4256,18 @@ bool CPythonNetworkStream::RecvAffectRemovePacket()
 
 bool CPythonNetworkStream::RecvChannelPacket()
 {
+	extern std::string gs_stServerInfo;
 	TPacketGCChannel kChannelPacket;
 	if (!Recv(sizeof(kChannelPacket), &kChannelPacket))
 		return false;
 
-	//Tracef(" >> CPythonNetworkStream::RecvChannelPacket(channel=%d)\n", kChannelPacket.channel);
+	std::string::size_type pos = gs_stServerInfo.rfind(", CH");
+	if (pos != std::string::npos)
+	{
+		char szNewSuffix[16];
+		sprintf(szNewSuffix, ", CH%d ", (int)kChannelPacket.channel);
+		gs_stServerInfo = gs_stServerInfo.substr(0, pos) + szNewSuffix;
+	}
 
 	return true;
 }
@@ -4474,6 +4485,36 @@ bool CPythonNetworkStream::RecvDigMotionPacket()
 
 
 // ��ȥ�� ��ȭ
+void CPythonNetworkStream::SendChangeChannelPacket(int channel, const char* szAddr, WORD wPort)
+{
+	m_strNewChannelAddr = szAddr;
+	m_wNewChannelPort = wPort;
+
+	TPacketCGChangeChannel pk;
+	pk.header = HEADER_CG_CHANGE_CHANNEL;
+	pk.channel = (BYTE)channel;
+	Send(sizeof(pk), &pk);
+}
+
+bool CPythonNetworkStream::RecvChangeChannelPacket()
+{
+	TPacketGCChangeChannel pk;
+	if (!Recv(sizeof(pk), &pk))
+		return false;
+
+	m_dwLoginKey = pk.login_key;
+
+	// Construieste adresa IP din DWORD network-order
+	BYTE* b = (BYTE*)&pk.lAddr;
+	char szAddr[16];
+	sprintf(szAddr, "%u.%u.%u.%u", b[0], b[1], b[2], b[3]);
+	m_strNewChannelAddr = szAddr;
+	m_wNewChannelPort   = pk.wPort;
+
+	m_bChangingChannel = true;
+	return true;
+}
+
 bool CPythonNetworkStream::SendDragonSoulRefinePacket(BYTE bRefineType, TItemPos* pos)
 {
 	TPacketCGDragonSoulRefine pk;

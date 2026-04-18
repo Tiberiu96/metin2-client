@@ -96,6 +96,10 @@ void CPythonNetworkStream::HandShakePhase()
 
 void CPythonNetworkStream::SetHandShakePhase()
 {
+	if (m_bChannelHopInProgress)
+	{
+		m_bChannelHopInProgress = false;
+	}
 	if ("HandShake"!=m_strPhase)
 		m_phaseLeaveFunc.Run();
 
@@ -220,7 +224,7 @@ bool CPythonNetworkStream::RecvKeyAgreementPacket()
 	size_t agreedLength = Prepare(packetToSend.data, &dataLength);
 	if (agreedLength == 0)
 	{
-		// ÃÊ±âÈ­ ½ÇÆÐ
+		// ï¿½Ê±ï¿½È­ ï¿½ï¿½ï¿½ï¿½
 		Disconnect();
 		return false;
 	}
@@ -228,7 +232,7 @@ bool CPythonNetworkStream::RecvKeyAgreementPacket()
 
 	if (Activate(packet.wAgreedLength, packet.data, packet.wDataLength))
 	{
-		// Key agreement ¼º°ø, ÀÀ´ä Àü¼Û
+		// Key agreement ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		packetToSend.bHeader = HEADER_CG_KEY_AGREEMENT;
 		packetToSend.wAgreedLength = (WORD)agreedLength;
 		packetToSend.wDataLength = (WORD)dataLength;
@@ -242,7 +246,7 @@ bool CPythonNetworkStream::RecvKeyAgreementPacket()
 	}
 	else
 	{
-		// Å° Çù»ó ½ÇÆÐ
+		// Å° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		Disconnect();
 		return false;
 	}

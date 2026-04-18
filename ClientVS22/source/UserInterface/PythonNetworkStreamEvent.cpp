@@ -3,6 +3,17 @@
 
 void CPythonNetworkStream::OnRemoteDisconnect()
 {
+	if (m_bChangingChannel)
+	{
+		m_bChangingChannel = false;
+		m_bPendingChannelReconnect = true;
+		return;
+	}
+	if (m_bChannelHopInProgress)
+	{
+		m_bChannelHopInProgress = false;
+		return;
+	}
 	PyCallClassMemberFunc(m_poHandler, "SetLoginPhase", Py_BuildValue("()"));
 }
 

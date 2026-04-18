@@ -27,7 +27,14 @@ void CPythonNetworkStream::SetSelectPhase()
 
 	if (__DirectEnterMode_IsSet())
 	{
-		PyCallClassMemberFunc(m_poHandler, "SetLoadingPhase", Py_BuildValue("()"));	
+		if (m_bChannelChangeNeedsFirstHop)
+		{
+			SendSelectCharacterPacket((BYTE)m_kDirectEnterMode.m_dwChrSlotIndex);
+		}
+		else
+		{
+			PyCallClassMemberFunc(m_poHandler, "SetLoadingPhase", Py_BuildValue("()"));
+		}
 	}
 	else
 	{

@@ -155,6 +155,7 @@ enum
 	HEADER_CG_DRAGON_SOUL_REFINE			= 205,
 	HEADER_CG_STATE_CHECKER					= 206,
 	HEADER_CG_SET_LANGUAGE					= 207,
+	HEADER_CG_CHANGE_CHANNEL				= 208,
 
 #ifdef __AUCTION__
 	HEADER_CG_AUCTION_CMD							= 205,
@@ -359,6 +360,7 @@ enum
 	HEADER_GC_SPECIFIC_EFFECT					= 208,
 	HEADER_GC_DRAGON_SOUL_REFINE						= 209,
 	HEADER_GC_RESPOND_CHANNELSTATUS				= 210,
+	HEADER_GC_CHANGE_CHANNEL					= 211,
 
 	HEADER_GC_KEY_AGREEMENT_COMPLETED			= 0xfa, // _IMPROVED_PACKET_ENCRYPTION_
 	HEADER_GC_KEY_AGREEMENT						= 0xfb, // _IMPROVED_PACKET_ENCRYPTION_
@@ -2818,5 +2820,22 @@ typedef struct SChannelStatus
 	short nPort;
 	BYTE bStatus;
 } TChannelStatus;
+
+typedef struct SPacketCGChangeChannel
+{
+	SPacketCGChangeChannel() : header(HEADER_CG_CHANGE_CHANNEL) {}
+	BYTE header;
+	BYTE channel;
+} TPacketCGChangeChannel;
+
+typedef struct SPacketGCChangeChannel
+{
+	SPacketGCChangeChannel() : header(HEADER_GC_CHANGE_CHANNEL) {}
+	BYTE  header;
+	BYTE  channel;
+	DWORD login_key;
+	DWORD lAddr;
+	WORD  wPort;
+} TPacketGCChangeChannel;
 
 #pragma pack(pop)

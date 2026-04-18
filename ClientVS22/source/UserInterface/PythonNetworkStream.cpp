@@ -184,7 +184,8 @@ class CMainPacketHeaderMap : public CNetworkPacketHeaderMap
 			Set(HEADER_GC_HYBRIDCRYPT_SDB,	CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCHybridSDB), DYNAMIC_SIZE_PACKET));
 			Set(HEADER_GC_SPECIFIC_EFFECT,	CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCSpecificEffect), STATIC_SIZE_PACKET));
 			Set(HEADER_GC_DRAGON_SOUL_REFINE,		CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCDragonSoulRefine), STATIC_SIZE_PACKET));
-			
+			Set(HEADER_GC_CHANGE_CHANNEL,			CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCChangeChannel), STATIC_SIZE_PACKET));
+
 		}
 };
 
@@ -243,7 +244,7 @@ void CPythonNetworkStream::AbsoluteExitApplication()
 
 bool CPythonNetworkStream::__IsNotPing()
 {
-	// ¿ø·¡´Â ÇÎÀÌ ¾È¿Ã¶§ Ã¼Å©ÀÌ³ª ¼­¹ö¶û Á¤È®È÷ ¸ÂÃß¾î¾ß ÇÑ´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½È¿Ã¶ï¿½ Ã¼Å©ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½ï¿½ß¾ï¿½ï¿½ ï¿½Ñ´ï¿½.
 	return false;
 }
 
@@ -255,7 +256,7 @@ DWORD CPythonNetworkStream::GetGuildID()
 UINT CPythonNetworkStream::UploadMark(const char * c_szImageFileName)
 {
 	// MARK_BUG_FIX
-	// ±æµå¸¦ ¸¸µç Á÷ÈÄ´Â ±æµå ¾ÆÀÌµð°¡ 0ÀÌ´Ù.
+	// ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ 0ï¿½Ì´ï¿½.
 	if (0 == m_dwGuildID)
 		return ERROR_MARK_UPLOAD_NEED_RECONNECT;
 
@@ -325,13 +326,13 @@ UINT CPythonNetworkStream::UploadSymbol(const char* c_szImageFileName)
 
 void CPythonNetworkStream::__DownloadMark()
 {
-	// 3ºÐ ¾È¿¡´Â ´Ù½Ã Á¢¼ÓÇÏÁö ¾Ê´Â´Ù.
+	// 3ï¿½ï¿½ ï¿½È¿ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
 	DWORD curTime = ELTimer_GetMSec();
 
 	if (curTime < gs_nextDownloadMarkTime)
 		return;
 
-	gs_nextDownloadMarkTime = curTime + 60000 * 3; // 3ºÐ
+	gs_nextDownloadMarkTime = curTime + 60000 * 3; // 3ï¿½ï¿½
 
 	CGuildMarkDownloader& rkGuildMarkDownloader = CGuildMarkDownloader::Instance();
 	rkGuildMarkDownloader.Connect(m_kMarkAuth.m_kNetAddr, m_kMarkAuth.m_dwHandle, m_kMarkAuth.m_dwRandomKey);
@@ -597,19 +598,19 @@ bool CPythonNetworkStream::RecvPhasePacket()
 
 	switch (packet_phase.phase)
 	{
-		case PHASE_CLOSE:				// ²÷±â´Â »óÅÂ (¶Ç´Â ²÷±â Àü »óÅÂ)
+		case PHASE_CLOSE:				// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 			ClosePhase();
 			break;
 
-		case PHASE_HANDSHAKE:			// ¾Ç¼ö..;;
+		case PHASE_HANDSHAKE:			// ï¿½Ç¼ï¿½..;;
 			SetHandShakePhase();
 			break;
 
-		case PHASE_LOGIN:				// ·Î±×ÀÎ Áß
+		case PHASE_LOGIN:				// ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½
 			SetLoginPhase();
 			break;
 
-		case PHASE_SELECT:				// Ä³¸¯ÅÍ ¼±ÅÃ È­¸é
+		case PHASE_SELECT:				// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È­ï¿½ï¿½
 			SetSelectPhase();
 #if defined(ENABLE_DISCORD_RPC)
 			Discord_Update(false);
@@ -622,18 +623,18 @@ bool CPythonNetworkStream::RecvPhasePacket()
 			// END_OF_MARK_BUG_FIX
 			break;
 
-		case PHASE_LOADING:				// ¼±ÅÃ ÈÄ ·Îµù È­¸é
+		case PHASE_LOADING:				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Îµï¿½ È­ï¿½ï¿½
 			SetLoadingPhase();
 			break;
 
-		case PHASE_GAME:				// °ÔÀÓ È­¸é
+		case PHASE_GAME:				// ï¿½ï¿½ï¿½ï¿½ È­ï¿½ï¿½
 			SetGamePhase();
 #if defined(ENABLE_DISCORD_RPC)
 			Discord_Update(true);
 #endif
 			break;
 
-		case PHASE_DEAD:				// Á×¾úÀ» ¶§.. (°ÔÀÓ ¾È¿¡ ÀÖ´Â °ÍÀÏ ¼öµµ..)
+		case PHASE_DEAD:				// ï¿½×¾ï¿½ï¿½ï¿½ ï¿½ï¿½.. (ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½..)
 			break;
 	}
 
@@ -668,9 +669,21 @@ bool CPythonNetworkStream::RecvDefaultPacket(int header)
 	if (!header)
 		return true;
 
-	TraceError("Ã³¸®µÇÁö ¾ÊÀº ÆÐÅ¶ Çì´õ %d, state %s\n", header, m_strPhase.c_str());
+	TraceError("Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ %d, state %s\n", header, m_strPhase.c_str());
 	ClearRecvBuffer();
 	return true;
+}
+
+void CPythonNetworkStream::Process()
+{
+	if (m_bPendingChannelReconnect && !IsOnline())
+	{
+		m_bPendingChannelReconnect = false;
+		m_bChannelChangeNeedsFirstHop = true;
+		__DirectEnterMode_Set(m_dwSelectedCharacterIndex);
+		CNetworkStream::Connect(m_strNewChannelAddr.c_str(), m_wNewChannelPort);
+	}
+	CNetworkStream::Process();
 }
 
 bool CPythonNetworkStream::OnProcess()
@@ -892,12 +905,19 @@ CPythonNetworkStream::CPythonNetworkStream()
 	m_isEnableChatInsultFilter = FALSE;
 	m_bComboSkillFlag = FALSE;
 	m_strPhase = "OffLine";
-	
+
 	__InitializeGamePhase();
 	__InitializeMarkAuth();
 
 	__DirectEnterMode_Initialize();
 	__BettingGuildWar_Initialize();
+
+	m_bChangingChannel = false;
+	m_bPendingChannelReconnect = false;
+	m_bChannelChangeNeedsFirstHop = false;
+	m_bChannelHopInProgress = false;
+	m_strNewChannelAddr = "";
+	m_wNewChannelPort = 0;
 
 	std::fill(m_apoPhaseWnd, m_apoPhaseWnd+PHASE_WINDOW_NUM, (PyObject*)NULL);
 	m_poSerCommandParserWnd = NULL;

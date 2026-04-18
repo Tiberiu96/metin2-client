@@ -118,7 +118,7 @@ void CPythonNetworkStream::SetLoginPhase()
 		else
 			SendLoginPacket(m_stID.c_str(), m_stPassword.c_str());
 
-		// ºñ¹Ð¹øÈ£¸¦ ¸Þ¸ð¸®¿¡ °è¼Ó °®°í ÀÖ´Â ¹®Á¦°¡ ÀÖ¾î¼­, »ç¿ë Áï½Ã ³¯¸®´Â °ÍÀ¸·Î º¯°æ
+		// ï¿½ï¿½Ð¹ï¿½È£ï¿½ï¿½ ï¿½Þ¸ð¸®¿ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾î¼­, ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		ClearLoginInfo();
 		CAccountConnector & rkAccountConnector = CAccountConnector::Instance();
 		rkAccountConnector.ClearLoginInfo();
@@ -130,7 +130,7 @@ void CPythonNetworkStream::SetLoginPhase()
 		else
 			SendLoginPacket(m_stID.c_str(), m_stPassword.c_str());
 
-		// ºñ¹Ð¹øÈ£¸¦ ¸Þ¸ð¸®¿¡ °è¼Ó °®°í ÀÖ´Â ¹®Á¦°¡ ÀÖ¾î¼­, »ç¿ë Áï½Ã ³¯¸®´Â °ÍÀ¸·Î º¯°æ
+		// ï¿½ï¿½Ð¹ï¿½È£ï¿½ï¿½ ï¿½Þ¸ð¸®¿ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾î¼­, ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		ClearLoginInfo();
 		CAccountConnector & rkAccountConnector = CAccountConnector::Instance();
 		rkAccountConnector.ClearLoginInfo();
@@ -166,14 +166,24 @@ bool CPythonNetworkStream::__RecvLoginSuccessPacket3()
 	}
 
 	m_kMarkAuth.m_dwHandle=kPacketLoginSuccess.handle;
-	m_kMarkAuth.m_dwRandomKey=kPacketLoginSuccess.random_key;	
+	m_kMarkAuth.m_dwRandomKey=kPacketLoginSuccess.random_key;
 
 	if (__DirectEnterMode_IsSet())
 	{
+		if (m_bChannelChangeNeedsFirstHop)
+		{
+			m_bChannelChangeNeedsFirstHop = false;
+			m_bChannelHopInProgress = true;
+			ConnectGameServer((UINT)m_kDirectEnterMode.m_dwChrSlotIndex);
+		}
+		else
+		{
+			SendSelectCharacterPacket((BYTE)m_kDirectEnterMode.m_dwChrSlotIndex);
+		}
 	}
 	else
 	{
-		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_SELECT], "Refresh", Py_BuildValue("()"));		
+		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_SELECT], "Refresh", Py_BuildValue("()"));
 	}
 
 	return true;
@@ -184,8 +194,8 @@ bool CPythonNetworkStream::__RecvLoginSuccessPacket4()
 	TPacketGCLoginSuccess4 kPacketLoginSuccess;
 
 	if (!Recv(sizeof(kPacketLoginSuccess), &kPacketLoginSuccess))
-		return false;	
-	
+		return false;
+
 	for (int i = 0; i<PLAYER_PER_ACCOUNT4; ++i)
 	{
 		m_akSimplePlayerInfo[i]=kPacketLoginSuccess.akSimplePlayerInformation[i];
@@ -194,14 +204,24 @@ bool CPythonNetworkStream::__RecvLoginSuccessPacket4()
 	}
 
 	m_kMarkAuth.m_dwHandle=kPacketLoginSuccess.handle;
-	m_kMarkAuth.m_dwRandomKey=kPacketLoginSuccess.random_key;	
+	m_kMarkAuth.m_dwRandomKey=kPacketLoginSuccess.random_key;
 
 	if (__DirectEnterMode_IsSet())
 	{
+		if (m_bChannelChangeNeedsFirstHop)
+		{
+			m_bChannelChangeNeedsFirstHop = false;
+			m_bChannelHopInProgress = true;
+			ConnectGameServer((UINT)m_kDirectEnterMode.m_dwChrSlotIndex);
+		}
+		else
+		{
+			SendSelectCharacterPacket((BYTE)m_kDirectEnterMode.m_dwChrSlotIndex);
+		}
 	}
 	else
 	{
-		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_SELECT], "Refresh", Py_BuildValue("()"));		
+		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_SELECT], "Refresh", Py_BuildValue("()"));
 	}
 
 	return true;
@@ -216,7 +236,7 @@ void CPythonNetworkStream::OnConnectFailure()
 	}
 	else
 	{
-		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_LOGIN], "OnConnectFailure", Py_BuildValue("()"));	
+		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_LOGIN], "OnConnectFailure", Py_BuildValue("()"));
 	}
 }
 
