@@ -13,6 +13,8 @@
 
 #include "../eterPythonLib/PythonWindowManager.h"
 
+static const float ATLAS_SCALE_FACTOR = 1.5f;
+
 void CPythonMiniMap::AddObserver(DWORD dwVID, float fSrcX, float fSrcY)
 {
 	std::map<DWORD, SObserver>::iterator f=m_kMap_dwVID_kObserver.find(dwVID);
@@ -91,11 +93,11 @@ void CPythonMiniMap::Update(float fCenterX, float fCenterY)
 	if (!rkBG.IsMapOutdoor())
 		return;
 	
-	// ¹Ì´Ï¸Ê ±×¸² °»½Å
+	// ï¿½Ì´Ï¸ï¿½ ï¿½×¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (m_fCenterX != fCenterX || m_fCenterY != fCenterY )
 		SetCenterPosition(fCenterX, fCenterY);
 
-	// Ä³¸¯ÅÍ ¸®½ºÆ® °»½Å
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 	m_OtherPCPositionVector.clear();
 	m_PartyPCPositionVector.clear();
 	m_NPCPositionVector.clear();
@@ -434,7 +436,7 @@ void CPythonMiniMap::Render(float fScreenX, float fScreenY)
 	STATEMANAGER.SaveTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR);
 	STATEMANAGER.SaveTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR);
 
-	// Ä³¸¯ÅÍ ¸¶Å©
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©
 	CInstanceBase * pkInst = CPythonCharacterManager::Instance().GetMainInstancePtr();
 
 	if (pkInst)
@@ -470,7 +472,7 @@ void CPythonMiniMap::Render(float fScreenX, float fScreenY)
 
 	CCamera* pkCmrCur=CCameraManager::Instance().GetCurrentCamera();
 
-	// Ä«¸Þ¶ó ¹æÇâ
+	// Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (pkCmrCur)
 	{
 		m_MiniMapCameraraphicImageInstance.SetRotation(pkCmrCur->GetRoll());
@@ -530,7 +532,7 @@ bool CPythonMiniMap::Create()
 	const std::string strPlayerMark = strImageRoot + "minimap/playermark.sub";
 	const std::string strWhiteMark = strImageRoot + "minimap/whitemark.sub";
 
-	// ¹Ì´Ï¸Ê Ä¿¹ö
+	// ï¿½Ì´Ï¸ï¿½ Ä¿ï¿½ï¿½
 	CGraphicImage * pImage = (CGraphicImage *) CResourceManager::Instance().GetResourcePointer(strImageFilter.c_str());
 	m_MiniMapFilterGraphicImageInstance.SetImagePointer(pImage);
 	pImage = (CGraphicImage *) CResourceManager::Instance().GetResourcePointer(strImageCamera.c_str());
@@ -540,7 +542,7 @@ bool CPythonMiniMap::Create()
 	m_matMiniMapCover._22 = 1.0f / ((float)m_MiniMapFilterGraphicImageInstance.GetHeight());
 	m_matMiniMapCover._33 = 0.0f;
 
-	// Ä³¸¯ÅÍ ¸¶Å©
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©
 	CGraphicSubImage * pSubImage = (CGraphicSubImage *) CResourceManager::Instance().GetResourcePointer(strPlayerMark.c_str());
 	m_PlayerMark.SetImagePointer(pSubImage);
 
@@ -569,7 +571,7 @@ bool CPythonMiniMap::Create()
 
 	m_GuildAreaFlagImageInstance.SetImagePointer((CGraphicSubImage *) CResourceManager::Instance().GetResourcePointer("d:/ymir work/ui/minimap/GuildArea01.sub"));
 
-	// ±×·ÁÁú Æú¸®°ï ¼¼ÆÃ
+	// ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 #pragma pack(push)
 #pragma pack(1)
 	LPMINIMAPVERTEX		lpMiniMapVertex;
@@ -962,6 +964,7 @@ void CPythonMiniMap::RenderAtlas(float fScreenX, float fScreenY)
 
 	if (m_fAtlasScreenX != fScreenX || m_fAtlasScreenY != fScreenY)
 	{
+		D3DXMatrixScaling(&m_matWorldAtlas, ATLAS_SCALE_FACTOR, ATLAS_SCALE_FACTOR, 1.0f);
 		m_matWorldAtlas._41 = fScreenX;
 		m_matWorldAtlas._42 = fScreenY;
 		m_fAtlasScreenX = fScreenX;
@@ -1040,8 +1043,8 @@ void CPythonMiniMap::RenderAtlas(float fScreenX, float fScreenY)
 		{
 			TGuildAreaInfo & rInfo = *itor;
 
-			m_GuildAreaFlagImageInstance.SetPosition(fScreenX+(rInfo.fsxRender+rInfo.fexRender)/2.0f - m_GuildAreaFlagImageInstance.GetWidth()/2,
-													 fScreenY+(rInfo.fsyRender+rInfo.feyRender)/2.0f - m_GuildAreaFlagImageInstance.GetHeight()/2);
+			m_GuildAreaFlagImageInstance.SetPosition(fScreenX+(rInfo.fsxRender+rInfo.fexRender)/2.0f * ATLAS_SCALE_FACTOR - m_GuildAreaFlagImageInstance.GetWidth()/2,
+													 fScreenY+(rInfo.fsyRender+rInfo.feyRender)/2.0f * ATLAS_SCALE_FACTOR - m_GuildAreaFlagImageInstance.GetHeight()/2);
 			m_GuildAreaFlagImageInstance.Render();
 
 //			CScreen::RenderBar2d(fScreenX+rInfo.fsxRender,
@@ -1112,8 +1115,8 @@ bool CPythonMiniMap::GetPickedInstanceInfo(float fScreenX, float fScreenY, std::
 
 bool CPythonMiniMap::GetAtlasInfo(float fScreenX, float fScreenY, std::string & rReturnString, float * pReturnPosX, float * pReturnPosY, DWORD * pdwTextColor, DWORD * pdwGuildID)
 {
-	float fRealX = (fScreenX - m_fAtlasScreenX) * (m_fAtlasMaxX / m_fAtlasImageSizeX);
-	float fRealY = (fScreenY - m_fAtlasScreenY) * (m_fAtlasMaxY / m_fAtlasImageSizeY);
+	float fRealX = (fScreenX - m_fAtlasScreenX) / ATLAS_SCALE_FACTOR * (m_fAtlasMaxX / m_fAtlasImageSizeX);
+	float fRealY = (fScreenY - m_fAtlasScreenY) / ATLAS_SCALE_FACTOR * (m_fAtlasMaxY / m_fAtlasImageSizeY);
 
 	//((float) CTerrainImpl::CELLSCALE) * 10.0f
 	float fCheckWidth = (m_fAtlasMaxX / m_fAtlasImageSizeX) * 5.0f;
@@ -1192,10 +1195,10 @@ bool CPythonMiniMap::GetAtlasInfo(float fScreenX, float fScreenY, std::string & 
 	for (; itor!=m_GuildAreaInfoVector.end(); ++itor)
 	{
 		TGuildAreaInfo & rInfo = *itor;
-		if (fScreenX - m_fAtlasScreenX >= rInfo.fsxRender)
-		if (fScreenY - m_fAtlasScreenY >= rInfo.fsyRender)
-		if (fScreenX - m_fAtlasScreenX <= rInfo.fexRender)
-		if (fScreenY - m_fAtlasScreenY <= rInfo.feyRender)
+		if ((fScreenX - m_fAtlasScreenX) / ATLAS_SCALE_FACTOR >= rInfo.fsxRender)
+		if ((fScreenY - m_fAtlasScreenY) / ATLAS_SCALE_FACTOR >= rInfo.fsyRender)
+		if ((fScreenX - m_fAtlasScreenX) / ATLAS_SCALE_FACTOR <= rInfo.fexRender)
+		if ((fScreenY - m_fAtlasScreenY) / ATLAS_SCALE_FACTOR <= rInfo.feyRender)
 		{
 			if (CPythonGuild::Instance().GetGuildName(rInfo.dwGuildID, &rReturnString))
 			{
@@ -1222,8 +1225,8 @@ bool CPythonMiniMap::GetAtlasSize(float * pfSizeX, float * pfSizeY)
 	if (!rkBG.IsMapOutdoor())
 		return false;
 
-	*pfSizeX = m_fAtlasImageSizeX;
-	*pfSizeY = m_fAtlasImageSizeY;
+	*pfSizeX = m_fAtlasImageSizeX * ATLAS_SCALE_FACTOR;
+	*pfSizeY = m_fAtlasImageSizeY * ATLAS_SCALE_FACTOR;
 
 	return true;
 }
