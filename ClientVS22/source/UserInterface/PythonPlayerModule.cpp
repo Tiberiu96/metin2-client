@@ -2164,6 +2164,16 @@ PyObject* playerSendDragonSoulRefine(PyObject* poSelf, PyObject* poArgs)
 	
 	return Py_BuildNone();
 }
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+PyObject* playerGetItemSlotIndex(PyObject* poSelf, PyObject* poArgs)
+{
+	int iVnum;
+	if (!PyTuple_GetInteger(poArgs, 0, &iVnum))
+		return Py_BuildException();
+
+	return Py_BuildValue("i", CPythonPlayer::Instance().GetItemSlotIndex(iVnum));
+}
+#endif
 void initPlayer()
 {
 	static PyMethodDef s_methods[] =
@@ -2236,6 +2246,9 @@ void initPlayer()
 		{ "GetISellItemPrice",					playerGetISellItemPrice,					METH_VARARGS },
 		{ "MoveItem",							playerMoveItem,								METH_VARARGS },
 		{ "SendClickItemPacket",				playerSendClickItemPacket,					METH_VARARGS },
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		{ "GetItemSlotIndex",				playerGetItemSlotIndex,					METH_VARARGS },
+#endif
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2568,5 +2581,21 @@ void initPlayer()
 	PyModule_AddIntConstant(poModule, "DS_SUB_HEADER_DO_UPGRADE",	DS_SUB_HEADER_DO_UPGRADE);
 	PyModule_AddIntConstant(poModule, "DS_SUB_HEADER_DO_IMPROVEMENT",	DS_SUB_HEADER_DO_IMPROVEMENT);
 	PyModule_AddIntConstant(poModule, "DS_SUB_HEADER_DO_REFINE",	DS_SUB_HEADER_DO_REFINE);
+
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	PyModule_AddIntConstant(poModule, "CHARACTER_NAME_MAX_LEN", CHARACTER_NAME_MAX_LEN);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_GRADE_NORMAL", DRAGON_SOUL_GRADE_NORMAL);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_GRADE_BRILLIANT", DRAGON_SOUL_GRADE_BRILLIANT);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_GRADE_RARE", DRAGON_SOUL_GRADE_RARE);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_GRADE_ANCIENT", DRAGON_SOUL_GRADE_ANCIENT);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_GRADE_LEGENDARY", DRAGON_SOUL_GRADE_LEGENDARY);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_GRADE_MAX", DRAGON_SOUL_GRADE_MAX);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_STEP_LOWEST", DRAGON_SOUL_STEP_LOWEST);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_STEP_LOW", DRAGON_SOUL_STEP_LOW);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_STEP_MID", DRAGON_SOUL_STEP_MID);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_STEP_HIGH", DRAGON_SOUL_STEP_HIGH);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_STEP_HIGHEST", DRAGON_SOUL_STEP_HIGHEST);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_STEP_MAX", DRAGON_SOUL_STEP_MAX);
+#endif
 
 }

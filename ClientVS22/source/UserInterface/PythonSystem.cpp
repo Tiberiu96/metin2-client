@@ -307,6 +307,9 @@ void CPythonSystem::SetDefaultConfig()
 	m_Config.bAlwaysShowName	= DEFAULT_VALUE_ALWAYS_SHOW_NAME;
 	m_Config.bShowDamage		= true;
 	m_Config.bShowSalesText		= true;
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	m_Config.fPrivateShopViewDistance = 1.0f;
+#endif
 }
 
 bool CPythonSystem::IsWindowed()
@@ -452,6 +455,10 @@ bool CPythonSystem::LoadConfig()
 			m_Config.bShowDamage = atoi(value) == 1 ? true : false;
 		else if (!stricmp(command, "SHOW_SALESTEXT"))
 			m_Config.bShowSalesText = atoi(value) == 1 ? true : false;
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		else if (!stricmp(command, "PRIVATE_SHOP_VIEW_DISTANCE"))
+			m_Config.fPrivateShopViewDistance = atof(value);
+#endif
 	}
 
 	if (m_Config.bWindowed)
@@ -542,6 +549,9 @@ bool CPythonSystem::SaveConfig()
 	fprintf(fp, "USE_DEFAULT_IME		%d\n", m_Config.bUseDefaultIME);
 	fprintf(fp, "SOFTWARE_TILING		%d\n", m_Config.bSoftwareTiling);
 	fprintf(fp, "SHADOW_LEVEL			%d\n", m_Config.iShadowLevel);
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	fprintf(fp, "PRIVATE_SHOP_VIEW_DISTANCE			%.3f\n", m_Config.fPrivateShopViewDistance);
+#endif
 	fprintf(fp, "\n");
 
 	fclose(fp);

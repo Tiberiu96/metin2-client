@@ -275,6 +275,9 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 	initsafebox();
 	initguild();
 	initServerStateChecker();
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	initPrivateShop();
+#endif
 
 	NANOBEGIN
 

@@ -66,6 +66,11 @@ class CPythonTextTail : public CSingleton<CPythonTextTail>
 		void ShowAllTextTail();
 		void ShowCharacterTextTail(DWORD VirtualID);
 		void ShowItemTextTail(DWORD VirtualID);
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		void ShowPrivateShopTextTail(DWORD dwVirtualID);
+		void RegisterPrivateShopTextTail(DWORD dwVirtualID);
+		void DeletePrivateShopTextTail(DWORD dwVirtualID);
+#endif
 
 		void RegisterCharacterTextTail(DWORD dwGuildID, DWORD dwVirtualID, const D3DXCOLOR & c_rColor, float fAddHeight=10.0f);
 		void RegisterItemTextTail(DWORD VirtualID, const char * c_szText, CGraphicObjectInstance * pOwner);

@@ -1086,3 +1086,17 @@ CPythonTextTail::~CPythonTextTail()
 {
 	Destroy();
 }
+
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+void CPythonTextTail::ShowPrivateShopTextTail(DWORD dwVirtualID)
+{
+}
+
+void CPythonTextTail::RegisterPrivateShopTextTail(DWORD dwVirtualID)
+{
+}
+
+void CPythonTextTail::DeletePrivateShopTextTail(DWORD dwVirtualID)
+{
+}
+#endif

@@ -48,7 +48,6 @@ m_dwLastIdleTime(0)
 #ifndef _DEBUG
 	SetEterExceptionHandler();
 #endif
-
 	CTimer::Instance().UseCustomTime();
 	m_dwWidth = 800;
 	m_dwHeight = 600;
@@ -177,6 +176,9 @@ void CPythonApplication::RenderGame()
 		CCullingManager::Instance().Process();
 
 		m_kChrMgr.Deform();
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	m_pyPrivateShop.Deform();
+#endif
 		m_kEftMgr.Update();
 
 		m_pyBackground.RenderCharacterShadowToTexture();
@@ -201,7 +203,9 @@ void CPythonApplication::RenderGame()
 
 		m_pyBackground.SetCharacterDirLight();
 		m_kChrMgr.Render();
-
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	m_pyPrivateShop.Render();
+#endif
 		m_pyBackground.SetBackgroundDirLight();
 		m_pyBackground.RenderWater();
 		m_pyBackground.RenderSnow();
@@ -227,6 +231,9 @@ void CPythonApplication::RenderGame()
 
 	DWORD t1=ELTimer_GetMSec();
 	m_kChrMgr.Deform();
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	m_pyPrivateShop.Deform();
+#endif
 	DWORD t2=ELTimer_GetMSec();
 	m_kEftMgr.Update();
 	DWORD t3=ELTimer_GetMSec();
@@ -265,6 +272,9 @@ void CPythonApplication::RenderGame()
 	m_pyBackground.SetCharacterDirLight();
 	DWORD t10=ELTimer_GetMSec();
 	m_kChrMgr.Render();
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	m_pyPrivateShop.Render();
+#endif
 	DWORD t11=ELTimer_GetMSec();
 
 	m_pyBackground.SetBackgroundDirLight();
@@ -351,7 +361,10 @@ void CPythonApplication::UpdateGame()
 	m_GameEventManager.Update();
 
 	DWORD t6=ELTimer_GetMSec();
-	m_kChrMgr.Update();	
+	m_kChrMgr.Update();
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	m_pyPrivateShop.Update();
+#endif
 	DWORD t7=ELTimer_GetMSec();
 	m_kEftMgr.UpdateSound();
 	DWORD t8=ELTimer_GetMSec();
@@ -464,7 +477,6 @@ bool CPythonApplication::Process()
 	if (GameGuard_IsError())
 		return false;
 #endif
-
 	m_kGuildMarkDownloader.Process();
 	m_kAccountConnector.Process();
 
@@ -531,7 +543,6 @@ bool CPythonApplication::Process()
 		fflush(fp);
 	}		
 #endif
-
 	//Update하는데 걸린시간.delta값
 	m_dwCurUpdateTime = ELTimer_GetMSec() - updatestart;
 
@@ -723,7 +734,6 @@ bool CPythonApplication::Process()
 				m_pyGraphic.SetClearColor(0.3f, 0.3f, 0.3f);
 				m_pyGraphic.Clear();
 #endif
-
 				/////////////////////
 				// Interface
 				m_pyGraphic.SetInterfaceRenderState();
@@ -1121,7 +1131,6 @@ bool CPythonApplication::Create(PyObject * poSelf, const char * c_szName, int wi
 	if (!XTrap_CheckInit())
 		return false;
 #endif
-
 	if (m_pySystem.IsUseDefaultIME())
 	{
 		CPythonIME::Instance().UseDefaultIME();
@@ -1130,7 +1139,6 @@ bool CPythonApplication::Create(PyObject * poSelf, const char * c_szName, int wi
 #if defined(ENABLE_DISCORD_RPC)
 	m_pyNetworkStream.Discord_Start();
 #endif
-
 	// 풀스크린 모드이고
 	// 디폴트 IME 를 사용하거나 유럽 버전이면
 	// 윈도우 풀스크린 모드를 사용한다
@@ -1427,8 +1435,7 @@ void CPythonApplication::Destroy()
 	
 #if defined(ENABLE_DISCORD_RPC)
 	m_pyNetworkStream.Discord_Close();
-#endif	
-	
+#endif
 	//m_pyNetworkDatagram.Destroy();	
 
 	m_pyRes.Destroy();

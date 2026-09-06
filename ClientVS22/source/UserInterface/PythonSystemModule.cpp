@@ -372,6 +372,21 @@ PyObject * systemSetShadowLevel(PyObject * poSelf, PyObject * poArgs)
 	return Py_BuildNone();
 }
 
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+PyObject* systemGetPrivateShopViewDistance(PyObject* poSelf, PyObject* poArgs)
+{
+	return Py_BuildValue("f", CPythonSystem::Instance().GetPrivateShopViewDistance());
+}
+
+PyObject* systemSetPrivateShopViewDistance(PyObject* poSelf, PyObject* poArgs)
+{
+	float fDistance;
+	if (!PyTuple_GetFloat(poArgs, 0, &fDistance))
+		return Py_BuildException();
+	CPythonSystem::Instance().SetPrivateShopViewDistance(fDistance);
+	return Py_BuildNone();
+}
+#endif
 void initsystem()
 {
 	static PyMethodDef s_methods[] =
@@ -425,7 +440,10 @@ void initsystem()
 
 		{ "GetShadowLevel",				systemGetShadowLevel,			METH_VARARGS },
 		{ "SetShadowLevel",				systemSetShadowLevel,			METH_VARARGS },
-
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		{ "GetPrivateShopViewDistance", systemGetPrivateShopViewDistance, METH_VARARGS },
+		{ "SetPrivateShopViewDistance", systemSetPrivateShopViewDistance, METH_VARARGS },
+#endif
 		{ NULL,							NULL,							NULL }
 	};
 

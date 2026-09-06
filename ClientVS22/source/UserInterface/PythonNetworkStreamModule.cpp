@@ -1726,6 +1726,267 @@ PyObject* netRegisterErrorLog(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildNone();
 }
 
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+PyObject* netSendClosePrivateShopPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendClosePrivateShopPacket();
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendClosePrivateShopPanelPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendClosePrivateShopPanelPacket();
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendOpenPrivateShopPanelPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendOpenPrivateShopPanelPacket();
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendPrivateShopStartPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	DWORD dwVID;
+	if (!PyTuple_GetUnsignedLong(poArgs, 0, &dwVID))
+		return Py_BuildException();
+
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendPrivateShopStartPacket(dwVID);
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendPrivateShopEndPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendPrivateShopEndPacket();
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendPrivateShopBuyPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	int iPos;
+	if (!PyTuple_GetInteger(poArgs, 0, &iPos))
+		return Py_BuildException();
+
+	if (iPos < 0)
+		return Py_BuildNone();
+
+	if (iPos >= PRIVATE_SHOP_HOST_ITEM_MAX_NUM)
+		return Py_BuildNone();
+
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendPrivateShopBuyPacket((WORD)iPos);
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendWithdrawPrivateShopPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendWithdrawPrivateShopPacket();
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendModifyPrivateShopPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendModifyPrivateShopPacket();
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendItemMovePrivateShopPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	WORD wPos;
+	if (!PyTuple_GetInteger(poArgs, 0, &wPos))
+		return Py_BuildException();
+
+	WORD wChangePos;
+	if (!PyTuple_GetInteger(poArgs, 1, &wChangePos))
+		return Py_BuildException();
+
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendItemMovePrivateShopPacket(wPos, wChangePos);
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendItemPriceChangePrivateShopPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	WORD wPos;
+	if (!PyTuple_GetInteger(poArgs, 0, &wPos))
+		return Py_BuildException();
+
+	long long llGold;
+	if (!PyTuple_GetLongLong(poArgs, 1, &llGold))
+		return Py_BuildException();
+
+	int iCheque;
+	if (!PyTuple_GetInteger(poArgs, 2, &iCheque))
+		return Py_BuildException();
+
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendItemPriceChangePrivateShopPacket(wPos, llGold, 0);
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendItemCheckinPrivateShopPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	WORD wSrcPos;
+	if (!PyTuple_GetInteger(poArgs, 0, &wSrcPos))
+		return Py_BuildException();
+
+	WORD wSrcWindow;
+	if (!PyTuple_GetInteger(poArgs, 1, &wSrcWindow))
+		return Py_BuildException();
+
+	long long llGold;
+	if (!PyTuple_GetLongLong(poArgs, 2, &llGold))
+		return Py_BuildException();
+
+	DWORD dwCheque;
+	if (!PyTuple_GetUnsignedLong(poArgs, 3, &dwCheque))
+		return Py_BuildException();
+
+	int iDstPos;
+	if (!PyTuple_GetInteger(poArgs, 4, &iDstPos))
+		return Py_BuildException();
+
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendItemCheckinPrivateShopPacket(wSrcPos, wSrcWindow, llGold, 0, iDstPos);
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendItemCheckoutPrivateShopPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	switch (PyTuple_Size(poArgs))
+	{
+		case 1:
+		{
+			WORD wSrcPos;
+			if (!PyTuple_GetInteger(poArgs, 0, &wSrcPos))
+				return Py_BuildException();
+
+			CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+			rns.SendItemCheckoutPrivateShopPacket(wSrcPos);
+		}
+		break;
+
+		case 2:
+		{
+			WORD wSrcPos;
+			if (!PyTuple_GetInteger(poArgs, 0, &wSrcPos))
+				return Py_BuildException();
+
+			WORD wDstPos;
+			if (!PyTuple_GetInteger(poArgs, 1, &wDstPos))
+				return Py_BuildException();
+
+			CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+			rns.SendItemCheckoutPrivateShopPacket(wSrcPos, wDstPos);
+		}
+		break;
+
+		default:
+			return Py_BuildException();
+	}
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendTitleChangePrivateShopPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	char* c_szTitle;
+	if (!PyTuple_GetString(poArgs, 0, &c_szTitle))
+		return Py_BuildException();
+
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendTitleChangePrivateShopPacket(c_szTitle);
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendClosePrivateShopSearchPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendClosePrivateShopSearchPacket();
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendPrivateShopSearchPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	PyObject* pyDictObject{};
+	if (!PyTuple_GetObject(poArgs, 0, &pyDictObject))
+		return Py_BuildException();
+
+	TPacketCGPrivateShopSearch packet{};
+	packet.bUseFilter = false;
+
+	for (int i = 0; i < FILTER_TYPE_MAX_NUM; ++i)
+	{
+		PyObject* pyKey = PyInt_FromLong(i);
+		if (!pyKey)
+			continue;
+
+		PyObject* pyValue = PyDict_GetItem(pyDictObject, pyKey);
+		Py_DECREF(pyKey);
+		if (!pyValue)
+			continue;
+
+		switch (i)
+		{
+			case FILTER_TYPE_ITEM_VNUM:					packet.Filter.dwVnum = PyLong_AsUnsignedLong(pyValue); break;
+			case FILTER_TYPE_ITEM_TYPE:					packet.Filter.iItemType = PyLong_AsLong(pyValue); break;
+			case FILTER_TYPE_ITEM_SUBTYPE:				packet.Filter.iItemSubType = PyLong_AsLong(pyValue); break;
+
+			case FILTER_TYPE_CLASS:						packet.Filter.iJob = PyLong_AsLong(pyValue); packet.bUseFilter = true; break;
+
+			case FILTER_TYPE_MIN_LEVEL:					packet.Filter.dwMinLevel = PyLong_AsUnsignedLong(pyValue); packet.bUseFilter = true; break;
+			case FILTER_TYPE_MAX_LEVEL:					packet.Filter.dwMaxLevel = PyLong_AsUnsignedLong(pyValue); packet.bUseFilter = true; break;
+
+			case FILTER_TYPE_MIN_REFINEMENT:			packet.Filter.bMinRefine = PyLong_AsUnsignedLong(pyValue); packet.bUseFilter = true; break;
+			case FILTER_TYPE_MAX_REFINEMENT:			packet.Filter.bMaxRefine = PyLong_AsUnsignedLong(pyValue); packet.bUseFilter = true; break;
+
+			case FILTER_TYPE_MIN_CHEQUE:				packet.Filter.wMinCheque = 0; break;
+			case FILTER_TYPE_MAX_CHEQUE:				packet.Filter.wMaxCheque = 0; break;
+
+			case FILTER_TYPE_MIN_GOLD:					packet.Filter.llMinGold = PyLong_AsLongLong(pyValue); packet.bUseFilter = true; break;
+			case FILTER_TYPE_MAX_GOLD:					packet.Filter.llMaxGold = PyLong_AsLongLong(pyValue); packet.bUseFilter = true; break;
+			default: break;
+		}
+	}
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendPrivateShopSearchPacket(&packet);
+
+	return Py_BuildNone();
+}
+
+PyObject* netSendPrivateShopSearchBuyPacket(PyObject* poSelf, PyObject* poArgs)
+{
+	WORD wPos;
+	if (!PyTuple_GetInteger(poArgs, 0, &wPos))
+		return Py_BuildException();
+
+	CPythonNetworkStream& rns = CPythonNetworkStream::Instance();
+	rns.SendPrivateShopSearchBuyPacket(wPos);
+
+	return Py_BuildNone();
+}
+#endif
+
 void initnet()
 {
 	static PyMethodDef s_methods[] =
@@ -1891,7 +2152,24 @@ void initnet()
 
 		// Log
 		{ "RegisterErrorLog",						netRegisterErrorLog,						METH_VARARGS },
-
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		{ "SendClosePrivateShopPacket", netSendClosePrivateShopPacket, METH_VARARGS },
+		{ "SendClosePrivateShopPanelPacket", netSendClosePrivateShopPanelPacket, METH_VARARGS },
+		{ "SendOpenPrivateShopPanelPacket", netSendOpenPrivateShopPanelPacket, METH_VARARGS },
+		{ "SendPrivateShopStartPacket", netSendPrivateShopStartPacket, METH_VARARGS },
+		{ "SendPrivateShopEndPacket", netSendPrivateShopEndPacket, METH_VARARGS },
+		{ "SendPrivateShopBuyPacket", netSendPrivateShopBuyPacket, METH_VARARGS },
+		{ "SendWithdrawPrivateShopPacket", netSendWithdrawPrivateShopPacket, METH_VARARGS },
+		{ "SendModifyPrivateShopPacket", netSendModifyPrivateShopPacket, METH_VARARGS },
+		{ "SendItemMovePrivateShopPacket", netSendItemMovePrivateShopPacket, METH_VARARGS },
+		{ "SendItemPriceChangePrivateShopPacket", netSendItemPriceChangePrivateShopPacket, METH_VARARGS },
+		{ "SendItemCheckinPrivateShopPacket", netSendItemCheckinPrivateShopPacket, METH_VARARGS },
+		{ "SendItemCheckoutPrivateShopPacket", netSendItemCheckoutPrivateShopPacket, METH_VARARGS },
+		{ "SendTitleChangePrivateShopPacket", netSendTitleChangePrivateShopPacket, METH_VARARGS },
+		{ "SendClosePrivateShopSearchPacket", netSendClosePrivateShopSearchPacket, METH_VARARGS },
+		{ "SendPrivateShopSearchPacket", netSendPrivateShopSearchPacket, METH_VARARGS },
+		{ "SendPrivateShopSearchBuyPacket", netSendPrivateShopSearchBuyPacket, METH_VARARGS },
+#endif
 		{ "SendChangeChannelPacket",				netSendChangeChannelPacket,					METH_VARARGS },
 
 		{ NULL,										NULL,										NULL },

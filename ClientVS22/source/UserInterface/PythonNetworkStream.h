@@ -7,6 +7,9 @@
 #include "InsultChecker.h"
 
 #include "packet.h"
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+#include "PythonPrivateShop.h"
+#endif
 
 class CInstanceBase;
 class CNetworkActorManager;
@@ -569,6 +572,31 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool RecvHSCheckRequest();
 		bool RecvXTrapVerifyRequest();
 
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	public:
+		bool SendBuildPrivateShopPacket(const char* c_szTitle, DWORD dwPolyVnum, BYTE bTitleType, BYTE bPageCount, const std::vector<TPrivateShopItem>& c_vec_itemStock);
+		bool SendClosePrivateShopPacket();
+		bool SendClosePrivateShopPanelPacket();
+		bool SendOpenPrivateShopPanelPacket();
+		bool SendPrivateShopStartPacket(DWORD dwVID);
+		bool SendPrivateShopEndPacket();
+		bool SendPrivateShopBuyPacket(WORD wPos);
+		bool SendWithdrawPrivateShopPacket();
+		bool SendModifyPrivateShopPacket();
+		bool SendItemPriceChangePrivateShopPacket(WORD wPos, long long llGold, DWORD dwCheque);
+		bool SendItemMovePrivateShopPacket(WORD wPos, WORD wChangePos);
+		bool SendItemCheckinPrivateShopPacket(WORD wSrcPos, WORD wSrcWindow, long long llGold, DWORD dwCheque, int iDstPos = -1);
+		bool SendItemCheckoutPrivateShopPacket(WORD wSrcPos, int iDstPos = -1);
+		bool SendTitleChangePrivateShopPacket(const char* c_szTitle);
+		bool SendClosePrivateShopSearchPacket();
+		bool SendPrivateShopSearchPacket(TPacketCGPrivateShopSearch* pPacket);
+		bool SendPrivateShopSearchBuyPacket(WORD wPos);
+
+	protected:
+		bool RecvPrivateShop();
+		void __RefreshPrivateShopWindow() { m_isRefreshPrivateShopWindow = true; }
+#endif
+
 	protected:
 		// �̸�Ƽ��
 		bool ParseEmoticon(const char * pChatMsg, DWORD * pdwEmoticon);
@@ -684,6 +712,9 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool m_isRefreshGuildWndMemberPageGradeComboBox;
 		bool m_isRefreshGuildWndSkillPage;
 		bool m_isRefreshGuildWndGradePage;
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		bool m_isRefreshPrivateShopWindow;
+#endif
 
 		// Emoticon
 		std::vector<std::string> m_EmoticonStringVector;

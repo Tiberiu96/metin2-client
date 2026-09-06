@@ -162,6 +162,9 @@ class CInstanceBase
 			NEW_AFFECT_FISH_MIND         = 504, // PREMIUM_FISH_MIND,
 			NEW_AFFECT_MARRIAGE_FAST     = 505, // ������ ���� (�ݽ�),
 			NEW_AFFECT_GOLD_BONUS        = 506,
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+			NEW_AFFECT_PREMIUM_PRIVATE_SHOP = 507,
+#endif
 
 		    NEW_AFFECT_MALL              = 510, // �� ������ ����Ʈ
 			NEW_AFFECT_NO_DEATH_PENALTY  = 511, // ����� ��ȣ (����ġ �г�Ƽ�� �ѹ� �����ش�)

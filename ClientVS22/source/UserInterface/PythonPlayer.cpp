@@ -596,6 +596,19 @@ DWORD CPythonPlayer::GetItemIndex(TItemPos Cell)
 	return GetItemData(Cell)->vnum;
 }
 
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+int CPythonPlayer::GetItemSlotIndex(DWORD dwVnum)
+{
+	for (int i = 0; i < c_Inventory_Count; ++i)
+	{
+		const TItemData& c_rItemData = m_playerStatus.aItem[i];
+		if (c_rItemData.vnum == dwVnum)
+			return i;
+	}
+
+	return -1;
+}
+#endif
 DWORD CPythonPlayer::GetItemFlags(TItemPos Cell)
 {
 	if (!Cell.IsValidCell())
@@ -1638,6 +1651,9 @@ void CPythonPlayer::Clear()
 	m_kPPosReserved = TPixelPosition(0, 0, 0);
 	m_dwVIDReserved = 0;
 	m_dwIIDReserved = 0;
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	m_dwPSIDReserved = 0;
+#endif
 	m_dwSkillSlotIndexReserved = 0;
 	m_dwSkillRangeReserved = 0;
 

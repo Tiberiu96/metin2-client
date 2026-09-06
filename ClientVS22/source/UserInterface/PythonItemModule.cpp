@@ -665,6 +665,12 @@ void initItem()
 	PyModule_AddIntConstant(poModule, "MATERIAL_DS_REFINE_BLESSED",	CItemData::MATERIAL_DS_REFINE_BLESSED);
 	PyModule_AddIntConstant(poModule, "MATERIAL_DS_REFINE_HOLLY",	CItemData::MATERIAL_DS_REFINE_HOLLY);
 
+	PyModule_AddIntConstant(poModule, "DS_SLOT1",					CItemData::DS_SLOT1);
+	PyModule_AddIntConstant(poModule, "DS_SLOT2",					CItemData::DS_SLOT2);
+	PyModule_AddIntConstant(poModule, "DS_SLOT3",					CItemData::DS_SLOT3);
+	PyModule_AddIntConstant(poModule, "DS_SLOT4",					CItemData::DS_SLOT4);
+	PyModule_AddIntConstant(poModule, "DS_SLOT5",					CItemData::DS_SLOT5);
+	PyModule_AddIntConstant(poModule, "DS_SLOT6",					CItemData::DS_SLOT6);
 	PyModule_AddIntConstant(poModule, "METIN_NORMAL",				CItemData::METIN_NORMAL);
 	PyModule_AddIntConstant(poModule, "METIN_GOLD",					CItemData::METIN_GOLD);
 

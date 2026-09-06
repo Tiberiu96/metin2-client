@@ -75,6 +75,9 @@ class CPythonSystem : public CSingleton<CPythonSystem>
 			bool			bAlwaysShowName;
 			bool			bShowDamage;
 			bool			bShowSalesText;
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+			float			fPrivateShopViewDistance;
+#endif
 		} TConfig;
 
 	public:
@@ -148,6 +151,10 @@ class CPythonSystem : public CSingleton<CPythonSystem>
 		int								GetDistance();
 		int								GetShadowLevel();
 		void							SetShadowLevel(unsigned int level);
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		float							GetPrivateShopViewDistance() { return m_Config.fPrivateShopViewDistance; }
+		void							SetPrivateShopViewDistance(float fDistance) { m_Config.fPrivateShopViewDistance = fDistance; }
+#endif
 
 	protected:
 		TResolution						m_ResolutionList[RESOLUTION_MAX_NUM];

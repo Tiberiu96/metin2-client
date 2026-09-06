@@ -2,6 +2,10 @@
 #include "PythonPlayer.h"
 #include "PythonPlayerEventHandler.h"
 #include "PythonApplication.h"
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+#include "PythonPrivateShop.h"
+#include "PythonNetworkStream.h"
+#endif
 #include "../eterlib/Camera.h"
 #include "../eterbase/Timer.h"
 
@@ -400,6 +404,62 @@ void CPythonPlayer::__OnClickGround(CInstanceBase& rkInstMain, const TPixelPosit
 		__ShowPickedEffect(c_rkPPosPickedGround);
 }
 
+
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+void CPythonPlayer::__OnClickPrivateShop(DWORD dwPickedPrivateShopID)
+{
+}
+
+void CPythonPlayer::__OnPressPrivateShop(CInstanceBase& rkInstMain, DWORD dwPickedPrivateShopID)
+{
+	__ClearReservedAction();
+	__ClearAutoAttackTargetActorID();
+
+	CPythonPrivateShop& rkPrivateShop = CPythonPrivateShop::Instance();
+
+	TPixelPosition kPPosPickedPrivateShop;
+	if (!rkPrivateShop.GetPrivateShopPosition(dwPickedPrivateShopID, &kPPosPickedPrivateShop))
+		return;
+
+	if (!rkInstMain.NEW_IsClickableDistanceDestPixelPosition(kPPosPickedPrivateShop))
+	{
+		__ReserveClickPrivateShop(dwPickedPrivateShopID);
+		return;
+	}
+
+	rkInstMain.NEW_Stop();
+	CPythonNetworkStream::Instance().SendPrivateShopStartPacket(dwPickedPrivateShopID);
+}
+
+void CPythonPlayer::SendClickPrivateShopPacket(DWORD dwPrivateShopID)
+{
+	if (IsObserverMode())
+		return;
+
+	static DWORD s_dwNextTCPTime = 0;
+	DWORD dwCurTime = ELTimer_GetMSec();
+	if (dwCurTime < s_dwNextTCPTime)
+		return;
+
+	s_dwNextTCPTime = dwCurTime + 500;
+
+	if (!CPythonPrivateShop::Instance().GetPrivateShopInstance(dwPrivateShopID))
+		return;
+
+	CPythonNetworkStream::Instance().SendPrivateShopStartPacket(dwPrivateShopID);
+}
+
+bool CPythonPlayer::__GetPickedPrivateShopID(DWORD* pdwPrivateShopID)
+{
+	return CPythonPrivateShop::Instance().GetPickedInstanceVID(pdwPrivateShopID);
+}
+
+void CPythonPlayer::__ReserveClickPrivateShop(DWORD dwPrivateShopID)
+{
+	m_eReservedMode = MODE_CLICK_PRIVATE_SHOP;
+	m_dwPSIDReserved = dwPrivateShopID;
+}
+#endif
 void CPythonPlayer::SetMovableGroundDistance(float fDistance)
 {
 	MOVABLE_GROUND_DISTANCE=fDistance;

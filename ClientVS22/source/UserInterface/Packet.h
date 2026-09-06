@@ -156,6 +156,9 @@ enum
 	HEADER_CG_STATE_CHECKER					= 206,
 	HEADER_CG_SET_LANGUAGE					= 207,
 	HEADER_CG_CHANGE_CHANNEL				= 208,
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	HEADER_CG_PRIVATE_SHOP					= 230,
+#endif
 
 #ifdef __AUCTION__
 	HEADER_CG_AUCTION_CMD							= 205,
@@ -361,6 +364,9 @@ enum
 	HEADER_GC_DRAGON_SOUL_REFINE						= 209,
 	HEADER_GC_RESPOND_CHANNELSTATUS				= 210,
 	HEADER_GC_CHANGE_CHANNEL					= 211,
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	HEADER_GC_PRIVATE_SHOP					= 230,
+#endif
 
 	HEADER_GC_KEY_AGREEMENT_COMPLETED			= 0xfa, // _IMPROVED_PACKET_ENCRYPTION_
 	HEADER_GC_KEY_AGREEMENT						= 0xfb, // _IMPROVED_PACKET_ENCRYPTION_
@@ -433,6 +439,15 @@ enum
 
 	SHOP_TAB_NAME_MAX = 32,
 	SHOP_TAB_COUNT_MAX = 3,
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	PRIVATE_SHOP_PAGE_MAX_NUM = 2,
+	PRIVATE_SHOP_WIDTH = 5,
+	PRIVATE_SHOP_HEIGHT = 8,
+	PRIVATE_SHOP_PAGE_ITEM_MAX_NUM = PRIVATE_SHOP_WIDTH * PRIVATE_SHOP_HEIGHT,
+	PRIVATE_SHOP_HOST_ITEM_MAX_NUM = PRIVATE_SHOP_PAGE_ITEM_MAX_NUM * PRIVATE_SHOP_PAGE_MAX_NUM,
+	TITLE_MAX_LEN = 32,
+	TITLE_MIN_LEN = 3,
+#endif
 };
 
 #pragma pack(push)
@@ -2820,6 +2835,245 @@ typedef struct SChannelStatus
 	short nPort;
 	BYTE bStatus;
 } TChannelStatus;
+
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+enum EPrivateShopGCSubheader
+{
+	SUBHEADER_GC_PRIVATE_SHOP_ADD_ENTITY,
+	SUBHEADER_GC_PRIVATE_SHOP_DEL_ENTITY,
+	SUBHEADER_GC_PRIVATE_SHOP_TITLE,
+	SUBHEADER_GC_PRIVATE_SHOP_LOAD,
+	SUBHEADER_GC_PRIVATE_SHOP_SET_ITEM,
+	SUBHEADER_GC_PRIVATE_SHOP_BALANCE_UPDATE,
+	SUBHEADER_GC_PRIVATE_SHOP_OPEN_PANEL,
+	SUBHEADER_GC_PRIVATE_SHOP_CLOSE_PANEL,
+	SUBHEADER_GC_PRIVATE_SHOP_CLOSE,
+	SUBHEADER_GC_PRIVATE_SHOP_START,
+	SUBHEADER_GC_PRIVATE_SHOP_END,
+	SUBHEADER_GC_PRIVATE_SHOP_REMOVE_ITEM,
+	SUBHEADER_GC_PRIVATE_SHOP_REMOVE_MY_ITEM,
+	SUBHEADER_GC_PRIVATE_SHOP_ADD_ITEM,
+	SUBHEADER_GC_PRIVATE_SHOP_STATE_UPDATE,
+	SUBHEADER_GC_PRIVATE_SHOP_WITHDRAW,
+	SUBHEADER_GC_PRIVATE_SHOP_ITEM_PRICE_CHANGE,
+	SUBHEADER_GC_PRIVATE_SHOP_ITEM_MOVE,
+	SUBHEADER_GC_PRIVATE_SHOP_TITLE_CHANGE,
+	SUBHEADER_GC_PRIVATE_SHOP_SEARCH_OPEN_LOOK_MODE,
+	SUBHEADER_GC_PRIVATE_SHOP_SEARCH_OPEN_TRADE_MODE,
+	SUBHEADER_GC_PRIVATE_SHOP_SEARCH_RESULT,
+};
+
+enum EPrivateShopCGSubheader
+{
+	SUBHEADER_CG_PRIVATE_SHOP_BUILD,
+	SUBHEADER_CG_PRIVATE_SHOP_CLOSE,
+	SUBHEADER_CG_PRIVATE_SHOP_PANEL_OPEN,
+	SUBHEADER_CG_PRIVATE_SHOP_PANEL_CLOSE,
+	SUBHEADER_CG_PRIVATE_SHOP_START,
+	SUBHEADER_CG_PRIVATE_SHOP_END,
+	SUBHEADER_CG_PRIVATE_SHOP_BUY,
+	SUBHEADER_CG_PRIVATE_SHOP_WITHDRAW,
+	SUBHEADER_CG_PRIVATE_SHOP_MODIFY,
+	SUBHEADER_CG_PRIVATE_SHOP_STATE_UPDATE,
+	SUBHEADER_CG_PRIVATE_SHOP_ITEM_PRICE_CHANGE,
+	SUBHEADER_CG_PRIVATE_SHOP_ITEM_MOVE,
+	SUBHEADER_CG_PRIVATE_SHOP_ITEM_CHECKIN,
+	SUBHEADER_CG_PRIVATE_SHOP_ITEM_CHECKOUT,
+	SUBHEADER_CG_PRIVATE_SHOP_TITLE_CHANGE,
+	SUBHEADER_CG_PRIVATE_SHOP_SEARCH_CLOSE,
+	SUBHEADER_CG_PRIVATE_SHOP_SEARCH,
+	SUBHEADER_CG_PRIVATE_SHOP_SEARCH_BUY,
+};
+
+typedef struct SSalePrice
+{
+	long long llGold;
+	DWORD dwCheque;
+} TItemPrice;
+
+typedef struct SPrivateShopItem
+{
+	TItemPos TPos;
+	TItemPrice TPrice;
+	WORD wDisplayPos;
+} TPrivateShopItem;
+
+typedef struct SPrivateShopItemData
+{
+	DWORD dwVnum;
+	TItemPrice TPrice;
+	time_t tCheckin;
+	DWORD dwCount;
+	WORD wPos;
+	long alSockets[ITEM_SOCKET_SLOT_MAX_NUM];
+	TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_SLOT_MAX_NUM];
+} TPrivateShopItemData;
+
+typedef struct SPrivateShopSearchData
+{
+	DWORD dwShopID;
+	char szOwnerName[CHARACTER_NAME_MAX_LEN + 1];
+	DWORD dwVnum;
+	TItemPrice TPrice;
+	DWORD dwCount;
+	WORD wPos;
+	long alSockets[ITEM_SOCKET_SLOT_MAX_NUM];
+	TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_SLOT_MAX_NUM];
+	time_t tCheckin;
+} TPrivateShopSearchData;
+
+typedef struct SPacketCGPrivateShop
+{
+	BYTE bHeader;
+	BYTE bSubHeader;
+} TPacketCGPrivateShop;
+
+typedef struct SPacketGCPrivateShop
+{
+	BYTE bHeader;
+	WORD wSize;
+	BYTE bSubHeader;
+} TPacketGCPrivateShop;
+
+typedef struct SPacketCGPrivateShopBuild
+{
+	char szTitle[TITLE_MAX_LEN + 1];
+	DWORD dwPolyVnum;
+	BYTE bTitleType;
+	BYTE bPageCount;
+	WORD wItemCount;
+} TPacketCGPrivateShopBuild;
+
+typedef struct SPacketCGPrivateShopItemPriceChange
+{
+	WORD wPos;
+	TItemPrice TPrice;
+} TPacketCGPrivateShopItemPriceChange;
+
+typedef struct SPacketCGPrivateShopItemMove
+{
+	WORD wPos;
+	WORD wChangePos;
+} TPacketCGPrivateShopItemMove;
+
+typedef struct SPacketCGPrivateShopItemCheckin
+{
+	TItemPos TSrcPos;
+	long long llGold;
+	DWORD dwCheque;
+	int iDstPos;
+} TPacketCGPrivateShopItemCheckin;
+
+typedef struct SPacketCGPrivateShopItemCheckout
+{
+	WORD wSrcPos;
+	int iDstPos;
+} TPacketCGPrivateShopItemCheckout;
+
+typedef struct SPrivateShopSearchFilter
+{
+	DWORD dwVnum;
+	int iJob;
+	int iItemType;
+	int iItemSubType;
+	DWORD dwMinLevel;
+	DWORD dwMaxLevel;
+	BYTE bMinRefine;
+	BYTE bMaxRefine;
+	WORD wMinCheque;
+	WORD wMaxCheque;
+	long long llMinGold;
+	long long llMaxGold;
+} TPrivateShopSearchFilter;
+
+typedef struct SPacketCGPrivateShopSearch
+{
+	TPrivateShopSearchFilter Filter;
+	bool bUseFilter;
+} TPacketCGPrivateShopSearch;
+
+typedef struct SPacketCGPrivateShopSearchBuy
+{
+	DWORD dwShopID;
+	WORD wPos;
+	TItemPrice TPrice;
+} TPacketCGPrivateShopSearchBuy;
+
+typedef struct SPacketGCPrivateShopAddEntity
+{
+	long lX;
+	long lY;
+	long lZ;
+	DWORD dwVID;
+	DWORD dwVnum;
+	char szName[CHARACTER_NAME_MAX_LEN + 1];
+	BYTE bTitleType;
+	char szTitle[TITLE_MAX_LEN + 1];
+} TPacketGCPrivateShopAddEntity;
+
+typedef struct SPacketGCPrivateShopDelEntity
+{
+	DWORD dwVID;
+} TPacketGCPrivateShopDelEntity;
+
+typedef struct SPacketGCPrivateShopTitle
+{
+	DWORD dwVID;
+	char szTitle[TITLE_MAX_LEN + 1];
+	BYTE bTitleType;
+} TPacketGCPrivateShopTitle;
+
+typedef struct SPacketGCPrivateShopLoad
+{
+	char szTitle[SHOP_SIGN_MAX_LEN + 1];
+	long long llGold;
+	DWORD dwCheque;
+	long lX;
+	long lY;
+	BYTE bChannel;
+	BYTE bState;
+	BYTE bPageCount;
+} TPacketGCPrivateShopLoad;
+
+typedef struct SPacketGCPrivateShopOpen
+{
+	char szTitle[SHOP_SIGN_MAX_LEN + 1];
+	BYTE bState;
+	BYTE bPageCount;
+	DWORD dwVID;
+	TPrivateShopItemData aItems[PRIVATE_SHOP_HOST_ITEM_MAX_NUM];
+} TPacketGCPrivateShopOpen;
+
+typedef struct SPacketGCPrivateStateUpdate
+{
+	BYTE bState;
+	bool bIsMainPlayerPrivateShop;
+} TPacketGCPrivateStateUpdate;
+
+typedef struct SPacketGCPrivateShopBalanceUpdate
+{
+	TItemPrice TPrice;
+} TPacketGCPrivateShopBalanceUpdate;
+
+typedef struct SPacketGCPrivateShopItemPriceChange
+{
+	WORD wPos;
+	TItemPrice TPrice;
+} TPacketGCPrivateShopItemPriceChange;
+
+typedef struct SPacketGCPrivateShopItemMove
+{
+	WORD wPos;
+	WORD wChangePos;
+} TPacketGCPrivateShopItemMove;
+
+typedef struct SPacketGCPrivateShopSearchUpdate
+{
+	DWORD dwShopID;
+	int iSpecificItemPos;
+	BYTE bState;
+} TPacketGCPrivateShopSearchUpdate;
+#endif
 
 typedef struct SPacketCGChangeChannel
 {

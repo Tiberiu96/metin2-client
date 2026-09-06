@@ -9,6 +9,7 @@ extern BOOL bVisibleNotice = true;
 extern BOOL bTestServerFlag = FALSE;
 extern int TWOHANDED_WEWAPON_ATT_SPEED_DECREASE_VALUE = 0;
 
+
 #ifdef USE_OPENID
 extern int openid_test;
 #endif
@@ -1517,6 +1518,24 @@ void initapp()
 	PyModule_AddIntConstant(poModule, "ENABLE_NEW_EQUIPMENT_SYSTEM",	0);
 #endif
 
+
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	PyModule_AddIntConstant(poModule, "ENABLE_PREMIUM_PRIVATE_SHOP", 1);
+#else
+	PyModule_AddIntConstant(poModule, "ENABLE_PREMIUM_PRIVATE_SHOP", 0);
+#endif
+
+#ifdef ENABLE_PRIVATE_SHOP_CHEQUE
+	PyModule_AddIntConstant(poModule, "ENABLE_PRIVATE_SHOP_CHEQUE", 1);
+#else
+	PyModule_AddIntConstant(poModule, "ENABLE_PRIVATE_SHOP_CHEQUE", 0);
+#endif
+
+#ifdef ENABLE_CHEQUE_SYSTEM
+	PyModule_AddIntConstant(poModule, "ENABLE_CHEQUE_SYSTEM", 1);
+#else
+	PyModule_AddIntConstant(poModule, "ENABLE_CHEQUE_SYSTEM", 0);
+#endif
 #ifdef USE_OPENID
 	PyModule_AddIntConstant(poModule, "USE_OPENID",	1);
 	if (openid_test)
