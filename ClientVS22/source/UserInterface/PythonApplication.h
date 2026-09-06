@@ -32,6 +32,9 @@
 #include "PythonMessenger.h"
 #include "PythonSafeBox.h"
 #include "PythonGuild.h"
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+#include "PythonPrivateShop.h"
+#endif
 
 #include "GuildMarkDownloader.h"
 #include "GuildMarkUploader.h"
@@ -340,6 +343,9 @@ class CPythonApplication : public CMSApplication, public CInputKeyboard, public 
 		CPythonMessenger			m_pyManager;
 		CPythonSafeBox				m_pySafeBox;
 		CPythonGuild				m_pyGuild;
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		CPythonPrivateShop			 m_pyPrivateShop;
+#endif
 
 		CGuildMarkManager			m_kGuildMarkManager;
 		CGuildMarkDownloader		m_kGuildMarkDownloader;

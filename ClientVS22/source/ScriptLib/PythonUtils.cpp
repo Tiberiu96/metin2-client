@@ -71,6 +71,20 @@ bool PyTuple_GetLong(PyObject* poArgs, int pos, long* ret)
 	return true;
 }
 
+bool PyTuple_GetLongLong(PyObject* poArgs, int pos, long long* ret)
+{
+	if (pos >= PyTuple_Size(poArgs))
+		return false;
+
+	PyObject* poItem = PyTuple_GetItem(poArgs, pos);
+
+	if (!poItem)
+		return false;
+
+	*ret = PyLong_AsLongLong(poItem);
+	return true;
+}
+
 bool PyTuple_GetDouble(PyObject* poArgs, int pos, double* ret)
 {
 	if (pos >= PyTuple_Size(poArgs))

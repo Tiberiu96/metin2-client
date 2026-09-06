@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameType.h"
 #include "AbstractPlayer.h"
 #include "Packet.h"
 #include "PythonSkill.h"
@@ -62,6 +63,9 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 			MODE_CLICK_POSITION,
 			MODE_CLICK_ITEM,
 			MODE_CLICK_ACTOR,
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+			MODE_CLICK_PRIVATE_SHOP,
+#endif
 			MODE_USE_SKILL,
 		};
 
@@ -287,6 +291,9 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		DWORD	GetItemFlags(TItemPos Cell);
 		DWORD	GetItemCount(TItemPos Cell);
 		DWORD	GetItemCountByVnum(DWORD dwVnum);
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		int		GetItemSlotIndex(DWORD dwVnum);
+#endif
 		DWORD	GetItemMetinSocket(TItemPos Cell, DWORD dwMetinSocketIndex);
 		void	GetItemAttribute(TItemPos Cell, DWORD dwAttrSlotIndex, BYTE * pbyType, short * psValue);
 		void	SendClickItemPacket(DWORD dwIID);
@@ -456,6 +463,11 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		void	__OnClickActor(CInstanceBase& rkInstMain, DWORD dwPickedActorID, bool isAuto);
 		void	__OnClickItem(CInstanceBase& rkInstMain, DWORD dwPickedItemID);
 		void	__OnClickGround(CInstanceBase& rkInstMain, const TPixelPosition& c_rkPPosPickedGround);
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		void	__OnClickPrivateShop(DWORD dwPickedPrivateShopID);
+		void	__OnPressPrivateShop(CInstanceBase& rkInstMain, DWORD dwPickedPrivateShopID);
+		void	SendClickPrivateShopPacket(DWORD dwPrivateShopID);
+#endif
 
 		bool	__IsMovableGroundDistance(CInstanceBase& rkInstMain, const TPixelPosition& c_rkPPosPickedGround);
 
@@ -464,11 +476,17 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		bool	__GetPickedActorID(DWORD* pdwActorID);
 		bool	__GetPickedItemID(DWORD* pdwItemID);
 		bool	__GetPickedGroundPos(TPixelPosition* pkPPosPicked);
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		bool	__GetPickedPrivateShopID(DWORD* pdwPrivateShopID);
+#endif
 
 		void	__ClearReservedAction();
 		void	__ReserveClickItem(DWORD dwItemID);
 		void	__ReserveClickActor(DWORD dwActorID);
 		void	__ReserveClickGround(const TPixelPosition& c_rkPPosPickedGround);
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		void	__ReserveClickPrivateShop(DWORD dwPrivateShopID);
+#endif
 		void	__ReserveUseSkill(DWORD dwActorID, DWORD dwSkillSlotIndex, DWORD dwRange);
 
 		void	__ReserveProcess_ClickActor();
@@ -611,6 +629,9 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		UINT					m_iComboOld;
 		DWORD					m_dwVIDReserved;
 		DWORD					m_dwIIDReserved;
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		DWORD					m_dwPSIDReserved;
+#endif
 
 		DWORD					m_dwcurSkillSlotIndex;
 		DWORD					m_dwSkillSlotIndexReserved;

@@ -1509,6 +1509,9 @@ void initchr()
 	PyModule_AddIntConstant(poModule, "NEW_AFFECT_FISH_MIND",				CInstanceBase::NEW_AFFECT_FISH_MIND);
 	PyModule_AddIntConstant(poModule, "NEW_AFFECT_MARRIAGE_FAST",			CInstanceBase::NEW_AFFECT_MARRIAGE_FAST);
 	PyModule_AddIntConstant(poModule, "NEW_AFFECT_GOLD_BONUS",				CInstanceBase::NEW_AFFECT_GOLD_BONUS);
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	PyModule_AddIntConstant(poModule, "NEW_AFFECT_PREMIUM_PRIVATE_SHOP",	CInstanceBase::NEW_AFFECT_PREMIUM_PRIVATE_SHOP);
+#endif
 	PyModule_AddIntConstant(poModule, "NEW_AFFECT_AUTO_HP_RECOVERY",		CInstanceBase::NEW_AFFECT_AUTO_HP_RECOVERY);
 	PyModule_AddIntConstant(poModule, "NEW_AFFECT_AUTO_SP_RECOVERY",		CInstanceBase::NEW_AFFECT_AUTO_SP_RECOVERY);
 

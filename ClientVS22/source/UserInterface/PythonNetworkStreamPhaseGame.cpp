@@ -16,6 +16,9 @@
 #include "PythonEventManager.h"
 #include "PythonMessenger.h"
 #include "PythonApplication.h"
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+#include "PythonPrivateShop.h"
+#endif
 
 #include "../EterPack/EterPackManager.h"
 #include "../gamelib/ItemManager.h"
@@ -630,6 +633,12 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvDragonSoulRefine();
 				break;
 
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+			case HEADER_GC_PRIVATE_SHOP:
+				ret = RecvPrivateShop();
+				break;
+#endif
+
 			case HEADER_GC_CHANGE_CHANNEL:
 				ret = RecvChangeChannelPacket();
 				break;
@@ -787,7 +796,16 @@ void CPythonNetworkStream::GamePhase()
 		m_isRefreshGuildWndGradePage=false;
 		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "RefreshGuildGradePage", Py_BuildValue("()"));
 		s_nextRefreshTime = curTime + 300;
-	}	
+	}
+
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	if (m_isRefreshPrivateShopWindow)
+	{
+		m_isRefreshPrivateShopWindow = false;
+		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "RefreshPrivateShopWindow", Py_BuildValue("()"));
+		s_nextRefreshTime = curTime + 300;
+	}
+#endif
 }
 
 void CPythonNetworkStream::__InitializeGamePhase()
@@ -809,6 +827,9 @@ void CPythonNetworkStream::__InitializeGamePhase()
 	m_isRefreshGuildWndMemberPageGradeComboBox=false;
 	m_isRefreshGuildWndSkillPage=false;
 	m_isRefreshGuildWndGradePage=false;
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	m_isRefreshPrivateShopWindow=false;
+#endif
 
 	m_EmoticonStringVector.clear();
 
@@ -846,6 +867,10 @@ void CPythonNetworkStream::__ShowMapName(LONG lLocalX, LONG lLocalY)
 
 void CPythonNetworkStream::__LeaveGamePhase()
 {
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	CPythonPrivateShop::Instance().Destroy();
+#endif
+
 	CInstanceBase::ClearPVPKeySystem();
 
 	__ClearNetworkActorManager();
@@ -4238,6 +4263,13 @@ bool CPythonNetworkStream::RecvAffectAddPacket()
 		CPythonPlayer::instance().SetStatus (POINT_ENERGY_END_TIME, CPythonApplication::Instance().GetServerTimeStamp() + rkElement.lDuration);
 		__RefreshStatus();
 	}
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	if (rkElement.dwType == CInstanceBase::NEW_AFFECT_PREMIUM_PRIVATE_SHOP)
+	{
+		CPythonPrivateShop::Instance().SetPremiumTime(CPythonApplication::Instance().GetServerTimeStamp() + rkElement.lDuration);
+		__RefreshPrivateShopWindow();
+	}
+#endif
 	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_NEW_AddAffect", Py_BuildValue("(iiii)", rkElement.dwType, rkElement.bPointIdxApplyOn, rkElement.lApplyValue, rkElement.lDuration));
 
 	return true;
@@ -4580,5 +4612,671 @@ void CPythonNetworkStream::Discord_Update(const bool bInGame)
 void CPythonNetworkStream::Discord_Close()
 {
 	Discord_Shutdown();
+}
+#endif
+
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+bool CPythonNetworkStream::SendBuildPrivateShopPacket(const char* c_szTitle, DWORD dwPolyVnum, BYTE bTitleType, BYTE bPageCount, const std::vector<TPrivateShopItem>& c_vec_itemStock)
+{
+	TraceError("PRIVATESHOP_CLIENT: net_send_build_begin title=%s poly=%u title_type=%u page_count=%u item_count=%u",
+		c_szTitle ? c_szTitle : "", dwPolyVnum, bTitleType, bPageCount, static_cast<unsigned>(c_vec_itemStock.size()));
+	if (c_vec_itemStock.empty() || c_vec_itemStock.size() > PRIVATE_SHOP_HOST_ITEM_MAX_NUM || bPageCount == 0 || bPageCount > PRIVATE_SHOP_PAGE_MAX_NUM)
+	{
+		TraceError("PRIVATESHOP_CLIENT: net_send_build_fail reason=invalid_header title=%s item_count=%u page_count=%u", c_szTitle ? c_szTitle : "", static_cast<unsigned>(c_vec_itemStock.size()), bPageCount);
+		return false;
+	}
+
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_BUILD;
+
+	TPacketCGPrivateShopBuild subPacket{};
+	strncpy(subPacket.szTitle, c_szTitle ? c_szTitle : "", TITLE_MAX_LEN);
+	subPacket.szTitle[TITLE_MAX_LEN] = '\0';
+	subPacket.dwPolyVnum = dwPolyVnum;
+	subPacket.bTitleType = bTitleType;
+	subPacket.bPageCount = bPageCount;
+	subPacket.wItemCount = static_cast<WORD>(c_vec_itemStock.size());
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+	{
+		TraceError("PRIVATESHOP_CLIENT: net_send_build_fail reason=send_main");
+		return false;
+	}
+	TraceError("PRIVATESHOP_CLIENT: net_send_build_main_ok size=%u subheader=%u", static_cast<unsigned>(sizeof(mainPacket)), mainPacket.bSubHeader);
+
+	if (!Send(sizeof(subPacket), &subPacket))
+	{
+		TraceError("PRIVATESHOP_CLIENT: net_send_build_fail reason=send_sub title=%s item_count=%u", subPacket.szTitle, subPacket.wItemCount);
+		return false;
+	}
+	TraceError("PRIVATESHOP_CLIENT: net_send_build_sub_ok title=%s poly=%u title_type=%u page_count=%u item_count=%u",
+		subPacket.szTitle, subPacket.dwPolyVnum, subPacket.bTitleType, subPacket.bPageCount, subPacket.wItemCount);
+
+	WORD wIndex = 0;
+	for (const auto& c_rShopItem : c_vec_itemStock)
+	{
+		TPrivateShopItem shopItem = c_rShopItem;
+		shopItem.TPrice.dwCheque = 0;
+		if (shopItem.TPrice.llGold <= 0)
+		{
+			TraceError("PRIVATESHOP_CLIENT: net_send_build_fail reason=invalid_item_price idx=%u window=%u cell=%u display=%u gold=%lld cheque=%u",
+				wIndex, shopItem.TPos.window_type, shopItem.TPos.cell, shopItem.wDisplayPos, shopItem.TPrice.llGold, shopItem.TPrice.dwCheque);
+			return false;
+		}
+
+		if (!Send(sizeof(shopItem), &shopItem))
+		{
+			TraceError("PRIVATESHOP_CLIENT: net_send_build_fail reason=send_item idx=%u window=%u cell=%u display=%u",
+				wIndex, shopItem.TPos.window_type, shopItem.TPos.cell, shopItem.wDisplayPos);
+			return false;
+		}
+		TraceError("PRIVATESHOP_CLIENT: net_send_build_item_ok idx=%u window=%u cell=%u display=%u gold=%lld cheque=%u",
+			wIndex, shopItem.TPos.window_type, shopItem.TPos.cell, shopItem.wDisplayPos, shopItem.TPrice.llGold, shopItem.TPrice.dwCheque);
+		++wIndex;
+	}
+
+	const bool bSequence = SendSequence();
+	TraceError("PRIVATESHOP_CLIENT: net_send_build_done success=%d title=%s item_count=%u", bSequence ? 1 : 0, c_szTitle ? c_szTitle : "", static_cast<unsigned>(c_vec_itemStock.size()));
+	return bSequence;
+}
+
+bool CPythonNetworkStream::SendClosePrivateShopPacket()
+{
+	TraceError("PRIVATESHOP_CLIENT: net_send_close_begin");
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_CLOSE;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+	{
+		TraceError("PRIVATESHOP_CLIENT: net_send_close_fail reason=send_main");
+		return false;
+	}
+
+	const bool bSequence = SendSequence();
+	TraceError("PRIVATESHOP_CLIENT: net_send_close_done success=%d", bSequence ? 1 : 0);
+	return bSequence;
+}
+
+bool CPythonNetworkStream::SendOpenPrivateShopPanelPacket()
+{
+	TraceError("PRIVATESHOP_CLIENT: net_send_panel_open_begin");
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_PANEL_OPEN;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+	{
+		TraceError("PRIVATESHOP_CLIENT: net_send_panel_open_fail reason=send_main");
+		return false;
+	}
+
+	const bool bSequence = SendSequence();
+	TraceError("PRIVATESHOP_CLIENT: net_send_panel_open_done success=%d", bSequence ? 1 : 0);
+	return bSequence;
+}
+
+bool CPythonNetworkStream::SendClosePrivateShopPanelPacket()
+{
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_PANEL_CLOSE;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendPrivateShopStartPacket(DWORD dwVID)
+{
+	TraceError("PRIVATESHOP_CLIENT: net_send_start_begin vid=%u", dwVID);
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_START;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+	{
+		TraceError("PRIVATESHOP_CLIENT: net_send_start_fail reason=send_main vid=%u", dwVID);
+		return false;
+	}
+
+	if (!Send(sizeof(dwVID), &dwVID))
+	{
+		TraceError("PRIVATESHOP_CLIENT: net_send_start_fail reason=send_vid vid=%u", dwVID);
+		return false;
+	}
+
+	const bool bSequence = SendSequence();
+	TraceError("PRIVATESHOP_CLIENT: net_send_start_done vid=%u success=%d", dwVID, bSequence ? 1 : 0);
+	return bSequence;
+}
+
+bool CPythonNetworkStream::SendPrivateShopEndPacket()
+{
+	TraceError("PRIVATESHOP_CLIENT: net_send_end_begin");
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_END;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+	{
+		TraceError("PRIVATESHOP_CLIENT: net_send_end_fail reason=send_main");
+		return false;
+	}
+
+	const bool bSequence = SendSequence();
+	TraceError("PRIVATESHOP_CLIENT: net_send_end_done success=%d", bSequence ? 1 : 0);
+	return bSequence;
+}
+
+bool CPythonNetworkStream::SendPrivateShopBuyPacket(WORD wPos)
+{
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_BUY;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	if (!Send(sizeof(wPos), &wPos))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendWithdrawPrivateShopPacket()
+{
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_WITHDRAW;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendModifyPrivateShopPacket()
+{
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_MODIFY;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendItemPriceChangePrivateShopPacket(WORD wPos, long long llGold, DWORD dwCheque)
+{
+	if (llGold <= 0)
+		return false;
+
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_ITEM_PRICE_CHANGE;
+
+	TPacketCGPrivateShopItemPriceChange subPacket{};
+	subPacket.wPos = wPos;
+	subPacket.TPrice.llGold = llGold;
+	subPacket.TPrice.dwCheque = 0;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	if (!Send(sizeof(subPacket), &subPacket))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendItemMovePrivateShopPacket(WORD wPos, WORD wChangePos)
+{
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_ITEM_MOVE;
+
+	TPacketCGPrivateShopItemMove subPacket{};
+	subPacket.wPos = wPos;
+	subPacket.wChangePos = wChangePos;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	if (!Send(sizeof(subPacket), &subPacket))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendItemCheckinPrivateShopPacket(WORD wSrcPos, WORD wSrcWindow, long long llGold, DWORD dwCheque, int iDstPos /* = -1 */)
+{
+	if (llGold <= 0)
+		return false;
+
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_ITEM_CHECKIN;
+
+	TPacketCGPrivateShopItemCheckin subPacket{};
+	subPacket.TSrcPos.cell = wSrcPos;
+	subPacket.TSrcPos.window_type = wSrcWindow;
+	subPacket.llGold = llGold;
+	subPacket.dwCheque = 0;
+	subPacket.iDstPos = iDstPos;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	if (!Send(sizeof(subPacket), &subPacket))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendItemCheckoutPrivateShopPacket(WORD wSrcPos, int iDstPos/* = -1 */)
+{
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_ITEM_CHECKOUT;
+
+	TPacketCGPrivateShopItemCheckout subPacket{};
+	subPacket.wSrcPos = wSrcPos;
+	subPacket.iDstPos = iDstPos;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	if (!Send(sizeof(subPacket), &subPacket))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendTitleChangePrivateShopPacket(const char* c_szTitle)
+{
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_TITLE_CHANGE;
+
+	char szTitle[TITLE_MAX_LEN + 1] = {};
+	strncpy(szTitle, c_szTitle, TITLE_MAX_LEN);
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	if (!Send(sizeof(szTitle), &szTitle))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendClosePrivateShopSearchPacket()
+{
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_SEARCH_CLOSE;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendPrivateShopSearchPacket(TPacketCGPrivateShopSearch* pPacket)
+{
+	pPacket->Filter.wMinCheque = 0;
+	pPacket->Filter.wMaxCheque = 0;
+	if (pPacket->Filter.llMinGold < 0)
+		pPacket->Filter.llMinGold = 0;
+	if (pPacket->Filter.llMaxGold <= 0)
+		pPacket->Filter.llMaxGold = 2000000000;
+
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_SEARCH;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	if (!Send(sizeof(TPacketCGPrivateShopSearch), pPacket))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendPrivateShopSearchBuyPacket(WORD wPos)
+{
+	const TPrivateShopSearchData* c_pItemData;
+	if (!CPythonPrivateShop::Instance().GetSearchItemData(wPos, &c_pItemData))
+		return true;
+
+	TPacketCGPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_CG_PRIVATE_SHOP;
+	mainPacket.bSubHeader = SUBHEADER_CG_PRIVATE_SHOP_SEARCH_BUY;
+
+	TPacketCGPrivateShopSearchBuy subPacket{};
+	subPacket.dwShopID = c_pItemData->dwShopID;
+	subPacket.wPos = c_pItemData->wPos;
+	subPacket.TPrice.llGold = c_pItemData->TPrice.llGold;
+	subPacket.TPrice.dwCheque = 0;
+
+	if (!Send(sizeof(mainPacket), &mainPacket))
+		return false;
+
+	if (!Send(sizeof(subPacket), &subPacket))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::RecvPrivateShop()
+{
+	TPacketGCPrivateShop mainPacket{};
+	if (!Recv(sizeof(mainPacket), &mainPacket))
+	{
+		TraceError("PRIVATESHOP_CLIENT: net_recv_fail reason=recv_main");
+		return false;
+	}
+	TraceError("PRIVATESHOP_CLIENT: net_recv_begin subheader=%u size=%u", mainPacket.bSubHeader, mainPacket.wSize);
+
+	switch (mainPacket.bSubHeader)
+	{
+		case SUBHEADER_GC_PRIVATE_SHOP_ADD_ENTITY:
+		{
+			TraceError("PRIVATESHOP_CLIENT: net_recv_dispatch subheader=ADD_ENTITY");
+			TPacketGCPrivateShopAddEntity subPacket{};
+			if (!Recv(sizeof(TPacketGCPrivateShopAddEntity), &subPacket))
+			{
+				TraceError("PRIVATESHOP_CLIENT: net_recv_fail subheader=ADD_ENTITY reason=recv_sub");
+				return false;
+			}
+			TraceError("PRIVATESHOP_CLIENT: net_recv_add_entity vid=%u vnum=%u name=%s pos=%ld,%ld,%ld title_type=%u",
+				subPacket.dwVID, subPacket.dwVnum, subPacket.szName, subPacket.lX, subPacket.lY, subPacket.lZ, subPacket.bTitleType);
+
+			CPythonPrivateShop::TPrivateShopInstance* pPrivateShopInstance = CPythonPrivateShop::Instance().CreatePrivateShopInstance(
+				subPacket.dwVID, subPacket.dwVnum,
+				subPacket.szName, subPacket.lX, subPacket.lY, subPacket.lZ);
+
+			if (!pPrivateShopInstance)
+				return true;
+
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME],
+				"AddPrivateShopTitleBoard",
+				Py_BuildValue("(isi)", subPacket.dwVID, subPacket.szTitle, subPacket.bTitleType)
+			);
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_DEL_ENTITY:
+		{
+			TraceError("PRIVATESHOP_CLIENT: net_recv_dispatch subheader=DEL_ENTITY");
+			TPacketGCPrivateShopDelEntity subPacket{};
+			if (!Recv(sizeof(TPacketGCPrivateShopDelEntity), &subPacket))
+			{
+				TraceError("PRIVATESHOP_CLIENT: net_recv_fail subheader=DEL_ENTITY reason=recv_sub");
+				return false;
+			}
+			TraceError("PRIVATESHOP_CLIENT: net_recv_del_entity vid=%u", subPacket.dwVID);
+
+			CPythonPrivateShop::Instance().DeletePrivateShopInstance(subPacket.dwVID);
+
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME],
+				"RemovePrivateShopTitleBoard",
+				Py_BuildValue("(i)", subPacket.dwVID)
+			);
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_TITLE:
+		{
+			TPacketGCPrivateShopTitle subPacket{};
+			if (!Recv(sizeof(TPacketGCPrivateShopTitle), &subPacket))
+				return false;
+
+			CPythonPlayer& rkPlayer = CPythonPlayer::Instance();
+
+			if (0 == strlen(subPacket.szTitle))
+			{
+				PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME],
+					"RemovePrivateShopTitleBoard",
+					Py_BuildValue("(i)", subPacket.dwVID)
+				);
+			}
+			else
+			{
+				PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME],
+					"AddPrivateShopTitleBoard",
+					Py_BuildValue("(isi)", subPacket.dwVID, subPacket.szTitle, subPacket.bTitleType)
+				);
+			}
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_LOAD:
+		{
+			TPacketGCPrivateShopLoad subPacket{};
+			if (!Recv(sizeof(TPacketGCPrivateShopLoad), &subPacket))
+				return false;
+
+			// Clear the stock if we were building a private shop
+			CPythonPrivateShop::Instance().ClearPrivateShopStock();
+
+			CPythonPrivateShop::Instance().SetGold(subPacket.llGold);
+			CPythonPrivateShop::Instance().SetCheque(subPacket.dwCheque);
+			CPythonPrivateShop::Instance().SetLocation(subPacket.lX, subPacket.lY, subPacket.bChannel);
+			CPythonPrivateShop::Instance().SetMyTitle(subPacket.szTitle);
+			CPythonPrivateShop::Instance().SetMyState(subPacket.bState);
+			CPythonPrivateShop::Instance().SetMyPageCount(subPacket.bPageCount);
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_SET_ITEM:
+		{
+			TPrivateShopItemData subPacket{};
+			if (!Recv(sizeof(TPrivateShopItemData), &subPacket))
+				return false;
+
+			CPythonPrivateShop::Instance().SetItemData(subPacket, true);
+			__RefreshPrivateShopWindow();
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_BALANCE_UPDATE:
+		{
+			TPacketGCPrivateShopBalanceUpdate subPacket{};
+			if (!Recv(sizeof(TPacketGCPrivateShopBalanceUpdate), &subPacket))
+				return false;
+
+			CPythonPrivateShop::Instance().ChangeGold(subPacket.TPrice.llGold);
+			CPythonPrivateShop::Instance().ChangeCheque(subPacket.TPrice.dwCheque);
+
+			__RefreshPrivateShopWindow();
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_OPEN_PANEL:
+		{
+			CPythonPrivateShop::Instance().SetMainPlayerPrivateShop(true);
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "OpenPrivateShopPanel", Py_BuildValue("()"));
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_CLOSE_PANEL:
+		{
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "ClosePrivateShopPanel", Py_BuildValue("()"));
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_CLOSE:
+		{
+			CPythonPrivateShop::Instance().ClearMyPrivateShop();
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "ClosePrivateShopPanel", Py_BuildValue("()"));
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_START:
+		{
+			TPacketGCPrivateShopOpen subPacket{};
+			if (!Recv(sizeof(TPacketGCPrivateShopOpen), &subPacket))
+				return false;
+
+			CPythonPrivateShop::Instance().Clear();
+			CPythonPrivateShop::Instance().SetTitle(subPacket.szTitle);
+			CPythonPrivateShop::Instance().SetState(subPacket.bState);
+			CPythonPrivateShop::Instance().SetPageCount(subPacket.bPageCount);
+			CPythonPrivateShop::Instance().SetMainPlayerPrivateShop(false);
+
+			for (WORD i = 0; i < PRIVATE_SHOP_HOST_ITEM_MAX_NUM; ++i)
+			{
+				if (subPacket.aItems[i].dwVnum)
+					CPythonPrivateShop::Instance().SetItemData(subPacket.aItems[i], false);
+			}
+
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "OpenPrivateShopPanel", Py_BuildValue("()"));
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_END:
+		{
+			CPythonPrivateShop::Instance().Clear();
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "ClosePrivateShopPanel", Py_BuildValue("()"));
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_REMOVE_ITEM:
+		{
+			WORD wPos;
+			if (!Recv(sizeof(WORD), &wPos))
+				return false;
+
+			CPythonPrivateShop::Instance().RemoveItemData(wPos, false);
+			__RefreshPrivateShopWindow();
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_REMOVE_MY_ITEM:
+		{
+			WORD wPos;
+			if (!Recv(sizeof(WORD), &wPos))
+				return false;
+
+			CPythonPrivateShop::Instance().RemoveItemData(wPos, true);
+			__RefreshPrivateShopWindow();
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_STATE_UPDATE:
+		{
+			TPacketGCPrivateStateUpdate subPacket{};
+			if (!Recv(sizeof(TPacketGCPrivateStateUpdate), &subPacket))
+				return false;
+
+			if (subPacket.bIsMainPlayerPrivateShop)
+				CPythonPrivateShop::Instance().SetMyState(subPacket.bState);
+			else
+				CPythonPrivateShop::Instance().SetState(subPacket.bState);
+
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "PrivateShopStateUpdate", Py_BuildValue("()"));
+			__RefreshPrivateShopWindow();
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_WITHDRAW:
+		{
+			CPythonPrivateShop::Instance().SetGold(0);
+			CPythonPrivateShop::Instance().SetCheque(0);
+
+			__RefreshPrivateShopWindow();
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_ITEM_PRICE_CHANGE:
+		{
+			TPacketGCPrivateShopItemPriceChange subPacket{};
+			if (!Recv(sizeof(TPacketGCPrivateShopItemPriceChange), &subPacket))
+				return false;
+
+			CPythonPrivateShop::Instance().ChangeItemPrice(subPacket.wPos, subPacket.TPrice.llGold, subPacket.TPrice.dwCheque);
+			__RefreshPrivateShopWindow();
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_ITEM_MOVE:
+		{
+			TPacketGCPrivateShopItemMove subPacket{};
+			if (!Recv(sizeof(TPacketGCPrivateShopItemMove), &subPacket))
+				return false;
+
+			CPythonPrivateShop::Instance().MoveItem(subPacket.wPos, subPacket.wChangePos);
+			__RefreshPrivateShopWindow();
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_ADD_ITEM:
+		{
+			TPrivateShopItemData subPacket{};
+			if (!Recv(sizeof(TPrivateShopItemData), &subPacket))
+				return false;
+
+			CPythonPrivateShop::Instance().SetItemData(subPacket, false);
+			__RefreshPrivateShopWindow();
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_TITLE_CHANGE:
+		{
+			char szTitle[TITLE_MAX_LEN + 1] = { 0 };
+			if (!Recv(sizeof(szTitle), &szTitle))
+				return false;
+
+			CPythonPrivateShop::Instance().SetMyTitle(szTitle);
+			__RefreshPrivateShopWindow();
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_SEARCH_OPEN_LOOK_MODE:
+		{
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "OpenPrivateShopSearch", Py_BuildValue("(i)", MODE_LOOK));
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_SEARCH_OPEN_TRADE_MODE:
+		{
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "OpenPrivateShopSearch", Py_BuildValue("(i)", MODE_TRADE));
+		}
+		break;
+
+		case SUBHEADER_GC_PRIVATE_SHOP_SEARCH_RESULT:
+		{
+			WORD wSize = mainPacket.wSize - sizeof(mainPacket);
+			if (!wSize)
+				break;
+
+			while (wSize)
+			{
+				TPrivateShopSearchData subPacket{};
+				if (!Recv(sizeof(subPacket), &subPacket))
+					return false;
+
+				CPythonPrivateShop::Instance().SetSearchItemData(subPacket);
+
+				wSize -= sizeof(TPrivateShopSearchData);
+			}
+
+			if (!CPythonPrivateShop::Instance().GetResultPage())
+				CPythonPrivateShop::Instance().SetResultPage(1);
+
+			CPythonPrivateShop::Instance().SortSearchResult();
+
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "PrivateShopRefreshResult", Py_BuildValue("()"));
+		}
+		break;
+	}
+
+	return true;
 }
 #endif

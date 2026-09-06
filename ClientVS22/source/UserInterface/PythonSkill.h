@@ -1,8 +1,14 @@
 #pragma once
 
+#include <map>
+#include <string>
+#include <vector>
+
+#include "../EterBase/Singleton.h"
 #include "../gamelib/ItemData.h"
 #include "../EterBase/Poly/Poly.h"
 
+class CGraphicImage;
 class CInstanceBase;
 
 class CPythonSkill : public CSingleton<CPythonSkill>

@@ -1,6 +1,10 @@
 #include "StdAfx.h"
 #include "PythonPlayer.h"
 #include "PythonApplication.h"
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+#include "PythonPrivateShop.h"
+#include "PythonNetworkStream.h"
+#endif
 
 #include "../eterlib/Camera.h"
 
@@ -140,6 +144,10 @@ void CPythonPlayer::__OnPressSmart(CInstanceBase& rkInstMain, bool isAuto)
 	bool isPickedItemID=__GetPickedItemID(&dwPickedItemID);
 	bool isPickedActorID=__GetPickedActorID(&dwPickedActorID);
 	bool isPickedGroundPos=__GetPickedGroundPos(&kPPosPickedGround);
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	DWORD dwPickedShopID;
+	bool isPickedPrivateShopID = __GetPickedPrivateShopID(&dwPickedShopID);
+#endif
 
 	if (isPickedItemID)
 	{
@@ -149,6 +157,12 @@ void CPythonPlayer::__OnPressSmart(CInstanceBase& rkInstMain, bool isAuto)
 	{
 		__OnPressActor(rkInstMain, dwPickedActorID, isAuto);
 	}
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	else if (isPickedPrivateShopID)
+	{
+		__OnPressPrivateShop(rkInstMain, dwPickedShopID);
+	}
+#endif
 	else if (isPickedGroundPos)
 	{
 		__OnPressGround(rkInstMain, kPPosPickedGround);
@@ -164,6 +178,9 @@ void CPythonPlayer::__OnClickSmart(CInstanceBase& rkInstMain, bool isAuto)
 	DWORD dwPickedItemID;
 	DWORD dwPickedActorID;
 	TPixelPosition kPPosPickedGround;
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	DWORD dwPickedShopID;
+#endif
 	if (__GetPickedItemID(&dwPickedItemID))
 	{
 		__OnClickItem(rkInstMain, dwPickedItemID);
@@ -172,6 +189,12 @@ void CPythonPlayer::__OnClickSmart(CInstanceBase& rkInstMain, bool isAuto)
 	{
 		__OnClickActor(rkInstMain, dwPickedActorID, isAuto);
 	}
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+	else if (__GetPickedPrivateShopID(&dwPickedShopID))
+	{
+		__OnClickPrivateShop(dwPickedShopID);
+	}
+#endif
 	else if (__GetPickedGroundPos(&kPPosPickedGround))
 	{
 		__OnClickGround(rkInstMain, kPPosPickedGround);
@@ -287,6 +310,41 @@ void CPythonPlayer::NEW_RefreshMouseWalkingDirection()
 
 	switch (m_eReservedMode)
 	{
+#ifdef ENABLE_PREMIUM_PRIVATE_SHOP
+		case MODE_CLICK_PRIVATE_SHOP:
+		{
+			CPythonPrivateShop& rkPrivateShop = CPythonPrivateShop::Instance();
+
+			TPixelPosition kPPosPickedPrivateShop;
+			if (rkPrivateShop.GetPrivateShopPosition(m_dwPSIDReserved, &kPPosPickedPrivateShop))
+			{
+				if (pkInstMain->NEW_GetDistanceFromDestPixelPosition(kPPosPickedPrivateShop) < 500.0f)
+				{
+					CPythonNetworkStream& rkNetStream = CPythonNetworkStream::Instance();
+
+					TPixelPosition kPPosCur;
+					pkInstMain->NEW_GetPixelPosition(&kPPosCur);
+
+					float fCurRot = pkInstMain->GetRotation();
+					rkNetStream.SendCharacterStatePacket(kPPosCur, fCurRot, CInstanceBase::FUNC_WAIT, 0);
+					SendClickPrivateShopPacket(m_dwPSIDReserved);
+
+					pkInstMain->NEW_Stop();
+					__ClearReservedAction();
+				}
+				else
+				{
+					pkInstMain->NEW_MoveToDestPixelPositionDirection(kPPosPickedPrivateShop);
+				}
+			}
+			else
+			{
+				__ClearReservedAction();
+			}
+
+			break;
+		}
+#endif
 		case MODE_CLICK_ITEM:
 		{
 			CPythonItem& rkIT=CPythonItem::Instance();

@@ -240,6 +240,7 @@
     <ClInclude Include="..\..\source\UserInterface\PythonNonPlayer.h" />
     <ClInclude Include="..\..\source\UserInterface\PythonPlayer.h" />
     <ClInclude Include="..\..\source\UserInterface\PythonPlayerEventHandler.h" />
+    <ClInclude Include="..\..\source\UserInterface\PythonPrivateShop.h" />
     <ClInclude Include="..\..\source\UserInterface\PythonQuest.h" />
     <ClInclude Include="..\..\source\UserInterface\PythonSafeBox.h" />
     <ClInclude Include="..\..\source\UserInterface\PythonShop.h" />
@@ -332,6 +333,9 @@
     <ClCompile Include="..\..\source\UserInterface\PythonPlayerInputMouse.cpp" />
     <ClCompile Include="..\..\source\UserInterface\PythonPlayerModule.cpp" />
     <ClCompile Include="..\..\source\UserInterface\PythonPlayerSkill.cpp" />
+    <ClCompile Include="..\..\source\UserInterface\PythonPrivateShop.cpp" />
+    <ClCompile Include="..\..\source\UserInterface\PythonPrivateShopManager.cpp" />
+    <ClCompile Include="..\..\source\UserInterface\PythonPrivateShopModule.cpp" />
     <ClCompile Include="..\..\source\UserInterface\PythonProfilerModule.cpp" />
     <ClCompile Include="..\..\source\UserInterface\PythonQuest.cpp" />
     <ClCompile Include="..\..\source\UserInterface\PythonSafeBox.cpp" />
