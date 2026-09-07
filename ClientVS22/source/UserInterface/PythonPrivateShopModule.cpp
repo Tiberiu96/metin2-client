@@ -187,6 +187,11 @@ PyObject* privateShopGetPremiumTime(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildValue("i", CPythonPrivateShop::Instance().GetPremiumTime());
 }
 
+PyObject* privateShopGetLifetimeSeconds(PyObject* poSelf, PyObject* poArgs)
+{
+	return Py_BuildValue("I", CPythonPrivateShop::Instance().GetLifetimeSeconds());
+}
+
 PyObject* privateShopGetMyState(PyObject* poSelf, PyObject* poArgs)
 {
 	return Py_BuildValue("i", CPythonPrivateShop::Instance().GetMyState());
@@ -567,6 +572,7 @@ void initPrivateShop()
 		{ "GetGold",						privateShopGetGold,						METH_VARARGS },
 		{ "GetCheque",						privateShopGetCheque,					METH_VARARGS },
 		{ "GetPremiumTime",					privateShopGetPremiumTime,				METH_VARARGS },
+		{ "GetLifetimeSeconds", privateShopGetLifetimeSeconds, METH_VARARGS },
 		{ "GetMyState",						privateShopGetMyState,					METH_VARARGS },
 		{ "GetState",						privateShopGetState,					METH_VARARGS },
 		{ "GetPageCount",					privateShopGetPageCount,				METH_VARARGS },
@@ -613,6 +619,7 @@ void initPrivateShop()
 	PyModule_AddIntConstant(poModule, "STATE_CLOSED",						STATE_CLOSED);
 	PyModule_AddIntConstant(poModule, "STATE_OPEN",							STATE_OPEN);
 	PyModule_AddIntConstant(poModule, "STATE_MODIFY",						STATE_MODIFY);
+	PyModule_AddIntConstant(poModule, "STATE_RECOVERY", STATE_RECOVERY);
 	PyModule_AddIntConstant(poModule, "TITLE_MAX_LEN",						TITLE_MAX_LEN);
 	PyModule_AddIntConstant(poModule, "TITLE_MIN_LEN",						TITLE_MIN_LEN);
 	PyModule_AddIntConstant(poModule, "MODE_NONE",							MODE_NONE);
