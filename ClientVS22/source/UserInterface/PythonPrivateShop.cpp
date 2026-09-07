@@ -25,6 +25,8 @@ struct ItemStockSortFunc
 
 void CPythonPrivateShop::ClearMyPrivateShop()
 {
+	m_dwPremiumTime = 0;
+	m_dwLifetimeSeconds = 0;
 	m_llGold = 0;
 	m_dwCheque = 0;
 	m_lX = 0;

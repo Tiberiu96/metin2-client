@@ -14,7 +14,8 @@ enum EPrivateShopState
 	STATE_NONE,
 	STATE_CLOSED,
 	STATE_OPEN,
-	STATE_MODIFY
+	STATE_MODIFY,
+	STATE_RECOVERY
 };
 
 enum EMode
@@ -205,6 +206,8 @@ class CPythonPrivateShop : public CSingleton<CPythonPrivateShop>
 		void		GetLocation(long& lX, long& lY, BYTE& bChannel) { lX = m_lX, lY = m_lY, bChannel = m_bChannel; }
 		std::string	GetMyTitle() { return m_strMyTitle; }
 		DWORD		GetPremiumTime() { return m_dwPremiumTime; }
+		void SetLifetimeSeconds(DWORD value) { m_dwLifetimeSeconds = value; }
+		DWORD GetLifetimeSeconds() const { return m_dwLifetimeSeconds; }
 		BYTE		GetMyPageCount() { return m_bMyPageCount; }
 		long long	GetTotalGold();
 		DWORD		GetTotalCheque();
@@ -246,6 +249,7 @@ class CPythonPrivateShop : public CSingleton<CPythonPrivateShop>
 		long			m_lMapIndex;
 		BYTE			m_bChannel;
 		DWORD			m_dwPremiumTime;
+		DWORD m_dwLifetimeSeconds;
 		std::string		m_strMyTitle;
 		BYTE			m_bMyState;
 		BYTE			m_bMyPageCount;

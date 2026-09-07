@@ -4266,7 +4266,7 @@ bool CPythonNetworkStream::RecvAffectAddPacket()
 #ifdef ENABLE_PREMIUM_PRIVATE_SHOP
 	if (rkElement.dwType == CInstanceBase::NEW_AFFECT_PREMIUM_PRIVATE_SHOP)
 	{
-		CPythonPrivateShop::Instance().SetPremiumTime(CPythonApplication::Instance().GetServerTimeStamp() + rkElement.lDuration);
+		// Account premium affects do not extend an existing shop's deadline.
 		__RefreshPrivateShopWindow();
 	}
 #endif
@@ -5071,6 +5071,10 @@ bool CPythonNetworkStream::RecvPrivateShop()
 			CPythonPrivateShop::Instance().SetMyTitle(subPacket.szTitle);
 			CPythonPrivateShop::Instance().SetMyState(subPacket.bState);
 			CPythonPrivateShop::Instance().SetMyPageCount(subPacket.bPageCount);
+			CPythonPrivateShop::Instance().SetPremiumTime(subPacket.dwDeadline);
+			CPythonPrivateShop::Instance().SetLifetimeSeconds(subPacket.dwLifetimeSeconds);
+			Tracef("PRIVATESHOP_CLIENT: lifetime deadline=%u seconds=%u\n", subPacket.dwDeadline, subPacket.dwLifetimeSeconds);
+			__RefreshPrivateShopWindow();
 		}
 		break;
 
